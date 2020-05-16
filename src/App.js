@@ -1,11 +1,9 @@
 import React from 'react';
 import './App.css';
-
+import AppDrawer from './layouts/MainLayout/AppDrawer';
 function App() {
   return (
-    <center>
-      <h1>Inventory Management System</h1>
-    </center>
+    <AppDrawer />
   );
 }
 
