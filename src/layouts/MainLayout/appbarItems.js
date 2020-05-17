@@ -1,8 +1,3 @@
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import StoreIcon from '@material-ui/icons/Store';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-import RecentActorsIcon from '@material-ui/icons/RecentActors';
-
 const appBarActionItems = [
     {
         name : "Product",
@@ -37,12 +32,12 @@ const appBarActionItems = [
 const sideBarItems = [
     {
         name : "Dashboard",
-        icon : DashboardIcon,
+        icon : "dashboard",
         ref : "/dashboard",
         hasItems : false,
     },{
         name : "Sell",
-        icon : StoreIcon,
+        icon : "shopping_basket",
         ref : "/sell",
         hasItems : true,
         subItems : [
@@ -59,7 +54,7 @@ const sideBarItems = [
         ]
     },{
         name : "Product",
-        icon : ShoppingBasketIcon,
+        icon : "storefront   ",
         ref : "/product",
         hasItems : true,
         subItems : [
@@ -78,7 +73,7 @@ const sideBarItems = [
         ]
     },{
         name : "Customer",
-        icon : RecentActorsIcon,
+        icon : "supervisor_account",
         ref : "/customer",
         hasItems : true,
         subItems : [
@@ -94,4 +89,4 @@ const sideBarItems = [
     },
 ]
 
-export default {appBarActionItems,sideBarItems};
+export {appBarActionItems,sideBarItems};
