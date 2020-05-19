@@ -1,18 +1,22 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
+import {List,Popover,Typography} from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import { useSelector } from 'react-redux';
+import isAppDrawerSideExtend from '../reducers/appDrawer';
 
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.background.paper,
   },
   nested: {
     paddingLeft: theme.spacing(4),
@@ -22,12 +26,31 @@ const useStyles = makeStyles((theme) => ({
 export default function NestedList(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = () => {
-    setOpen(!open);
+    if (isAppDrawerSideBarExtends){
+      setOpen(!open);
+    }
   };
 
- 
+  
+  const popover = (event) => {
+    if(!isAppDrawerSideExtend){
+      setAnchorEl(null);
+    }
+    else if(isAppDrawerSideExtend){
+      setAnchorEl(event.currentTarget);
+    }
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const id = Boolean(anchorEl) ? 'simple-popover' : undefined;
+  const isAppDrawerSideBarExtends = useSelector(state => state.isSideBarExtend);
+
   return (
     <List
       component="nav"
@@ -41,15 +64,16 @@ export default function NestedList(props) {
     >
       <ListItem button onClick={handleClick}>
         <ListItemIcon>
-            <i class="material-icons md-24">{props.item.icon}</i>
+            <i onClick={popover}  class="material-icons md-24 md-light">{props.item.icon}</i>
         </ListItemIcon>
         <ListItemText primary={props.item.name} />
         {
            props.item.hasItems ? ( open ? <ExpandLess /> : <ExpandMore />) : ("")
         }
       </ListItem>
+     
       {
-          props.item.hasItems ? (
+          props.item.hasItems && isAppDrawerSideBarExtends ? (
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                 {
@@ -65,6 +89,30 @@ export default function NestedList(props) {
             </Collapse>
           ) : ("")
       }
+        {!isAppDrawerSideBarExtends && props.item.hasItems ? (
+      <Popover
+
+        style={{marginLeft:"2.5vh"}}
+        id={id}
+        open={(Boolean(anchorEl) && isAppDrawerSideExtend)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <List style={{backgroundColor: "#0c0c4b",color:"#fff"}}>
+          { props.item.subItems.map( item => (
+            <ListItem key={item}>{item.name}</ListItem>
+          ))}
+        </List>
+      </Popover>
+       ) : null}
     </List>
   );
 }

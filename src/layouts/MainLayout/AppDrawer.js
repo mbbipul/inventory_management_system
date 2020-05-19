@@ -17,7 +17,9 @@ import {sideBarItems} from './appbarItems';
 import '../../App.css';
 
 import NestedList from '../../components/nestedList';
-const drawerWidth = 240;
+import { useSelector , useDispatch} from 'react-redux';
+import {extendAppDrawerSideBar,collapseAppDrawerSideBar} from '../../actions';
+const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: "#060620",
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -48,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
+   
   },
   drawerOpen: {
     width: drawerWidth,
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
+      width: theme.spacing(7) + 1,
     },
   },
   toolbar: {
@@ -82,16 +86,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AppDrawer() {
+
+   
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const open = useSelector(state => state.isSideBarExtend);
+  const dispatch = useDispatch();
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    dispatch(extendAppDrawerSideBar());
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    dispatch(collapseAppDrawerSideBar());
   };
 
   return (
@@ -122,6 +129,7 @@ export default function AppDrawer() {
             </AppBar>
       <Drawer
         variant="permanent"
+        style={{backgroundColor: "#000!important"}}
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
@@ -135,7 +143,7 @@ export default function AppDrawer() {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? <ChevronRightIcon style={{color:"#fff"}}/> : <ChevronLeftIcon style={{color:"#fff"}}/>}
           </IconButton>
         </div>
         <Divider />
