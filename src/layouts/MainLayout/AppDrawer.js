@@ -123,7 +123,7 @@ export default function AppDrawer() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        Mini variant drawer
+                        Inventory Mangement System
                     </Typography>
                 </Toolbar>
             </AppBar>

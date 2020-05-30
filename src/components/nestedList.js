@@ -10,8 +10,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
 import isAppDrawerSideExtend from '../reducers/appDrawer';
 
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Link } from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -66,7 +66,9 @@ export default function NestedList(props) {
         <ListItemIcon>
             <i onClick={popover}  class="material-icons md-24 md-light">{props.item.icon}</i>
         </ListItemIcon>
-        <ListItemText primary={props.item.name} />
+        <Link style={{textDecoration: "none",color:"#fff"}} to={props.item.ref} >
+          <ListItemText primary={props.item.name} />
+        </Link>
         {
            props.item.hasItems ? ( open ? <ExpandLess /> : <ExpandMore />) : ("")
         }
