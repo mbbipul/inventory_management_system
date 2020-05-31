@@ -1,4 +1,4 @@
-const isAppDrawerSideExtend = (state = false , action ) => {
+const isAppDrawerSideExtend = (state = true , action ) => {
     switch(action.type) {
         case 'OPEN' :
             return !state;

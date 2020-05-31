@@ -4,22 +4,60 @@ import AppDrawer from './layouts/MainLayout/AppDrawer';
 
 import {BrowserRouter as Router,Switch,Route } from 'react-router-dom';
 
+import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import RouteHeader from './components/routeHeader';
+
+import DashBoard from './Views/dashboard';
+
+const useStyles = makeStyles((theme) => ({
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+}));
 function App() {
+  const classes = useStyles();
+  const isDrawerExtend = useSelector(state => state.isSideBarExtend);
+
+  var content = {
+    flexGrow: 1,
+    marginLeft : 55,
+    transition : ".8s ",
+   
+  }
+  if(isDrawerExtend){
+    content = {
+      marginLeft: 200,
+      transition : ".8s",
+    }
+  }
   return (
     <Router>
       <AppDrawer />
+      <main style={content}  >
+        <div className={classes.toolbar} />
       <Switch>
-          <Route path="/dashboard">
-            <h1>{
-              [1,2,3,4,5,6,6,7,8,8].map(()=>(
-                "Hello world"
-              ))
-            }</h1>
+          <Route exact path="/">
+            <RouteHeader />
+            <DashBoard />
+          </Route>
+          <Route exact path="/dashboard">
+            <RouteHeader />
           </Route>
           <Route path="/sells">
-            sells
+            <RouteHeader />
           </Route>
         </Switch>
+        </main>
     </Router>
   );
 }
