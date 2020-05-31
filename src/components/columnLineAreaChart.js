@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CanvasJSReact from '../assets/canvasjs.react';
+import {Paper} from '@material-ui/core';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var CanvasJS = CanvasJSReact.CanvasJS;
  
@@ -28,13 +29,13 @@ class ColumnLineAreaChart extends Component {
 	}
 	render() {
 		return (
-		<div style={{height:300,width:700,paddingLeft:20}}>
+		<Paper style={{height:640,width:750,paddingLeft:20}}>
 			<h1>Monthly Sales & Profit</h1>
 			<CanvasJSChart options = {this.props.options} 
 				onRef={ref => this.chart = ref}
 			/>
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-		</div>
+		</Paper>
 		);
 	}
 }

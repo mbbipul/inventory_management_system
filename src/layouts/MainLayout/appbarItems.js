@@ -54,7 +54,7 @@ const sideBarItems = [
         ]
     },{
         name : "Product",
-        icon : "storefront   ",
+        icon : "storefront",
         ref : "/product",
         hasItems : true,
         subItems : [

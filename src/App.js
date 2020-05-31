@@ -6,9 +6,9 @@ import {BrowserRouter as Router,Switch,Route } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
-import RouteHeader from './components/routeHeader';
 
 import DashBoard from './Views/dashboard';
+import Product from './Views/product';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -47,14 +47,16 @@ function App() {
         <div className={classes.toolbar} />
       <Switch>
           <Route exact path="/">
-            <RouteHeader />
             <DashBoard />
           </Route>
           <Route exact path="/dashboard">
-            <RouteHeader />
+            <DashBoard />
           </Route>
           <Route path="/sells">
-            <RouteHeader />
+            <DashBoard />
+          </Route>
+          <Route path="/product">
+            <Product />
           </Route>
         </Switch>
         </main>

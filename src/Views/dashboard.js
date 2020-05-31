@@ -1,9 +1,39 @@
 import React from 'react';
 import ColumnLineAreaChart from '../components/columnLineAreaChart';
+import PieChart from '../components/pieChart';
+import SimpleTable from '../components/table';
+import {Grid} from '@material-ui/core';
+import {Paper} from '@material-ui/core';
+import IconCard from '../components/iconCard';
+import RouteHeader from '../components/routeHeader';
+
 
 class DashBoard extends React.Component {
+
+    overViewItems = [
+        {
+            name : "Total Customer",
+            count : 120,
+            icon : "supervisor_account"
+        },
+        {
+            name : "Total Product",
+            count : 234,
+            icon : "storefront"
+        },
+        {
+            name : "Total Supplier",
+            count : 12,
+            icon : "supervisor_account"
+        },{
+            name : "Total Invoice",
+            count : 189,
+            icon : "shopping_basket"
+        }
+    ]
     
     monthlyChartOptions = {
+        // theme: "dark2",
         animationEnabled: true,
         colorSet: "colorSet2",
         title: {
@@ -86,9 +116,57 @@ class DashBoard extends React.Component {
             ]
         }]
     }
+
+    routeHeader = {
+        title : "Dashboard",
+        subTitle : "Home",
+        icon : "dashboard",
+        breadCrumbs : [{
+            title : "Dashboard",
+            icon : "dashboard"
+        }]
+    }
+
 	render() {
 		return (
-            <ColumnLineAreaChart options={this.monthlyChartOptions}/>
+            <div>
+                <RouteHeader details={this.routeHeader} />
+                <Grid
+                    container
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="flex-start"
+                >
+                    <Grid item xs={8}>
+                        <ColumnLineAreaChart options={this.monthlyChartOptions}/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Paper  style={{paddingLeft:20,paddingRight:20}}>
+                            <h1>Todays Report</h1>
+                            <SimpleTable />
+                            <br />
+                            <PieChart />
+                        </Paper>
+                    </Grid>
+                </Grid>
+                <br />
+                <Grid
+                    container
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="flex-start"
+                    spacing={4}
+                    style={{padding:20}}
+                >
+                    {
+                        this.overViewItems.map((item)=>(
+                            <Grid item xs={3}>
+                                <IconCard item={item}/>
+                            </Grid>
+                        ))
+                    }
+                </Grid>
+            </div>
 		);
 	}
 }

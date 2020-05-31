@@ -6,7 +6,10 @@ import '../App.css';
 
 class RouteHeader extends React.Component {
 
-    
+    constructor(props){
+        super(props);
+        this.headerDetails = props.details;
+    }
     render(){
         return (
             <Paper elevation={1} style={{paddingLeft : 10}}>
@@ -25,17 +28,17 @@ class RouteHeader extends React.Component {
                             spacing={8}
                         >
                             <Grid item xs={1}>
-                                <i style={{color: '#000'}}  className="material-icons md-48 md-light">dashboard</i>
+                                <i style={{color: '#000'}}  className="material-icons md-48 md-light">{this.headerDetails.icon}</i>
                             </Grid>
                             <Grid item xs={10}>
-                                <h3 style={{marginTop:-1,paddingTop:7,fontWeight:1000,fontSize:20}}>Dashboard</h3>
-                                <p style={{marginTop:-20}}>Home</p>
+                                <h3 style={{marginTop:-1,paddingTop:7,fontWeight:1000,fontSize:20}}>{this.headerDetails.title}</h3>
+                                <p style={{marginTop:-20}}>{this.headerDetails.subTitle}</p>
                             </Grid>
                         </Grid>
                     </Grid>
 
                     <Grid item xs={6}>
-                        <IconBreadcrumbs />
+                        <IconBreadcrumbs crumbs={this.headerDetails.breadCrumbs}/>
                     </Grid>
                 </Grid>
             </Paper>
