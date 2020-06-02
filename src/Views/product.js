@@ -1,13 +1,11 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useParams,
-  useRouteMatch
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
+import ProductTable from '../components/productTable';
+import AddProduct from "./addProduct";
 
 class Product extends React.Component {
 
@@ -32,10 +30,10 @@ class Product extends React.Component {
                 <RouteHeader details={this.routeHeader} />
                 <Switch>
                     <Route exact path="/product">
-                    <h3>Please select a topic.</h3>
+                        <ProductTable />
                     </Route>
-                    <Route path={'${this.props.match}/topicId'}>
-                        Hello world
+                    <Route exact path="/product/add-product">
+                        <AddProduct />
                     </Route>
                 </Switch>
             </div>                        
