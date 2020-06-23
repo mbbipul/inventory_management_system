@@ -51,7 +51,7 @@ namespace inventory_rest_api
                 endpoints.MapControllers();
             });
 
-         //   SeedData.EnsurePopulated(app);
+          // SeedData.EnsurePopulated(app);
         }
     }
 }

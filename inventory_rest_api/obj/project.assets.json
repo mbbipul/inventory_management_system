@@ -8481,19 +8481,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Pranto\\.nuget\\packages\\": {}
+    "/home/bb/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "H:\\bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
+      "projectUniqueName": "/home/bb/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
       "projectName": "inventory_rest_api",
-      "projectPath": "H:\\bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
-      "packagesPath": "C:\\Users\\Pranto\\.nuget\\packages\\",
-      "outputPath": "H:\\bipul\\inventory_management_system\\inventory_rest_api\\obj\\",
+      "projectPath": "/home/bb/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
+      "packagesPath": "/home/bb/.nuget/packages/",
+      "outputPath": "/home/bb/projects/inventory_management_system/inventory_rest_api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Pranto\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/bb/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -8560,7 +8560,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.301/RuntimeIdentifierGraph.json"
       }
     }
   }
