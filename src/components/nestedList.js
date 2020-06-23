@@ -82,7 +82,9 @@ export default function NestedList(props) {
                     props.item.subItems.map((sub,index) =>(
                     
                         <ListItem key={index} button className={classes.nested}>
-                            <ListItemText primary={sub.name} />
+                            <Link style={{textDecoration: "none",color:"#fff"}} to={sub.ref} >
+                              <ListItemText primary={sub.name} />
+                            </Link>
                         </ListItem>
                     
                     ))
