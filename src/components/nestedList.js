@@ -10,7 +10,15 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
 import isAppDrawerSideExtend from '../reducers/appDrawer';
 
-import { Link } from 'react-router-dom';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams,
+  useRouteMatch
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +35,8 @@ export default function NestedList(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  let { path, url } = useRouteMatch();
+
 
   const handleClick = () => {
     if (isAppDrawerSideBarExtends){
@@ -66,7 +76,7 @@ export default function NestedList(props) {
         <ListItemIcon>
             <i onClick={popover}  class="material-icons md-24 md-light">{props.item.icon}</i>
         </ListItemIcon>
-        <Link style={{textDecoration: "none",color:"#fff"}} to={props.item.ref} >
+        <Link style={{textDecoration: "none",color:"#fff"}} to={props.item.ref}  >
           <ListItemText primary={props.item.name} />
         </Link>
         {
@@ -82,7 +92,7 @@ export default function NestedList(props) {
                     props.item.subItems.map((sub,index) =>(
                     
                         <ListItem key={index} button className={classes.nested}>
-                            <Link style={{textDecoration: "none",color:"#fff"}} to={sub.ref} >
+                            <Link style={{textDecoration: "none",color:"#fff"}} to={url+sub.ref} >
                               <ListItemText primary={sub.name} />
                             </Link>
                         </ListItem>
