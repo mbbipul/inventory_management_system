@@ -97,6 +97,7 @@ class Form extends React.Component {
                                 case 0:
                                     item = <Grid key={i} item xs={6}>
                                         <TextField
+                                            disabled={field.disabled}
                                             error={error}
                                             label={field.label}
                                             name={field.label}
@@ -156,6 +157,7 @@ class Form extends React.Component {
                                     break;
                                 case 999:
                                     item = <Grid key={i} item xs={12}>
+                                                <br />
                                                 <Divider />
                                             </Grid>;
                                     break;
@@ -168,7 +170,7 @@ class Form extends React.Component {
                 </Grid>
                 <br />
                 <Button type="submit" style={{float:"right"}} variant="contained" color="primary">
-                    Add Product
+                    {this.props.submitButton}
                 </Button>
         </form>
         )

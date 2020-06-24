@@ -1,5 +1,5 @@
-import isAppDrawerSideExtend from './appDrawer';
 import {combineReducers} from 'redux';
+import isAppDrawerSideExtend from './appDrawer';
 
 const reducers = combineReducers({
     isSideBarExtend : isAppDrawerSideExtend

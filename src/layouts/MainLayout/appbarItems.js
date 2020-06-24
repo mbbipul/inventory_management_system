@@ -36,20 +36,20 @@ const sideBarItems = [
         ref : "/dashboard",
         hasItems : false,
     },{
-        name : "Sell",
+        name : "Sales",
         icon : "shopping_basket",
-        ref : "/sell",
+        ref : "/sales",
         hasItems : true,
         subItems : [
             {
-                name : "New Sell",
-                ref : "sell/new-sell"
+                name : "New Sales",
+                ref : "sales/new-sales"
             },{
-                name : "Manage Sell",
-                ref : "sell/manage-sell"
+                name : "Manage Sales",
+                ref : "sales/manage-sales"
             },{
-                name : "POS Sell",
-                ref : "sell/pos-sell"
+                name : "POS Sales",
+                ref : "sales/pos-sales"
             }
         ]
     },{
@@ -84,6 +84,22 @@ const sideBarItems = [
             {
                 name : "Manage Customer",
                 ref : "customer/manage-customer"
+            }
+        ]
+    },
+    {
+        name : "Supplier",
+        icon : "local_shipping",
+        ref : "/supplier",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Supplier",
+                ref : "supplier/add-supplier"
+            },
+            {
+                name : "Manage Customer",
+                ref : "supplier/manage-supplier"
             }
         ]
     },

@@ -10,6 +10,7 @@ class AddProduct extends React.Component {
             placeholder : "Fresh oil",
             type : 0,
             required : true,
+            disabled : false,
             validation : [9999]
         },
         {
@@ -17,6 +18,7 @@ class AddProduct extends React.Component {
             placeholder : "QT604T",
             type : 0,
             required : true,
+            disabled : false,
             validation : [9999]
 
         },
@@ -25,6 +27,7 @@ class AddProduct extends React.Component {
             placeholder : "Please Select product Type",
             type : 1,
             required : true,
+            disabled : false,
             validation : [9999]
 
         },
@@ -33,6 +36,7 @@ class AddProduct extends React.Component {
             placeholder : "5",
             type : 0,
             required : true,
+            disabled : false,
             validation : [0]
         },
         {
@@ -40,25 +44,38 @@ class AddProduct extends React.Component {
             placeholder : "450.00 tk",
             type : 0,
             required : true,
+            disabled : false,
             validation : [0]
 
         },
         {
+            label : "Purchase Discount",
+            placeholder : "200.00 tk",
+            type : 0,
+            required : true,
+            disabled : false,
+            validation : [0]
+        },
+
+        {
             label : "",
+            disabled : false,
             type : 999,
         },
         {
-            label : "Purchase Price",
-            placeholder : "500.00 tk",
+            label : "Purchase Price ( Per Product )",
+            placeholder : "000.00 tk",
             type : 0,
             required : true,
+            disabled : true,
             validation : [0]
         },
         {
-            label : "Sell Price",
+            label : "Sales Price ( Per Product )",
             placeholder : "700.00 tk",
             type : 0,
             required : true,
+            disabled : false,
             validation : [0]
         },
         {
@@ -66,6 +83,7 @@ class AddProduct extends React.Component {
             placeholder : "Please Select Supplier Name",
             type : 1,
             required : true,
+            disabled : false,
             validation : [0]
         },
         {
@@ -73,6 +91,7 @@ class AddProduct extends React.Component {
             placeholder : "product details",
             type : 2,
             required : true,
+            disabled : false,
             validation : [0]
         }
     ]
@@ -85,7 +104,7 @@ class AddProduct extends React.Component {
                     title="Add New Product"
                 />
                 <Divider />
-                <Form fields={this.fields}/>
+                <Form submitButton="Add Product" fields={this.fields}/>
             </Card>
         )
     }

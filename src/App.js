@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 
 import DashBoard from './Views/dashboard';
 import Product from './Views/product';
+import Supplier from './Views/supplier';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -57,6 +58,9 @@ function App() {
           </Route>
           <Route path="/product">
             <Product />
+          </Route>
+          <Route path="/supplier">
+            <Supplier />
           </Route>
         </Switch>
         </main>
