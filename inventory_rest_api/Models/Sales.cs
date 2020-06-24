@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace inventory_rest_api.Models
 {
-    public class Purchase
+    public class Sales
     {
-
-        public long PurchaseId { get ; set; }
-
+        public long SalesId { get; set; }
+        
         [Required]
-        public long SupplierId { get; set;}
+        public long CustomerId { get; set;}
 
         [Required]
         public long ProductId { get; set;}
@@ -20,23 +19,23 @@ namespace inventory_rest_api.Models
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime PurchaseDate { get; set; }
+        public DateTime SalesDate { get; set; }
         
         [Required]
-        public long PurchasePrice { get; set; }
+        public long SalesPrice { get; set; }
 
         [Required]
-        public long PurchasePaymentAmount { get; set; }
+        public long SalesDueAmount { get; set; }
         
         [Required]
-        public bool PurchasePaidStatus { get; set; }
+        public bool SalesPaidStatus { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime PurchaseDuePaymentDate { get; set;}
+        public DateTime SalesDuePaymentDate { get; set;}
 
         [Required]
-        public long PurchaseDiscount { get; set; }
+        public long SalesDiscount { get; set; }
 
 
     }
