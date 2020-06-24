@@ -44,36 +44,12 @@ class Form extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        let state = this.state;
-        let product = {
-            "productName" : state.ProductName,
-            "productCode" : state.ProductCode,
-            "productType" : state.ProductType,
-            "productQuantity" : parseInt(state.ProductQuantity),
-            "productPrice" : parseInt(state.ProductPrice),
-        }
-        console.log(product);
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify(product);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
-
-        fetch("https://localhost:5001/api/Products", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+        this.props.onSubmit(this.state);
     
     }
     render(){
         return(
-            <form  autoComplete="off" style={{padding:20,paddingBottom:50}} onSubmit={this.handleSubmit}>
+            <form autoComplete="off" style={{padding:20,paddingBottom:50}} onSubmit={this.handleSubmit}>
                 <Grid
                     container
                     direction="row"

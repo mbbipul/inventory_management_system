@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card , CardHeader, Divider } from '@material-ui/core';
 import Form from '../components/form';
+import apiUrl from '../utils/apiInfo';
 
 class AddProduct extends React.Component {
 
@@ -96,7 +97,33 @@ class AddProduct extends React.Component {
         }
     ]
 
-    
+    submitForm = (state) => {
+        let product = {
+            "productName" : state.ProductName,
+            "productCode" : state.ProductCode,
+            "productType" : state.ProductType,
+            "productQuantity" : parseInt(state.ProductQuantity),
+            "productPrice" : parseInt(state.ProductPrice),
+            "productDetails" : state.Details,
+        }
+        console.log(product);
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(product);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(apiUrl+"Products", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
     render(){
         return (
             <Card style={{margin:40}}>
@@ -104,7 +131,7 @@ class AddProduct extends React.Component {
                     title="Add New Product"
                 />
                 <Divider />
-                <Form submitButton="Add Product" fields={this.fields}/>
+                <Form onSubmit={this.submitForm} submitButton="Add Product" fields={this.fields}/>
             </Card>
         )
     }
