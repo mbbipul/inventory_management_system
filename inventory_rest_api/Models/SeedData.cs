@@ -22,6 +22,7 @@ namespace inventory_rest_api.Models
                     ProductCode = "231234",
                     ProductPrice = 400,
                     ProductQuantity = 10,
+                    ProductDetails = "product",
 
                 },
                  new Product {
@@ -30,6 +31,8 @@ namespace inventory_rest_api.Models
                     ProductCode = "231234",
                     ProductPrice = 400,
                     ProductQuantity = 10,
+                    ProductDetails = "product",
+
 
                 }, new Product {
                     ProductName = "Sugar",
@@ -37,6 +40,8 @@ namespace inventory_rest_api.Models
                     ProductCode = "231234",
                     ProductPrice = 400,
                     ProductQuantity = 10,
+                    ProductDetails = "product",
+
 
                 }
             );
