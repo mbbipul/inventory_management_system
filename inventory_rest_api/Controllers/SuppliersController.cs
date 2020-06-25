@@ -21,7 +21,7 @@ namespace inventory_rest_api.Controllers
         }
         
          [HttpGet("{id}")]
-        public async Task<ActionResult<Supplier>> GetSupplier(long id)
+        public async Task<ActionResult<Supplier>> GetSuppliers(long id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
  
@@ -35,7 +35,7 @@ namespace inventory_rest_api.Controllers
  
         // PUT: api/Supplier/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSupplier(long id, Supplier supplier)
+        public async Task<IActionResult> PutSuppliers(long id, Supplier supplier)
         {
             if (id != supplier.SupplierId)
             {
@@ -63,9 +63,9 @@ namespace inventory_rest_api.Controllers
             return CreatedAtAction("GetSuppliers", new { id = supplier.SupplierId }, supplier);
         }
  
-        // POST: api/Products
+        // POST: api/Suppliers
         [HttpPost]
-        public async Task<ActionResult> PostProducts(Supplier supplier)
+        public async Task<ActionResult> PostSuppliers(Supplier supplier)
         {
             _context.Suppliers.Add(supplier);
             await _context.SaveChangesAsync();
@@ -75,7 +75,7 @@ namespace inventory_rest_api.Controllers
  
         // DELETE: api/Suppliers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Supplier>> DeleteProducts(int id)
+        public async Task<ActionResult<Supplier>> DeleteSuppliers(int id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null)

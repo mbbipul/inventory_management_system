@@ -9,7 +9,7 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200624180225_InitialCreate")]
+    [Migration("20200625105743_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,6 +19,30 @@ namespace inventory_rest_api.Migrations
                 .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("inventory_rest_api.Models.Company", b =>
+                {
+                    b.Property<long>("CompanyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CompanyAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyContact")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CompanyId");
+
+                    b.ToTable("Companies");
+                });
 
             modelBuilder.Entity("inventory_rest_api.Models.Product", b =>
                 {
