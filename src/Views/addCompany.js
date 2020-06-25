@@ -1,62 +1,45 @@
 import React from 'react';
-
 import { Card , CardHeader, Divider } from '@material-ui/core';
 import Form from '../components/form';
 import apiUrl from '../utils/apiInfo';
 
-class AddSupplier extends React.Component {
+class AddCompany extends React.Component {
 
     fields = [
         {
-            label : "Supplier Name",
-            placeholder : "BB Roy",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [9999]
-        },
-        {
-            label : "Supplier Address",
-            placeholder : "Barishal Sador",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [9999]
-        },
-        {
-            label : "Supplier Contact",
-            placeholder : " +8801xxxxxxxxx",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [9999]
-        },
-        {
-            label : "Supplier Email",
-            placeholder : "bb@gmail.com",
-            type : 0,
-            required : false,
-            disabled : false,
-            validation : [9999]
-        },
-        {
-            label : "Supplier Company Name",
+            label : "Company Name",
             placeholder : "Amrita",
             type : 0,
-            required : false,
+            required : true,
             disabled : false,
             validation : [9999]
         },
+        {
+            label : "Company Address",
+            placeholder : "Barishal",
+            type : 0,
+            required : true,
+            disabled : false,
+            validation : [9999]
+
+        },
+        {
+            label : "Company Contact",
+            placeholder : "74634878476",
+            type : 0,
+            required : true,
+            disabled : false,
+            validation : [9999]
+
+        },
+        
     ]
 
     submitForm = (state) => {
         let product = {
-            "productName" : state.ProductName,
-            "productCode" : state.ProductCode,
-            "productType" : state.ProductType,
-            "productQuantity" : parseInt(state.ProductQuantity),
-            "productPrice" : parseInt(state.ProductPrice),
-            "productDetails" : state.Details,
+            "companyName" : state.CompanyName,
+            "companyAddress" : state.CompanyAddress,
+            "companyContact" : state.CompanyContact,
         }
         console.log(product);
         var myHeaders = new Headers();
@@ -71,7 +54,7 @@ class AddSupplier extends React.Component {
             redirect: 'follow'
         };
 
-        fetch(apiUrl+"Products", requestOptions)
+        fetch(apiUrl+"Companies", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -80,13 +63,13 @@ class AddSupplier extends React.Component {
         return (
             <Card style={{margin:40}}>
                 <CardHeader
-                    title="Add New Supplier"
+                    title="Add New Company"
                 />
                 <Divider />
-                <Form submitButton="Add Supplier" fields={this.fields}/>
+                <Form onSubmit={this.submitForm} submitButton="Add Company" fields={this.fields}/>
             </Card>
         )
     }
 }
 
-export default AddSupplier;
+export default AddCompany;

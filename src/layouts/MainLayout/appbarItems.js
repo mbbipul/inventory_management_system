@@ -103,6 +103,22 @@ const sideBarItems = [
             }
         ]
     },
+    {
+        name : "Company",
+        icon : "local_shipping",
+        ref : "/company",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Company",
+                ref : "company/add-company"
+            },
+            {
+                name : "Manage Company",
+                ref : "company/manage-company"
+            }
+        ]
+    },
 ]
 
 export {appBarActionItems,sideBarItems};
