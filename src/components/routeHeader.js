@@ -11,6 +11,7 @@ class RouteHeader extends React.Component {
         this.headerDetails = props.details;
     }
     render(){
+        console.log("render");
         return (
             <Paper elevation={1} style={{paddingLeft : 10}}>
                 <Grid
@@ -32,7 +33,7 @@ class RouteHeader extends React.Component {
                             </Grid>
                             <Grid item xs={10}>
                                 <h3 style={{marginTop:-1,paddingTop:7,fontWeight:1000,fontSize:20}}>{this.headerDetails.title}</h3>
-                                <p style={{marginTop:-20}}>{this.headerDetails.subTitle}</p>
+                                <p style={{marginTop:-20}}>{this.props.subTitle}</p>
                             </Grid>
                         </Grid>
                     </Grid>

@@ -2,7 +2,7 @@ import React from 'react';
 import MaterialTable from 'material-table';
 
 export default function ProductTable() {
-  const [state, setState] = React.useState({
+  const [state] = React.useState({
     columns: [
         {title : 'SL' , field : 'serial' , type: 'numeric'},
         {title : 'Product' ,field : 'product' },

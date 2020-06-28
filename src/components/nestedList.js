@@ -12,11 +12,7 @@ import isAppDrawerSideExtend from '../reducers/appDrawer';
 
 
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
   Link,
-  useParams,
   useRouteMatch
 } from "react-router-dom";
 
@@ -35,7 +31,7 @@ export default function NestedList(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  let { path, url } = useRouteMatch();
+  let {  url } = useRouteMatch();
 
 
   const handleClick = () => {

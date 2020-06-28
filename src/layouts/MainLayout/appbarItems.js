@@ -105,7 +105,7 @@ const sideBarItems = [
     },
     {
         name : "Company",
-        icon : "local_shipping",
+        icon : "business",
         ref : "/company",
         hasItems : true,
         subItems : [
