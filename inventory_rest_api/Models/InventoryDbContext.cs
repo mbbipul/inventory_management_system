@@ -12,5 +12,7 @@ namespace inventory_rest_api.Models
 
         public DbSet<Company> Companies { get; set; }
 
+        public DbSet<ProductCategory> ProductCategories { get; set; }
+
     }
 }

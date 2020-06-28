@@ -2,19 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inventory_rest_api.Models;
 
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200628060905_ProductType")]
+    partial class ProductType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5")
+                .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -75,20 +77,20 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("inventory_rest_api.Models.ProductCategory", b =>
+            modelBuilder.Entity("inventory_rest_api.Models.ProductType", b =>
                 {
-                    b.Property<long>("ProductCategoryId")
+                    b.Property<long>("ProductTypeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ProductCategoryName")
+                    b.Property<string>("ProductTypeName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductCategoryId");
+                    b.HasKey("ProductTypeId");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductTypes");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
