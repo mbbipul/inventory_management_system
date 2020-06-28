@@ -120,6 +120,16 @@ namespace inventory_rest_api.Controllers
             return productCategory;
         }
 
+        [HttpDelete("delete-categories")]
+        public async Task<ActionResult<String>> DeleteProductCategories(IEnumerable<ProductCategory> productCategories)
+        {
+
+            _context.ProductCategories.RemoveRange(productCategories);
+            await _context.SaveChangesAsync();
+
+            return "Successfully remove datas";
+        }
+
         private bool ProductCategoryExists(long id)
         {
             return _context.ProductCategories.Any(e => e.ProductCategoryId == id);
