@@ -10,8 +10,9 @@ class RouteHeader extends React.Component {
         super(props);
         this.headerDetails = props.details;
     }
+    
+
     render(){
-        console.log("render");
         return (
             <Paper elevation={1} style={{paddingLeft : 10}}>
                 <Grid

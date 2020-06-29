@@ -1,18 +1,43 @@
 import React from 'react';
-import { Card , CardHeader, Divider } from '@material-ui/core';
+import { Card , CardHeader, Divider, Snackbar} from '@material-ui/core';
 import Form from '../components/form';
-import apiUrl from '../utils/apiInfo';
+import submitForm from '../utils/fetchApi';
+import Alert from '@material-ui/lab/Alert';
 
 class AddCompany extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            company : {},
+            openSnackbar : false,
+            redirect : false
+        }
+    }
+
+    onCompanyAddSucces = (result) => {
+        this.setState({
+            company : JSON.parse(result),
+            openSnackbar : true,
+        });
+
+    }
+
+    handleSnackbar = () => {
+        this.setState({
+            openSnackbar : false
+        })
+    }
 
     fields = [
         {
             label : "Company Name",
             placeholder : "Amrita",
-            type : 0,
+            type : 4,
+            fetchUrl : "Companies/find/",
             required : true,
             disabled : false,
-            validation : [9999]
+            validation : [1] 
         },
         {
             label : "Company Address",
@@ -24,12 +49,12 @@ class AddCompany extends React.Component {
 
         },
         {
-            label : "Company Contact",
+            label : "Company Contact Number",
             placeholder : "74634878476",
             type : 0,
             required : true,
             disabled : false,
-            validation : [9999]
+            validation : [0] 
 
         },
         
@@ -39,25 +64,9 @@ class AddCompany extends React.Component {
         let product = {
             "companyName" : state.CompanyName,
             "companyAddress" : state.CompanyAddress,
-            "companyContact" : state.CompanyContact,
+            "companyContact" : state.CompanyContactNumber,
         }
-        console.log(product);
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify(product);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
-
-        fetch(apiUrl+"Companies", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+        submitForm("Companies","POST",product,this.onCompanyAddSucces);
     }
     render(){
         return (
@@ -67,6 +76,16 @@ class AddCompany extends React.Component {
                 />
                 <Divider />
                 <Form onSubmit={this.submitForm} submitButton="Add Company" fields={this.fields}/>
+                
+                <Snackbar 
+                    open={this.state.openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={this.handleSnackbar}
+                >
+                    <Alert onClose={this.handleSnackbar} variant="filled" severity="success">
+                        Succesfully new company "{this.state.company.companyName}" added !
+                    </Alert>
+                </Snackbar>
             </Card>
         )
     }

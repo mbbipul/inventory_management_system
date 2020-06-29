@@ -7,7 +7,6 @@ import {
 import RouteHeader from '../components/routeHeader';
 import ProductTable from '../components/productTable';
 import AddProduct from "./addProduct";
-import FullWidthTabs from "../components/tab";
 import Category from "./category";
 
 function Product() {

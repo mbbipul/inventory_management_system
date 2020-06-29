@@ -26,7 +26,10 @@ class AddProduct extends React.Component {
         {
             label : "Product Type",
             placeholder : "Please Select product Type",
-            type : 1,
+            type : 3,
+            fetchUrl : apiUrl+"ProductCategory",
+            selectName : "productCategoryName",
+            selectKey : "productCategoryId",
             required : true,
             disabled : false,
             validation : [9999]
@@ -93,7 +96,7 @@ class AddProduct extends React.Component {
             type : 2,
             required : true,
             disabled : false,
-            validation : [0]
+            validation : [999]
         }
     ]
 
@@ -101,7 +104,7 @@ class AddProduct extends React.Component {
         let product = {
             "productName" : state.ProductName,
             "productCode" : state.ProductCode,
-            "productType" : state.ProductType,
+            "productCategoryId" : state.ProductType.productCategoryId,
             "productQuantity" : parseInt(state.ProductQuantity),
             "productPrice" : parseInt(state.ProductPrice),
             "productDetails" : state.Details,

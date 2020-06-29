@@ -86,13 +86,12 @@ export default function NestedList(props) {
                 <List component="div" disablePadding>
                 {
                     props.item.subItems.map((sub,index) =>(
-                    
+                      <Link style={{textDecoration: "none",color:"#fff"}} to={url+sub.ref} >
                         <ListItem key={index} button className={classes.nested}>
-                            <Link style={{textDecoration: "none",color:"#fff"}} to={url+sub.ref} >
                               <ListItemText primary={sub.name} />
-                            </Link>
                         </ListItem>
-                    
+                      </Link>
+
                     ))
                 }
                 </List>

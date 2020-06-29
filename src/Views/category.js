@@ -14,9 +14,9 @@ import submitForm from "../utils/fetchApi";
 import Alert from '@material-ui/lab/Alert';
 import MaterialTableDetailsPanel from "../components/collapseTable";
 import MaterialTable from "material-table";
-import M from 'materialize-css';
 
 import apiUrl from "../utils/apiInfo";
+import ManageTable from "../components/manageTable";
 
 const FetchData = async (url,setState) => {
 
@@ -50,110 +50,7 @@ function PaperComponent(props) {
     );
 }
 
-function ManageCategory(props){
 
-    let [url,setUrl] = useState(apiUrl);
-    let [showALert,setAlert] = useState(false);
-    let [alertText,setAlertText] = useState("");
-    
-    const [state, setState] = React.useState(props.data);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setAlert(false);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, [showALert]);
-    
-    useEffect(() => {
-        props.ondataChange(state);
-    },[state]);
-
-    const updateProductCategory = (oldData,productCategory) => {
-        let isCategoryExists = (result ) => {
-            if(result === "true"){
-                setAlertText("Category \""+productCategory.productCategoryName+"\" already exists!")
-                setAlert(true);
-            }else{
-                submitForm("ProductCategory/"+productCategory.productCategoryId,"PUT",productCategory,() => {
-                    setState((prevState) => {
-                        const data = [...prevState.data];
-                        data[data.indexOf(oldData)] = productCategory;
-                        return { ...prevState, data };
-                    });
-                    setAlertText("Successfully Update Category !")
-                    setAlert(true);
-                });
-
-            }
-        }
-        submitForm("ProductCategory/find/"+productCategory.productCategoryName,"GET","",isCategoryExists);
-
-    }
-
-    const deleteProductCategory = (productCategory) => {
-        submitForm("ProductCategory/"+productCategory.productCategoryId,"DELETE",productCategory,() => {
-            setAlertText("Successfully deleted \""+productCategory.productCategoryName+"\" Category!")
-            setAlert(true);
-        });
-
-    }
-
-    const deleteSelectedProductCategory = (productCategories) => {
-        submitForm("ProductCategory/delete-categories","DELETE",productCategories,(result) => {
-            setAlertText(result);
-            setAlert(true);
-            FetchData(url,setState);
-        });
-        
-    }
-    return (
-        <div>
-            { showALert && <Alert elevation={3} variant="filled" severity="success">{alertText}</Alert>}
-            <MaterialTable
-            title="Category"
-            columns={state.columns}
-            data={state.data}
-            options={{
-                selection: true
-                }}
-                actions={[
-                    {
-                        tooltip: 'Remove All Selected Users',
-                        icon: 'delete',
-                        onClick: (evt, data) => {
-                            deleteSelectedProductCategory(data);
-                        }
-                    }
-            ]}
-            editable={{
-                onRowUpdate: (newData, oldData) =>
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                    resolve();
-                    if (oldData) {
-                        updateProductCategory(oldData,newData);
-                    }
-                    }, 600);
-                }),
-                onRowDelete: (oldData) =>
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                    resolve();
-                    setState((prevState) => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        deleteProductCategory(oldData);
-                        return { ...prevState, data };
-                    });
-                    }, 600);
-                }),
-            }}
-            />
-        </div>
-    );
-}
-  
 function Category(){
 
     const [open, setOpen] = useState(false);
@@ -245,7 +142,7 @@ function Category(){
         {
             tab : "Manage Category",
             tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                <ManageCategory ondataChange={ondataChange} data={categories} />
+                <ManageTable title="Category" uniqueKey="productCategoryId" uniqueName="productCategoryName" apiUrl="ProductCategory/" ondataChange={ondataChange} data={categories} />
             </div>
         }
     ];

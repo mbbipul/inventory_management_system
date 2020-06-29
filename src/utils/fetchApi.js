@@ -21,7 +21,7 @@ const submitForm = (path,method,data,onSuccess) => {
                 redirect: 'follow'
             };
         }
-
+        console.log(apiUrl+path);
         fetch(apiUrl+path, requestOptions)
         .then(response => response.text())
         .then(result => onSuccess(result))
