@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using inventory_rest_api.Models;
@@ -31,6 +33,18 @@ namespace inventory_rest_api.Controllers
             }
  
             return company;
+        }
+
+        [HttpGet("find/{name}")]
+        public ActionResult<bool> IsCompanyExists(string name)
+        {
+            if(_context.Companies
+                            .Any(c => c.CompanyName == name)){
+                return true;
+            }
+
+            return false;
+
         }
  
         // PUT: api/Companies/5
@@ -75,7 +89,7 @@ namespace inventory_rest_api.Controllers
  
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Company>> DeleteCompanies(int id)
+        public async Task<ActionResult<Company>> DeleteCompanies(long id)
         {
             var company = await _context.Companies.FindAsync(id);
             if (company == null)
@@ -89,6 +103,16 @@ namespace inventory_rest_api.Controllers
             return company;
         }
  
+        [HttpDelete("delete-multiple")]
+        public async Task<ActionResult<String>> DeleteCompanies(IEnumerable<Company> companies)
+        {
+
+            _context.Companies.RemoveRange(companies);
+            await _context.SaveChangesAsync();
+
+            return "Successfully remove datas";
+        }
+
         private bool CompanyExists(long id)
         {
             return _context.Companies.Any(e => e.CompanyId == id);

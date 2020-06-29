@@ -120,7 +120,7 @@ namespace inventory_rest_api.Controllers
             return productCategory;
         }
 
-        [HttpDelete("delete-categories")]
+        [HttpDelete("delete-multiple")]
         public async Task<ActionResult<String>> DeleteProductCategories(IEnumerable<ProductCategory> productCategories)
         {
 
