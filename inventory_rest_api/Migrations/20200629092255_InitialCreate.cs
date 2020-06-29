@@ -22,6 +22,19 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductCategories",
+                columns: table => new
+                {
+                    ProductCategoryId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductCategoryName = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategories", x => x.ProductCategoryId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -29,7 +42,7 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(nullable: false),
                     ProductCode = table.Column<string>(nullable: false),
-                    ProductType = table.Column<string>(nullable: false),
+                    ProductCategoryId = table.Column<long>(nullable: false),
                     ProductQuantity = table.Column<int>(nullable: false),
                     ProductPrice = table.Column<long>(nullable: false),
                     ProductDetails = table.Column<string>(nullable: true)
@@ -61,6 +74,9 @@ namespace inventory_rest_api.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "ProductCategories");
 
             migrationBuilder.DropTable(
                 name: "Products");

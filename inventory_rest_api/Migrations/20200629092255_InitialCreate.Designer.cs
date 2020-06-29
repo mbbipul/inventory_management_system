@@ -9,14 +9,14 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200625105743_InitialCreate")]
+    [Migration("20200629092255_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -51,6 +51,9 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long>("ProductCategoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ProductCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -68,13 +71,25 @@ namespace inventory_rest_api.Migrations
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.ProductCategory", b =>
+                {
+                    b.Property<long>("ProductCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ProductCategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProductCategoryId");
+
+                    b.ToTable("ProductCategories");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>

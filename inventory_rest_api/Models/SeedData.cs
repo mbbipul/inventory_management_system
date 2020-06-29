@@ -18,7 +18,7 @@ namespace inventory_rest_api.Models
             _context.Products.AddRangeAsync(
                 new Product {
                     ProductName = "Rice",
-                    ProductType = "Mudi",
+                    ProductCategoryId = 5,
                     ProductCode = "231234",
                     ProductPrice = 400,
                     ProductQuantity = 10,
@@ -27,7 +27,7 @@ namespace inventory_rest_api.Models
                 },
                  new Product {
                     ProductName = "Ata",
-                    ProductType = "Mudi",
+                    ProductCategoryId = 5,
                     ProductCode = "231234",
                     ProductPrice = 400,
                     ProductQuantity = 10,
@@ -36,7 +36,7 @@ namespace inventory_rest_api.Models
 
                 }, new Product {
                     ProductName = "Sugar",
-                    ProductType = "Mudi",
+                    ProductCategoryId = 5,
                     ProductCode = "231234",
                     ProductPrice = 400,
                     ProductQuantity = 10,

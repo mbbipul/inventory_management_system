@@ -49,6 +49,9 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long>("ProductCategoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ProductCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -65,10 +68,6 @@ namespace inventory_rest_api.Migrations
 
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProductType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductId");
 

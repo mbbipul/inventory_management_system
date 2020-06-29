@@ -1,3 +1,8 @@
+/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.csprojAssemblyReference.cache
+/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.AssemblyInfoInputs.cache
+/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.AssemblyInfo.cs
+/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.csproj.CoreCompileInputs.cache
+/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.MvcApplicationPartsAssemblyInfo.cache
 /home/bb/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/appsettings.Development.json
 /home/bb/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/appsettings.json
 /home/bb/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/Properties/launchSettings.json
@@ -121,11 +126,6 @@
 /home/bb/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/runtimes/unix/lib/netcoreapp2.0/System.Runtime.Caching.dll
 /home/bb/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/runtimes/win/lib/netcoreapp2.0/System.Runtime.Caching.dll
 /home/bb/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll
-/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.csprojAssemblyReference.cache
-/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.AssemblyInfoInputs.cache
-/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.AssemblyInfo.cs
-/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.csproj.CoreCompileInputs.cache
-/home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.MvcApplicationPartsAssemblyInfo.cache
 /home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.RazorTargetAssemblyInfo.cache
 /home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.csproj.CopyComplete
 /home/bb/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/staticwebassets/inventory_rest_api.StaticWebAssets.Manifest.cache

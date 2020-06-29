@@ -15,7 +15,7 @@ namespace inventory_rest_api.Models
         public String ProductCode { get ; set; }
 
         [Required]
-        public String ProductType { get ; set; }
+        public long ProductCategoryId { get ; set; }
 
         [Required]
         public int ProductQuantity { get ; set; }
