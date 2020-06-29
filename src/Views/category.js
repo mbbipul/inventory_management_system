@@ -18,6 +18,30 @@ import M from 'materialize-css';
 
 import apiUrl from "../utils/apiInfo";
 
+const FetchData = async (url,setState) => {
+
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+      const res = await fetch(url+"ProductCategory", requestOptions);
+      const json = await res.json();
+
+      setState((prevState) => {
+          const data = json;
+          return { ...prevState, data };
+        });
+      // console.log("json - ", json);
+    } catch (error) {
+      console.log("error - ", error);
+    }
+  };
+
 function PaperComponent(props) {
     return (
       <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
@@ -31,14 +55,9 @@ function ManageCategory(props){
     let [url,setUrl] = useState(apiUrl);
     let [showALert,setAlert] = useState(false);
     let [alertText,setAlertText] = useState("");
+    
+    const [state, setState] = React.useState(props.data);
 
-    const [state, setState] = React.useState({
-        columns: [
-          { title: 'Category Name', field: 'productCategoryName' },
-        ],
-        data: [],
-    });
-  
     useEffect(() => {
         const timer = setTimeout(() => {
             setAlert(false);
@@ -46,35 +65,9 @@ function ManageCategory(props){
         return () => clearTimeout(timer);
     }, [showALert]);
     
-    const FetchData = async () => {
-        console.log("rend");
-
-      try {
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var requestOptions = {
-            method: "GET",
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-        const res = await fetch(url+"ProductCategory", requestOptions);
-        const json = await res.json();
-
-        setState((prevState) => {
-            const data = json;
-            return { ...prevState, data };
-          });
-        // console.log("json - ", json);
-      } catch (error) {
-        console.log("error - ", error);
-      }
-    };
-
-    useEffect(() => {  
-        FetchData();
-    },[url]);
-    
+    useEffect(() => {
+        props.ondataChange(state);
+    },[state]);
 
     const updateProductCategory = (oldData,productCategory) => {
         let isCategoryExists = (result ) => {
@@ -110,7 +103,7 @@ function ManageCategory(props){
         submitForm("ProductCategory/delete-categories","DELETE",productCategories,(result) => {
             setAlertText(result);
             setAlert(true);
-            FetchData();
+            FetchData(url,setState);
         });
         
     }
@@ -162,14 +155,28 @@ function ManageCategory(props){
 }
   
 function Category(){
+
     const [open, setOpen] = useState(false);
+    let [url,setUrl] = useState(apiUrl);
 
     let [category,setCategory] = useState(" ");
     let [showError,setShowError] = useState(false);
     let [errorText, setErrorText] = useState(" ");
     let [showSnackbar, setShowSnackbar] = useState(false);
     let [snackbarText, setSnackbarText] = useState("");
+  
+    const [categories, setCategories] = React.useState({
+        columns: [
+          { title: 'Category Name', field: 'productCategoryName' },
+        ],
+        data: [],
+    });
 
+    useEffect(() => {  
+        FetchData(url,setCategories);
+    },[url]);
+    
+      
     const handleSnackbar = () => setShowSnackbar(false);
 
     const handleCategoryNameInput = (e) =>{
@@ -179,6 +186,12 @@ function Category(){
     const onSuccessAddCategory = (result) => {
         let resObj = JSON.parse(result);
         setSnackbarText("Successfully new Category \""+resObj.productCategoryName + "\" added.");
+
+        setCategories((prevState) => {
+            const data = [...prevState.data];
+            data.push(resObj);
+            return { ...prevState, data };
+        });
         setShowSnackbar(true);
     }
 
@@ -221,22 +234,25 @@ function Category(){
     const handleClose = () => {
         setOpen(false);
     };
-     let tabs = [
+
+    const ondataChange = (data) => setCategories(data);
+
+    let tabs = [
         {
             tab : "All Categories",
-            tabPanel : <MaterialTableDetailsPanel />
+            tabPanel : <MaterialTableDetailsPanel  data={categories} />
         },
         {
             tab : "Manage Category",
             tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                 <ManageCategory />
+                <ManageCategory ondataChange={ondataChange} data={categories} />
             </div>
         }
-    ]
+    ];
 
     return(
         <div>
-            <FullWidthTabs tabs={tabs}/>
+            <FullWidthTabs  tabs={tabs}/>
             <Fab onClick={() => setOpen(true)} style={{position : "fixed" , bottom :50,right:50}} color="primary" aria-label="add">
                 <AddIcon />
             </Fab>
