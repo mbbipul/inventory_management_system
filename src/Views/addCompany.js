@@ -11,7 +11,6 @@ class AddCompany extends React.Component {
         this.state = {
             company : {},
             openSnackbar : false,
-            redirect : false
         }
     }
 

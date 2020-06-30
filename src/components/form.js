@@ -81,7 +81,7 @@ class Form extends React.Component {
         e.target.reset();
         this.props.onSubmit(this.state);
     }
-    
+
     render(){
         return(
             <form autoComplete="off" style={{padding:20,paddingBottom:50}} onSubmit={this.handleSubmit}>
@@ -203,7 +203,28 @@ class Form extends React.Component {
                                             onChange={(event) => this.handleInputChange(event,field.validation,field.fetchUrl)}
                                             />  
                                     </Grid>    ;
-                                    break;          
+                                    break;      
+                                case 5:
+                                    item = <Grid key={i} item xs={6}>
+                                        <TextField
+                                            disabled={field.disabled}
+                                            type="password"
+                                            error={error}
+                                            label={field.label}
+                                            name={field.label}
+                                            fullWidth
+                                            placeholder={field.placeholder}
+                                            margin="normal"
+                                            helperText={helperText}
+                                            required={field.required}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            variant="outlined"
+                                            onChange={(event) => this.handleInputChange(event,field.validation)}
+                                            />  
+                                    </Grid>    ;
+                                    break;
                                 case 999:
                                     item = <Grid key={i} item xs={12}>
                                                 <br />

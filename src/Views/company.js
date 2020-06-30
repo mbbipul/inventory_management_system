@@ -86,6 +86,7 @@ function Company () {
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Company" 
+                                hasUnique={true}
                                 uniqueKey="companyId" 
                                 uniqueName="companyName" 
                                 apiUrl="Companies/" 

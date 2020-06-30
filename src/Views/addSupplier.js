@@ -1,10 +1,33 @@
 import React from 'react';
 
-import { Card , CardHeader, Divider } from '@material-ui/core';
+import { Card , CardHeader, Divider, Snackbar } from '@material-ui/core';
 import Form from '../components/form';
 import apiUrl from '../utils/apiInfo';
+import submitForm from '../utils/fetchApi';
+import Alert from '@material-ui/lab/Alert';
 
 class AddSupplier extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            supplier : {},
+            openSnackbar : false,
+        }
+    }
+
+    onSupplierAddSucces = (result) => {
+        this.setState({
+            supplier : JSON.parse(result),
+            openSnackbar : true,
+        });
+
+    }
+    handleSnackbar = () => {
+        this.setState({
+            openSnackbar : false
+        })
+    }
 
     fields = [
         {
@@ -29,7 +52,7 @@ class AddSupplier extends React.Component {
             type : 0,
             required : true,
             disabled : false,
-            validation : [9999]
+            validation : [0]
         },
         {
             label : "Supplier Email",
@@ -41,40 +64,28 @@ class AddSupplier extends React.Component {
         },
         {
             label : "Supplier Company Name",
-            placeholder : "Amrita",
-            type : 0,
+            placeholder : "Matrivandar store",
+            type : 3,
+            fetchUrl : apiUrl+"Companies",
+            selectName : "companyName",
+            selectKey : "companyId",
             required : false,
             disabled : false,
             validation : [9999]
         },
     ]
 
-    submitForm = (state) => {
-        let product = {
-            "productName" : state.ProductName,
-            "productCode" : state.ProductCode,
-            "productType" : state.ProductType,
-            "productQuantity" : parseInt(state.ProductQuantity),
-            "productPrice" : parseInt(state.ProductPrice),
-            "productDetails" : state.Details,
+    submitForms = (state) => {
+        let supplier = {
+            "companyId" : state.SupplierCompanyName.companyId,
+            "supplierName" : state.SupplierName,
+            "supplierAddress" : state.SupplierAddress,
+            "supplierContact" : state.SupplierContact,
+            "supplierEmail" : state.SupplierEmail,
         }
-        console.log(product);
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        console.log(supplier);
+        submitForm("Suppliers","POST",supplier,this.onSupplierAddSucces);
 
-        var raw = JSON.stringify(product);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
-
-        fetch(apiUrl+"Products", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
     }
     render(){
         return (
@@ -83,7 +94,16 @@ class AddSupplier extends React.Component {
                     title="Add New Supplier"
                 />
                 <Divider />
-                <Form submitButton="Add Supplier" fields={this.fields}/>
+                <Form onSubmit={this.submitForms}  submitButton="Add Supplier" fields={this.fields}/>
+                <Snackbar 
+                    open={this.state.openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={this.handleSnackbar}
+                >
+                    <Alert onClose={this.handleSnackbar} variant="filled" severity="success">
+                        Succesfully new supplier "{this.state.supplier.supplierName}" added !
+                    </Alert>
+                </Snackbar>
             </Card>
         )
     }

@@ -53,7 +53,7 @@ function ManageTable(props){
         const timer = setTimeout(() => {
             setAlert(false);
             setErrorALert(false);
-        }, 4000);
+        }, 3000);
         return () => clearTimeout(timer);
     }, [showALert]);
     
@@ -62,7 +62,7 @@ function ManageTable(props){
     },[state]);
 
     const updateData = (oldData,newData) => {
-        let isCategoryExists = (result ) => {
+        let isCategoryExists = (result ) => {   
             if(result === "true"){
                 setAlertText(" \""+newData[props.uniqueName]+"\" already exists!");
                 setAlert(true);
@@ -80,7 +80,19 @@ function ManageTable(props){
 
             }
         }
-        submitForm(props.apiUrl+"find/"+newData[props.uniqueName],"GET","",isCategoryExists);
+        if(props.hasUnique){
+            submitForm(props.apiUrl+"find/"+newData[props.uniqueName],"GET","",isCategoryExists);
+        }else{
+            submitForm(props.apiUrl+newData[props.uniqueKey],"PUT",newData,() => {
+                setState((prevState) => {
+                    const data = [...prevState.data];
+                    data[data.indexOf(oldData)] = newData;
+                    return { ...prevState, data };
+                });
+                setAlertText("Successfully Update Category !")
+                setAlert(true);
+            });
+        }
 
     }
 
