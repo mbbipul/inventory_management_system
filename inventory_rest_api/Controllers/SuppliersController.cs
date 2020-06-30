@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using inventory_rest_api.Models;
@@ -20,7 +22,7 @@ namespace inventory_rest_api.Controllers
             return await _context.Suppliers.ToListAsync();
         }
         
-         [HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Supplier>> GetSuppliers(long id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
@@ -33,6 +35,18 @@ namespace inventory_rest_api.Controllers
             return supplier;
         }
  
+        [HttpGet("find/{name}")]
+        public ActionResult<bool> IsSupplierExists(string name)
+        {
+            if(_context.Suppliers
+                            .Any(c => c.SupplierName == name)){
+                return true;
+            }
+
+            return false;
+
+        }
+
         // PUT: api/Supplier/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSuppliers(long id, Supplier supplier)
@@ -75,7 +89,7 @@ namespace inventory_rest_api.Controllers
  
         // DELETE: api/Suppliers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Supplier>> DeleteSuppliers(int id)
+        public async Task<ActionResult<Supplier>> DeleteSuppliers(long id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null)
@@ -89,6 +103,15 @@ namespace inventory_rest_api.Controllers
             return supplier;
         }
  
+        [HttpDelete("delete-multiple")]
+        public async Task<ActionResult<String>> DeleteSuppliers(IEnumerable<Supplier> suppliers)
+        {
+
+            _context.Suppliers.RemoveRange(suppliers);
+            await _context.SaveChangesAsync();
+
+            return "Successfully remove datas";
+        }
         private bool SupplierExists(long id)
         {
             return _context.Suppliers.Any(e => e.SupplierId == id);
