@@ -2,6 +2,7 @@ import React from 'react';
 import {TextField ,Grid , MenuItem , Divider , Button} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
+import MaterialUIPickers from './datePicker';
 
 class Form extends React.Component {
 
@@ -70,6 +71,12 @@ class Form extends React.Component {
         });
     }
 
+    handleDatePiker = (field,value) => {
+        const name = field.label.replace(/\s/g, '');
+        this.setState({
+            [name]: value,
+        });
+    }
     
     isNormalInteger = (str) =>{
         var n = Math.floor(Number(str));
@@ -168,7 +175,7 @@ class Form extends React.Component {
                                     break;
 
                                 case 3 :
-                                    item = <Grid item xs={12}>
+                                    item = <Grid item xs={6}>
                                             <AsyncAutoComplete
                                                 label={field.label}
                                                 name={field.label}
@@ -208,9 +215,8 @@ class Form extends React.Component {
                                     item = <Grid key={i} item xs={6}>
                                         <TextField
                                             disabled={field.disabled}
-                                            type="password"
                                             error={error}
-                                            label={field.label}
+                                            label={field.label+field.labelExtra}
                                             name={field.label}
                                             fullWidth
                                             placeholder={field.placeholder}
@@ -223,6 +229,18 @@ class Form extends React.Component {
                                             variant="outlined"
                                             onChange={(event) => this.handleInputChange(event,field.validation)}
                                             />  
+                                    </Grid>    ;
+                                    break;
+
+                                case 6:
+                                    item = <Grid key={i} item xs={6}>
+                                        <MaterialUIPickers 
+                                            label={field.label}
+                                            date={field.placeholder}
+                                            name={field.label}
+                                            required={field.required}
+                                            onChange={(date) => this.handleDatePiker(field,date)}
+                                        />
                                     </Grid>    ;
                                     break;
                                 case 999:

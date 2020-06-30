@@ -9,8 +9,9 @@ import ProductTable from '../components/productTable';
 import AddCompany from "./addCompany";
 import ManageTable from "../components/manageTable";
 import apiUrl from "../utils/apiInfo";
+import AddPurchase from "./addPurchase";
 
-function Company () {
+function Purchase () {
 
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
@@ -74,15 +75,15 @@ function Company () {
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
                 <Switch>
-                    <Route exact path="/company">
+                    <Route exact path="/purchase">
                         <div style={{margin:20}}>
                             <ProductTable data={{ columns : columns , data : data}}/>
                         </div>
                     </Route>
-                    <Route exact path="/company/add-company">
-                        <AddCompany />
+                    <Route exact path="/purchase/add-purchase">
+                        <AddPurchase />
                     </Route>
-                    <Route exact path="/company/manage-company">
+                    <Route exact path="/purchase/manage-purchase">
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Company" 
@@ -102,4 +103,4 @@ function Company () {
     
 }
 
-export default Company;
+export default Purchase;

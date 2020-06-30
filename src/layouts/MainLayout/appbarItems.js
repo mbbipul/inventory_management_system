@@ -36,6 +36,21 @@ const sideBarItems = [
         ref : "/dashboard",
         hasItems : false,
     },{
+        name : "Purchase",
+        icon : "shop_two",
+        ref : "/purchase",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Purchase",
+                ref : "purchase/add-purchase"
+            },{
+                name : "Manage Purchase",
+                ref : "purchase/manage-purchase"
+            }
+        ]
+    },
+    {
         name : "Sales",
         icon : "shopping_basket",
         ref : "/sales",

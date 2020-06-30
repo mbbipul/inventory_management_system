@@ -3,37 +3,32 @@ import { Card , CardHeader, Divider } from '@material-ui/core';
 import Form from '../components/form';
 import apiUrl from '../utils/apiInfo';
 
-class AddProduct extends React.Component {
+class AddPurchase extends React.Component {
 
     fields = [
+        
+        {
+            label : "Supplier Name",
+            placeholder : "BB Roy",
+            type : 3,
+            fetchUrl : apiUrl+"Suppliers",
+            selectName : "supplierName",
+            selectKey : "supplierId",
+            required : true,
+            disabled : false,
+            validation : [9999]
+
+        },
         {
             label : "Product Name",
-            placeholder : "Fresh oil",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [9999]
-        },
-        {
-            label : "Product Code",
-            placeholder : "QT604T",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [9999]
-
-        },
-        {
-            label : "Product Type",
-            placeholder : "Please Select product Type",
+            placeholder : "Ice Cream",
             type : 3,
-            fetchUrl : apiUrl+"ProductCategory",
-            selectName : "productCategoryName",
-            selectKey : "productCategoryId",
+            fetchUrl : apiUrl+"Products",
+            selectName : "productName",
+            selectKey : "productId",
             required : true,
             disabled : false,
             validation : [9999]
-
         },
         {
             label : "Product Quantity",
@@ -44,7 +39,7 @@ class AddProduct extends React.Component {
             validation : [0]
         },
         {
-            label : "Product Price",
+            label : "Purchase Price",
             placeholder : "450.00 tk",
             type : 0,
             required : true,
@@ -60,43 +55,41 @@ class AddProduct extends React.Component {
             disabled : false,
             validation : [0]
         },
-
         {
             label : "",
             disabled : false,
             type : 999,
         },
         {
-            label : "Purchase Price ( Per Product )",
+            label : "Purchase Price",
+            labelExtra : " ( Per Product )",
             placeholder : "000.00 tk",
-            type : 0,
+            type : 5,
             required : true,
             disabled : true,
             validation : [0]
         },
         {
-            label : "Sales Price ( Per Product )",
+            label : "Sales Price",
+            labelExtra : " ( Per Product )",
             placeholder : "700.00 tk",
+            type : 5,
+            required : true,
+            disabled : false,
+            validation : [0]
+        },
+        {
+            label : "Purchase Payment Amount",
+            placeholder : "500.00 tk",
             type : 0,
             required : true,
             disabled : false,
-            validation : [0]
+            validation : [999]
         },
         {
-            label : "Supplier Name",
-            placeholder : "Please Select Supplier Name",
-            type : 3,
-            fetchUrl : apiUrl+"Suppliers",
-            selectName : "supplierName",
-            selectKey : "supplierId",
-            required : true,
-            disabled : false,
-            validation : [0]
-        },
-        {
-            label : "Details",
-            placeholder : "product details",
-            type : 2,
+            label : "Purchase Due Payment Date",
+            placeholder : "12-12-2021",
+            type : 6,
             required : true,
             disabled : false,
             validation : [999]
@@ -128,4 +121,4 @@ class AddProduct extends React.Component {
     }
 }
 
-export default AddProduct;
+export default AddPurchase;

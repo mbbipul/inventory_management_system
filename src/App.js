@@ -11,6 +11,7 @@ import DashBoard from './Views/dashboard';
 import Product from './Views/product';
 import Supplier from './Views/supplier';
 import Company from './Views/company';
+import Purchase from './Views/purchase';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -54,8 +55,11 @@ function App() {
           <Route exact path="/dashboard">
             <DashBoard />
           </Route>
-          <Route path="/sells">
+          <Route path="/sales">
             <DashBoard />
+          </Route>
+          <Route path="/purchase">
+            <Purchase />
           </Route>
           <Route path="/product">
             <Product />
