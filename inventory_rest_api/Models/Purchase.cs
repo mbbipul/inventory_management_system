@@ -19,11 +19,13 @@ namespace inventory_rest_api.Models
 
         [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime PurchaseDate { get; set; }
         
         [Required]
         public long PurchasePrice { get; set; }
+
+        [Required]
+        public long SalesPrice { get; set; }
 
         [Required]
         public long PurchasePaymentAmount { get; set; }
@@ -32,7 +34,6 @@ namespace inventory_rest_api.Models
         public bool PurchasePaidStatus { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime PurchaseDuePaymentDate { get; set;}
 
         [Required]
