@@ -95,6 +95,7 @@ class Form extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         e.target.reset();
         this.props.onSubmit(this.state);
     }
