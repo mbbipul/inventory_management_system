@@ -3,6 +3,7 @@ import { Card , CardHeader, Divider, Snackbar} from '@material-ui/core';
 import Form from '../components/form';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
+import { addCompanyFormFields } from '../utils/appFormsFileds';
 
 class AddCompany extends React.Component {
 
@@ -28,37 +29,6 @@ class AddCompany extends React.Component {
         })
     }
 
-    fields = [
-        {
-            label : "Company Name",
-            placeholder : "Amrita",
-            type : 4,
-            fetchUrl : "Companies/find/",
-            required : true,
-            disabled : false,
-            validation : [1] 
-        },
-        {
-            label : "Company Address",
-            placeholder : "Barishal",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [9999]
-
-        },
-        {
-            label : "Company Contact Number",
-            placeholder : "74634878476",
-            type : 0,
-            required : true,
-            disabled : false,
-            validation : [0] 
-
-        },
-        
-    ]
-
     submitForm = (state) => {
         let product = {
             "companyName" : state.CompanyName,
@@ -74,7 +44,7 @@ class AddCompany extends React.Component {
                     title="Add New Company"
                 />
                 <Divider />
-                <Form onSubmit={this.submitForm} submitButton="Add Company" fields={this.fields}/>
+                <Form onSubmit={this.submitForm} submitButton="Add Company" fields={addCompanyFormFields}/>
                 
                 <Snackbar 
                     open={this.state.openSnackbar} 

@@ -42,7 +42,7 @@ class Form extends React.Component {
                 }
                 break;
             case 1 ://check if exists to db
-                var errorArray = this.state.hasAnyError;
+                errorArray = this.state.hasAnyError;
 
                 let isCompanyExits = (result) => {
                     if( result === "true"){
@@ -193,6 +193,7 @@ class Form extends React.Component {
                                                 name={field.label}
                                                 placeholder={field.placeholder}
                                                 margin="normal"
+                                                dialogContent={field.dialogFormContent}
                                                 required={field.required}
                                                 fetchUrl={field.fetchUrl}
                                                 validation={field.validation}

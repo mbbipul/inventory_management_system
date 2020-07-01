@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect,  } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -51,7 +51,7 @@ export default function AsyncAutoComplete(props) {
       );
       await sleep(4); // For demo purposes.
       const datas = await response.json();
-      if (datas.length == 0){
+      if (datas.length === 0){
         setAdd(true);
         setOptions([{[props.selectName] : "No Data to Show"}]);
       }
@@ -77,6 +77,9 @@ export default function AsyncAutoComplete(props) {
     props.onDataChange(name,value);
   }
   return (
+    <div>
+
+
     <Autocomplete
       id="asynchronous-demo"
       style={{ width: 300 }}
@@ -124,10 +127,14 @@ export default function AsyncAutoComplete(props) {
               Add
             </Button>
           }
-          <CustomizedDialogs changOpenProps={()=> setOpenDialog(false)} open={openDialog} />
-
         </div>
       )}
     />
+
+    <CustomizedDialogs 
+      dialogContent={props.dialogContent}
+      changOpenProps={()=> setOpenDialog(false)} open={openDialog} />
+
+    </div>
   );
 }

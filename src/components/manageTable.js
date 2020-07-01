@@ -8,7 +8,7 @@ import MaterialTable from 'material-table';
 
 function ManageTable(props){
 
-    let [url,setUrl] = useState(apiUrl);
+    let [url,] = useState(apiUrl);
     let [showALert,setAlert] = useState(false);
     let [errorAlert,setErrorALert] = useState(false);
 

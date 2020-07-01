@@ -23,7 +23,7 @@ function Company () {
         }
     }, [location]);
 
-    const [columns,setColumns] = useState([
+    const [columns,] = useState([
                                         { title: 'Company Name', field: 'companyName' },
                                         { title: 'Address', field: 'companyAddress' },
                                         { title: 'Contact Number', field: 'companyContact' },

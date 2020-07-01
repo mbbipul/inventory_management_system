@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
 import ProductTable from '../components/productTable';
-import AddCompany from "./addCompany";
 import ManageTable from "../components/manageTable";
 import apiUrl from "../utils/apiInfo";
 import AddPurchase from "./addPurchase";
@@ -24,7 +23,7 @@ function Purchase () {
         }
     }, [location]);
 
-    const [columns,setColumns] = useState([
+    const [columns,] = useState([
                                         { title: 'Company Name', field: 'companyName' },
                                         { title: 'Address', field: 'companyAddress' },
                                         { title: 'Contact Number', field: 'companyContact' },

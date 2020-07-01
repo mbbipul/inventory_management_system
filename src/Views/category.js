@@ -1,7 +1,7 @@
 import React ,{ useState,useEffect } from "react";
 
 import FullWidthTabs from "../components/tab";
-import { Fab, Button, TextField, Snackbar, Popover } from "@material-ui/core";
+import { Fab, Button, TextField, Snackbar } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,7 +13,6 @@ import Draggable from 'react-draggable';
 import submitForm from "../utils/fetchApi";
 import Alert from '@material-ui/lab/Alert';
 import MaterialTableDetailsPanel from "../components/collapseTable";
-import MaterialTable from "material-table";
 
 import apiUrl from "../utils/apiInfo";
 import ManageTable from "../components/manageTable";
@@ -54,7 +53,7 @@ function PaperComponent(props) {
 function Category(){
 
     const [open, setOpen] = useState(false);
-    let [url,setUrl] = useState(apiUrl);
+    let [url,] = useState(apiUrl);
 
     let [category,setCategory] = useState(" ");
     let [showError,setShowError] = useState(false);
@@ -73,7 +72,23 @@ function Category(){
         FetchData(url,setCategories);
     },[url]);
     
-      
+    
+    useEffect(() => {
+        const isCategoryExists = (result) => {
+            if(result === "true"){
+                setErrorText(category+" already exists!");
+                setShowError(true);
+            }else{
+                setErrorText("");
+                setSnackbarText("");
+                setShowError(false);
+            }
+        }
+        if(category !== " " ){
+            submitForm("ProductCategory/find/"+category,"GET","",isCategoryExists);
+        }
+     }, [category]);
+
     const handleSnackbar = () => setShowSnackbar(false);
 
     const handleCategoryNameInput = (e) =>{
@@ -92,22 +107,6 @@ function Category(){
         setShowSnackbar(true);
     }
 
-    const isCategoryExists = (result) => {
-        if(result === "true"){
-            setErrorText(category+" already exists!");
-            setShowError(true);
-        }else{
-            setErrorText("");
-            setSnackbarText("");
-            setShowError(false);
-        }
-    }
-
-    useEffect(() => {
-        if(category !== " " ){
-            submitForm("ProductCategory/find/"+category,"GET","",isCategoryExists);
-        }
-     }, [category]);
 
     const submitNewCategory = () => {
         if ( category === " " || category ==="" ){
@@ -123,10 +122,6 @@ function Category(){
             setShowError(false);
         }
     }
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
 
     const handleClose = () => {
         setOpen(false);

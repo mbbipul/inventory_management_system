@@ -13,7 +13,7 @@ import submitForm from "../utils/fetchApi";
 function Supplier() {
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
-    const [columns,setColumns] = useState([
+    const [columns,] = useState([
         { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Address', field: 'supplierAddress' },
         { title: 'Contact Number', field: 'supplierContact' },
