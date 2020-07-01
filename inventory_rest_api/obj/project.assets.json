@@ -8486,11 +8486,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/bb/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
+      "projectUniqueName": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
       "projectName": "inventory_rest_api",
-      "projectPath": "/home/bb/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
+      "projectPath": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
       "packagesPath": "/home/bb/.nuget/packages/",
-      "outputPath": "/home/bb/projects/inventory_management_system/inventory_rest_api/obj/",
+      "outputPath": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/bb/.nuget/NuGet/NuGet.Config"

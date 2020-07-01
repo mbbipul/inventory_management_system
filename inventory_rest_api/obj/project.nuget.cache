@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dXuFDp+CxJ7OcsOueuxGk8hdiV9PzZUYShkbVi0N/A3J66tdUHMLqwTPXz6Il0fN92Jho71L+sYREin8mU6heA==",
+  "dgSpecHash": "DN0a6UFb4kGjie6dmqxQb7QlO2ctUP6Wa5B3Ejf4g6dA1ra+/eR9YIcA4Bm6fq3FL8fnHvPGfup8KC/jV2fn4w==",
   "success": true,
-  "projectFilePath": "/home/bb/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
+  "projectFilePath": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
   "expectedPackageFiles": [
     "/home/bb/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/3.1.4/microsoft.aspnetcore.authentication.jwtbearer.3.1.4.nupkg.sha512",
     "/home/bb/.nuget/packages/microsoft.aspnetcore.html.abstractions/2.2.0/microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",

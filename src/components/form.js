@@ -10,44 +10,54 @@ class Form extends React.Component {
         super(props);
         this.apiUrl = "https://localhost:5001/api/";
         this.state = {
-            currentTarget : null,
-            error : false,
-            helperText : "",
+            hasAnyError: [],
+
         };
     }
 
-    handleInputChange = (event,validation,fetchUrl)  => {
+    handleInputChange = (event,fieldIndex,validation,fetchUrl)  => {
         const target = event.target;
         const value = target.value;
         const name = target.name.replace(/\s/g, '');
 
         switch (validation[0]) {
+
             case 0://only number valid
+                var errorArray = this.state.hasAnyError;
+
                 if (!this.isNormalInteger(value)){
+                    errorArray[fieldIndex] = true;
                     this.setState({
-                        currentTarget : target.name,
-                        error : true,
-                        helperText : target.name+" must be a integer number"
+                        hasAnyError : errorArray,
+                        [name+"HasError"] : true,
+                        [name+"helperText"] : target.name+" must be a integer number"
                     });
                 }else{
+                    errorArray[fieldIndex] = false;
                     this.setState({
-                        helperText : "",
-                        error : false
+                        hasAnyError : errorArray,
+                        [name+"HasError"] : false,
+                        [name+"helperText"] : ""
                     });
                 }
                 break;
             case 1 ://check if exists to db
+                var errorArray = this.state.hasAnyError;
+
                 let isCompanyExits = (result) => {
                     if( result === "true"){
+                        errorArray[fieldIndex] = true;
                         this.setState({
-                            currentTarget : target.name,
-                            error : true,
-                            helperText : target.name+" already exists !"
+                            hasAnyError : errorArray,
+                            [name+"HasError"] : true,
+                            [name+"helperText"] : target.name+" already exists !"
                         });
                     }else{
+                        errorArray[fieldIndex] = false;
                         this.setState({
-                            helperText : "",
-                            error : false
+                            hasAnyError : errorArray,
+                            [name+"HasError"] : false,
+                            [name+"helperText"] : ""
                         });
                     }
                 }
@@ -107,9 +117,10 @@ class Form extends React.Component {
                             let options = ["Mobile","Milk","Ice Cream"];
                             let helperText = "";
                             let error = false;
-                            if (this.state.currentTarget === field.label ){
-                                helperText = this.state.helperText;
-                                error = this.state.error;
+                            console.log(this.state[fieldName+"HasError"]);
+                            if (  this.state[fieldName+"HasError"] === true ){
+                                helperText = this.state[fieldName+"helperText"];
+                                error = true;
                             }
                             switch (field.type) {
                                 case 0:
@@ -128,7 +139,7 @@ class Form extends React.Component {
                                                 shrink: true,
                                             }}
                                             variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,field.validation)}
+                                            onChange={(event) => this.handleInputChange(event,i,field.validation)}
                                             />  
                                     </Grid>    ;
                                     break;
@@ -136,13 +147,14 @@ class Form extends React.Component {
                                     item = <Grid key={i} item xs={6}>
                                         <TextField
                                             select
+                                            error={error}
                                             label={field.label}
                                             fullWidth
                                             value={this.state[fieldName] === undefined ? options[0] : this.state[fieldName]}
                                             name={field.label}
                                             required={field.required}
-                                            onChange={(event) => this.handleInputChange(event,field.validation)}
-                                            helperText={this.state[field.label.replace(/\s/g, '')+"helperText"]}
+                                            onChange={(event) => this.handleInputChange(event,i,field.validation)}
+                                            helperText={helperText}
                                             variant="outlined"
                                             
                                         >
@@ -168,7 +180,7 @@ class Form extends React.Component {
                                                 rows={4}
                                                 placeholder={field.placeholder}
                                                 variant="outlined"
-                                                onChange={(event) => this.handleInputChange(event,field.validation)}
+                                                onChange={(event) => this.handleInputChange(event,i,field.validation)}
 
                                             />
                                         </Grid>;
@@ -207,7 +219,7 @@ class Form extends React.Component {
                                                 shrink: true,
                                             }}
                                             variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,field.validation,field.fetchUrl)}
+                                            onChange={(event) => this.handleInputChange(event,i,field.validation,field.fetchUrl)}
                                             />  
                                     </Grid>    ;
                                     break;      
@@ -227,7 +239,7 @@ class Form extends React.Component {
                                                 shrink: true,
                                             }}
                                             variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,field.validation)}
+                                            onChange={(event) => this.handleInputChange(event,i,field.validation)}
                                             />  
                                     </Grid>    ;
                                     break;
@@ -257,7 +269,7 @@ class Form extends React.Component {
                     }        
                 </Grid>
                 <br />
-                <Button type="submit" disabled={this.state.error} style={{float:"right"}} variant="contained" color="primary">
+                <Button type="submit" disabled={this.state.hasAnyError.includes(true)} style={{float:"right"}} variant="contained" color="primary">
                     {this.props.submitButton}
                 </Button>
         </form>
