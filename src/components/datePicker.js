@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -10,6 +10,11 @@ export default function MaterialUIPickers(props) {
   const [selectedDate, setSelectedDate] = React.useState(
     new Date(props.date)
   );
+
+  useEffect(()=> {
+    props.onChange(selectedDate);
+
+  },[selectedDate]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
