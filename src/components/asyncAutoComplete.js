@@ -3,6 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Button } from "@material-ui/core";
+import CustomizedDialogs from "./formDialog";
 
 function sleep(delay = 0) {
   return new Promise(resolve => {
@@ -13,13 +14,17 @@ function sleep(delay = 0) {
 export default function AsyncAutoComplete(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
-  
+  const [openDialog, setOpenDialog] = React.useState(false);
+
 
   const [inputData, setInputData] = React.useState("");
   const [showButton, setAdd] = React.useState(false);
 
   const loading = open && options.length === 0;
 
+  const handleButtonClick = () => {
+    setOpenDialog(true);
+  }
   React.useEffect(() => {
     console.log("hasNoData");
    }, [showButton]);
@@ -110,10 +115,17 @@ export default function AsyncAutoComplete(props) {
               )
             }}
           />
-         { showButton && <Button size="small" style={{marginTop:"-28%",marginLeft:"105%"}} variant="outlined" color="primary">
-            Add
-          </Button>
+         { showButton && 
+            <Button 
+              size="small" 
+              style={{marginTop:"-28%",marginLeft:"105%"}} 
+              onClick={handleButtonClick}
+              variant="outlined" color="primary">
+              Add
+            </Button>
           }
+          <CustomizedDialogs changOpenProps={()=> setOpenDialog(false)} open={openDialog} />
+
         </div>
       )}
     />
