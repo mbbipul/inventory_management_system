@@ -20,6 +20,13 @@ class Form extends React.Component {
         this.setState({[name+"dpendsOnValue"] : dependsValue});
     }
 
+    handleOnDependsError = (error,fieldIndex) => {
+        var errorArray = this.state.hasAnyError;
+        errorArray[fieldIndex] = error;
+        this.setState({
+            hasAnyError : errorArray,
+        });
+    }
     handleInputChange = (event,fieldIndex,field)  => {
         const target = event.target;
         const value = target.value;
@@ -27,11 +34,12 @@ class Form extends React.Component {
 
         const validation = field.validation;
         const fetchUrl = field.fetchUrl;
-
+        var errorArray = this.state.hasAnyError;
+     
+        console.log("call by "+field.label);
         switch (validation[0]) {
 
             case 0://only number valid
-                var errorArray = this.state.hasAnyError;
 
                 if (!this.isNormalInteger(value)){
                     errorArray[fieldIndex] = true;
@@ -268,35 +276,74 @@ class Form extends React.Component {
                                     break;
                                 case 7: // value from others
                                     let dependsValue = 0; 
-                                    
+                                    let textfield = "";
+
                                     switch(field.dependsOn.operation){
-                                        case 4 : 
+                                        
+                                        case 3 : 
                                             dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] /
-                                            this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
+                                                this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
+                                                if(Number.isNaN(dependsValue)){
+                                                        dependsValue = 0.00;
+                                                }
+                                                textfield = <TextField
+                                                    disabled={field.disabled}
+                                                    label={field.label}
+                                                    name={field.label}
+                                                    error={error}
+                                                    helperText={helperText}
+                                                    fullWidth
+                                                    placeholder={field.placeholder}
+                                                    margin="normal"
+                                                    required={field.required}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    value={dependsValue}
+                                                    variant="outlined"
+                                                    onChange={(event) => this.handleInputChange(event,i,field)}
+                                            />  
+                                            break;
+
+                                        case 4 : 
+                                            console.log("gi");
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] -
+                                                this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
+                                            console.log(dependsValue);
+                                            let dError = false;
+                                            if(this.state[field.label.replace(/\s/g, '')] > dependsValue ){
+
+                                                dError = true;
+                                                helperText = field.label + " Cannot greater than actual "+field.dependsOn.field[0];
+                                            }else{
+                                                dError = false;
+
+                                            }
+                                            textfield =  <TextField
+                                                disabled={field.disabled}
+                                                label={field.label}
+                                                name={field.label}
+                                                error={dError}
+                                                helperText={helperText}
+                                                fullWidth
+                                                placeholder={field.placeholder}
+                                                margin="normal"
+                                                required={field.required}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                variant="outlined"
+                                                onKeyUp={() => this.handleOnDependsError(dError,i)}
+                                                onChange={(event) => {this.handleInputChange(event,i,field);}}
+                                            />  
+
                                             break;
                                         default:
                                             break;
                                     }
                                     
-                                    if(Number.isNaN(dependsValue)){
-                                        dependsValue = 0.00;
-                                    }
                                     item = <Grid key={i} item xs={6}>
-                                        <TextField
-                                            disabled={field.disabled}
-                                            label={field.label+field.labelExtra}
-                                            name={field.label}
-                                            fullWidth
-                                            placeholder={field.placeholder}
-                                            margin="normal"
-                                            required={field.required}
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                            value={dependsValue}
-                                            variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,i,field)}
-                                            />  
+                                       {textfield}
                                     </Grid>    ;
                                     break;
                                 case 999:// break line
