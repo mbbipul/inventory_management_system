@@ -4,6 +4,7 @@ import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
 
+
 class Form extends React.Component {
 
     constructor(props){
@@ -15,10 +16,17 @@ class Form extends React.Component {
         };
     }
 
-    handleInputChange = (event,fieldIndex,validation,fetchUrl)  => {
+    updateDependsOnValue = (name,dependsValue) => {
+        this.setState({[name+"dpendsOnValue"] : dependsValue});
+    }
+
+    handleInputChange = (event,fieldIndex,field)  => {
         const target = event.target;
         const value = target.value;
         const name = target.name.replace(/\s/g, '');
+
+        const validation = field.validation;
+        const fetchUrl = field.fetchUrl;
 
         switch (validation[0]) {
 
@@ -67,6 +75,7 @@ class Form extends React.Component {
             default:
                 break;
         }
+
         this.setState({
           [name]: value,
         });
@@ -124,13 +133,13 @@ class Form extends React.Component {
                                 error = true;
                             }
                             switch (field.type) {
-                                case 0:
+                                case 0: //textfield
                                     item = <Grid key={i} item xs={6}>
                                         <TextField
                                             disabled={field.disabled}
                                             error={error}
                                             label={field.label}
-                                            name={field.label}
+                                            name={fieldName}
                                             fullWidth
                                             placeholder={field.placeholder}
                                             margin="normal"
@@ -140,11 +149,11 @@ class Form extends React.Component {
                                                 shrink: true,
                                             }}
                                             variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,i,field.validation)}
+                                            onChange={(event) => this.handleInputChange(event,i,field)}
                                             />  
                                     </Grid>    ;
                                     break;
-                                case 1:
+                                case 1: //selct options
                                     item = <Grid key={i} item xs={6}>
                                         <TextField
                                             select
@@ -154,7 +163,7 @@ class Form extends React.Component {
                                             value={this.state[fieldName] === undefined ? options[0] : this.state[fieldName]}
                                             name={field.label}
                                             required={field.required}
-                                            onChange={(event) => this.handleInputChange(event,i,field.validation)}
+                                            onChange={(event) => this.handleInputChange(event,i,field)}
                                             helperText={helperText}
                                             variant="outlined"
                                             
@@ -169,7 +178,7 @@ class Form extends React.Component {
                                     </Grid>
                                      ;
                                     break;
-                                case 2:
+                                case 2: // text area
                                     item = <Grid item xs={12}>
                                             <TextField
                                                 fullWidth
@@ -181,13 +190,13 @@ class Form extends React.Component {
                                                 rows={4}
                                                 placeholder={field.placeholder}
                                                 variant="outlined"
-                                                onChange={(event) => this.handleInputChange(event,i,field.validation)}
+                                                onChange={(event) => this.handleInputChange(event,i,field)}
 
                                             />
                                         </Grid>;
                                     break;
 
-                                case 3 :
+                                case 3 : //async select option
                                     item = <Grid item xs={6}>
                                             <AsyncAutoComplete
                                                 label={field.label}
@@ -221,11 +230,11 @@ class Form extends React.Component {
                                                 shrink: true,
                                             }}
                                             variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,i,field.validation,field.fetchUrl)}
+                                            onChange={(event) => this.handleInputChange(event,i,field)}
                                             />  
                                     </Grid>    ;
                                     break;      
-                                case 5:
+                                case 5: // TextField with subtitle
                                     item = <Grid key={i} item xs={6}>
                                         <TextField
                                             disabled={field.disabled}
@@ -241,12 +250,12 @@ class Form extends React.Component {
                                                 shrink: true,
                                             }}
                                             variant="outlined"
-                                            onChange={(event) => this.handleInputChange(event,i,field.validation)}
+                                            onChange={(event) => this.handleInputChange(event,i,field)}
                                             />  
                                     </Grid>    ;
                                     break;
 
-                                case 6:
+                                case 6: // date pickers
                                     item = <Grid key={i} item xs={6}>
                                         <MaterialUIPickers 
                                             label={field.label}
@@ -257,7 +266,40 @@ class Form extends React.Component {
                                         />
                                     </Grid>    ;
                                     break;
-                                case 999:
+                                case 7: // value from others
+                                    let dependsValue = 0; 
+                                    
+                                    switch(field.dependsOn.operation){
+                                        case 4 : 
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] /
+                                            this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    
+                                    if(Number.isNaN(dependsValue)){
+                                        dependsValue = 0.00;
+                                    }
+                                    item = <Grid key={i} item xs={6}>
+                                        <TextField
+                                            disabled={field.disabled}
+                                            label={field.label+field.labelExtra}
+                                            name={field.label}
+                                            fullWidth
+                                            placeholder={field.placeholder}
+                                            margin="normal"
+                                            required={field.required}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            value={dependsValue}
+                                            variant="outlined"
+                                            onChange={(event) => this.handleInputChange(event,i,field)}
+                                            />  
+                                    </Grid>    ;
+                                    break;
+                                case 999:// break line
                                     item = <Grid key={i} item xs={12}>
                                                 <br />
                                                 <Divider />
