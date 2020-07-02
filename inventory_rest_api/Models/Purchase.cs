@@ -18,8 +18,7 @@ namespace inventory_rest_api.Models
         public int ProductQuantity { get ; set; }
 
         [Required]
-        [DataType(DataType.Date)]
-        public DateTime PurchaseDate { get; set; }
+        public string PurchaseDate { get; set; }
         
         [Required]
         public long PurchasePrice { get; set; }
@@ -33,8 +32,7 @@ namespace inventory_rest_api.Models
         [Required]
         public bool PurchasePaidStatus { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime PurchaseDuePaymentDate { get; set;}
+        public string PurchaseDuePaymentDate { get; set;}
 
         [Required]
         public long PurchaseDiscount { get; set; }

@@ -22,7 +22,7 @@ namespace inventory_rest_api.Controllers
 
         // GET: api/Purchase
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchase()
+        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
         {
             return await _context.Purchases.ToListAsync();
         }
@@ -77,12 +77,12 @@ namespace inventory_rest_api.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Purchase>> PostPurchases(Purchase purchases)
+        public async Task<ActionResult<Purchase>> PostPurchases(Purchase purchase)
         {
-            _context.Purchases.Add(purchases);
+            _context.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPurchases", new { id = purchases.PurchaseId }, purchases);
+            return CreatedAtAction("GetPurchase", new { id = purchase.PurchaseId }, purchase);
         }
 
         // DELETE: api/Purchase/5

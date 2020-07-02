@@ -53,6 +53,28 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Purchases",
+                columns: table => new
+                {
+                    PurchaseId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SupplierId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
+                    ProductQuantity = table.Column<int>(nullable: false),
+                    PurchaseDate = table.Column<string>(nullable: false),
+                    PurchasePrice = table.Column<long>(nullable: false),
+                    SalesPrice = table.Column<long>(nullable: false),
+                    PurchasePaymentAmount = table.Column<long>(nullable: false),
+                    PurchasePaidStatus = table.Column<bool>(nullable: false),
+                    PurchaseDuePaymentDate = table.Column<string>(nullable: true),
+                    PurchaseDiscount = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Purchases", x => x.PurchaseId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Suppliers",
                 columns: table => new
                 {
@@ -80,6 +102,9 @@ namespace inventory_rest_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Purchases");
 
             migrationBuilder.DropTable(
                 name: "Suppliers");
