@@ -8,7 +8,7 @@ import {
 export default function MaterialUIPickers(props) {
   // The first commit of Material-UI
   const [selectedDate, setSelectedDate] = React.useState(
-    new Date(props.date)
+    new Date(props.date).getTime()
   );
 
   useEffect(()=> {
@@ -17,8 +17,10 @@ export default function MaterialUIPickers(props) {
   },[selectedDate]);
 
   const handleDateChange = (date) => {
-    console.log(new Date(date.toString()));
-    setSelectedDate(date);
+    if( date != null){
+      var dateString = new Date(date.toString()).getTime();
+      setSelectedDate(dateString);
+    }
   };
 
 
