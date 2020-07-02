@@ -248,7 +248,7 @@ const addPurchaseFormFields = [
         type : 7,
         dependsOn : {
             field : ["Purchase Price","Product Quantity"],
-            operation : 4
+            operation : 3
         },
         required : true,
         disabled : true,
@@ -266,7 +266,11 @@ const addPurchaseFormFields = [
     {
         label : "Purchase Payment Amount",
         placeholder : "500.00 tk",
-        type : 0,
+        type : 7,
+        dependsOn : {
+            field : ["Purchase Price","Purchase Discount"],
+            operation : 4 //substruct operation with check this value is not larger
+        },
         required : true,
         disabled : false,
         validation : [999]
