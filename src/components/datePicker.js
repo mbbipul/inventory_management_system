@@ -17,6 +17,7 @@ export default function MaterialUIPickers(props) {
   },[selectedDate]);
 
   const handleDateChange = (date) => {
+    console.log(new Date(date.toString()));
     setSelectedDate(date);
   };
 

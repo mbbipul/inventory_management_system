@@ -24,9 +24,16 @@ function Purchase () {
     }, [location]);
 
     const [columns,] = useState([
-                                        { title: 'Company Name', field: 'companyName' },
-                                        { title: 'Address', field: 'companyAddress' },
-                                        { title: 'Contact Number', field: 'companyContact' },
+                                        { title: 'Purchase ID', field: 'purchaseId' },
+                                        { title: 'Product Name', field: 'productId' },
+                                        { title: 'Product Quantity', field: 'productQuantity' },
+                                        { title: 'Purchase Price', field: 'purchasePrice' },
+                                        { title: 'Purchase Discount', field: 'purchaseDiscount' },
+                                        { title: 'Sales Price', field: 'salesPrice' },
+                                        { title: 'Purchase Payment Amount', field: 'purchasePaymentAmount' },
+                                        { title: 'Purchase Paid Status', field: 'purchasePaidStatus' },
+                                        { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
+
                                     ]);
     const [data,setData] = useState([]);
     
@@ -41,7 +48,7 @@ function Purchase () {
               headers: myHeaders,
               redirect: 'follow'
           };
-          const res = await fetch(apiUrl+"Companies", requestOptions);
+          const res = await fetch(apiUrl+"Purchases", requestOptions);
           const json = await res.json();
           setData(json);
 

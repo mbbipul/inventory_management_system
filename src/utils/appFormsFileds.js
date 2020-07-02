@@ -207,7 +207,7 @@ const addPurchaseFormFields = [
         fetchUrl : apiUrl+"Products",
         selectName : "productName",
         selectKey : "productId",
-        required : true,
+        required : false,
         disabled : false,
         validation : [9999]
     },
@@ -245,7 +245,11 @@ const addPurchaseFormFields = [
         label : "Purchase Price",
         labelExtra : " ( Per Product )",
         placeholder : "000.00 tk",
-        type : 5,
+        type : 7,
+        dependsOn : {
+            field : ["Purchase Price","Product Quantity"],
+            operation : 4
+        },
         required : true,
         disabled : true,
         validation : [0]

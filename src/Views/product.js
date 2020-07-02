@@ -8,13 +8,14 @@ import RouteHeader from '../components/routeHeader';
 import ProductTable from '../components/productTable';
 import AddProduct from "./addProduct";
 import Category from "./category";
+import apiUrl from "../utils/apiInfo";
+import ManageTable from "../components/manageTable";
 
 function Product() {
     let location = useLocation().pathname.split("/");
-   
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
-    useEffect(() => {
+   useEffect(() => {
         setHeaderSubtitile(location[2]);
         if(location.length <= 2){
             setHeaderSubtitile(location[1]);
@@ -22,6 +23,38 @@ function Product() {
         }
     }, [location]);
 
+    const [columns,] = useState([
+                                        { title: 'Purchase ID', field: 'purchaseId' },
+                                        { title: 'Product Name', field: 'productId' },
+                                        { title: 'Product Quantity', field: 'productQuantity' },
+                                        { title: 'Purchase Price', field: 'purchasePrice' },
+                                        { title: 'Purchase Discount', field: 'purchaseDiscount' },
+                                        { title: 'Sales Price', field: 'salesPrice' },
+                                       
+
+                                    ]);
+    const [data,setData] = useState([]);
+    
+    const FetchData = async () => {
+
+        try {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+    
+          var requestOptions = {
+              method: "GET",
+              headers: myHeaders,
+              redirect: 'follow'
+          };
+          const res = await fetch(apiUrl+"Purchases", requestOptions);
+          const json = await res.json();
+          setData(json);
+
+          // console.log("json - ", json);
+        } catch (error) {
+          console.log("error - ", error);
+        }
+    };
     
     let routeHeader = {
         title : "Product",
@@ -39,13 +72,34 @@ function Product() {
         ]
     }
 
+
+    useEffect(() => {
+        FetchData();
+    },[]);
+
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
             <Switch>
 
                 <Route exact path="/product">
-                    <ProductTable />
+                        <div style={{margin:20}}>
+                            <ProductTable data={{ columns : columns , data : data}}/>
+                        </div>
+                </Route>
+                <Route exact path="/product/manage-product">
+                <div style={{margin:20}}>
+                            <ManageTable 
+                                title="Manage Company" 
+                                hasUnique={true}
+                                uniqueKey="companyId" 
+                                uniqueName="companyName" 
+                                apiUrl="Companies/" 
+                                ondataChange={() => console.log()} 
+                                data={{ columns : columns , data : data}}
+                                
+                            />
+                        </div>
                 </Route>
                 <Route exact path="/product/category">
                     <Category />
