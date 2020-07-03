@@ -69,6 +69,9 @@ namespace inventory_rest_api.Migrations
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
+                    b.Property<long>("SalestPrice")
+                        .HasColumnType("bigint");
+
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");

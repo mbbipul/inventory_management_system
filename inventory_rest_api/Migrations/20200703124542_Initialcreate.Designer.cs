@@ -9,8 +9,8 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200702044351_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200703124542_Initialcreate")]
+    partial class Initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,6 +70,9 @@ namespace inventory_rest_api.Migrations
 
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
+
+                    b.Property<long>("SalestPrice")
+                        .HasColumnType("bigint");
 
                     b.HasKey("ProductId");
 

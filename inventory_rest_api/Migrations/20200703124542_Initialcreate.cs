@@ -2,7 +2,7 @@
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,7 @@ namespace inventory_rest_api.Migrations
                     ProductCategoryId = table.Column<long>(nullable: false),
                     ProductQuantity = table.Column<int>(nullable: false),
                     ProductPrice = table.Column<long>(nullable: false),
+                    SalestPrice = table.Column<long>(nullable: false),
                     ProductDetails = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

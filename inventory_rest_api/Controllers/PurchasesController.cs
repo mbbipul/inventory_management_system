@@ -41,6 +41,16 @@ namespace inventory_rest_api.Controllers
             return purchases;
         }
 
+        [HttpGet("by-productId/{productId}")]
+        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchasesByProductId(long productId){
+            var purchases = await _context.Purchases
+                                        .Where(p => p.ProductId == productId)
+                                        .OrderBy(p => p.PurchaseDate)
+                                        .ToListAsync();
+
+            return purchases;
+        }
+
         // PUT: api/Purchase/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

@@ -22,7 +22,8 @@ namespace inventory_rest_api.Models
 
         [Required]
         public long ProductPrice { get ; set;  }
-        
+        public long SalestPrice { get ; set;  }
+
         public String ProductDetails { get ; set ; }
 
     }

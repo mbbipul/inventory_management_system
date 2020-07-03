@@ -35,6 +35,27 @@ namespace inventory_rest_api.Controllers
             return products;
         }
  
+        [HttpGet("find/{name}")]
+        public ActionResult<bool> IsCompanyExists(string name)
+        {
+            if(_context.Products
+                            .Any(c => c.ProductName == name)){
+                return true;
+            }
+
+            return false;
+
+        }
+
+        [HttpGet("productWithCategories")]
+        public async Task<ActionResult<IEnumerable>> GetJoin(){
+            var query = from products in _context.Products
+                        join categories in _context.ProductCategories
+                            on products.ProductCategoryId equals categories.ProductCategoryId
+                        select new ProductWithCategory(products,categories);
+            return await query.ToListAsync();
+
+        }
         // PUT: api/Products/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducts(long id, Product products)
