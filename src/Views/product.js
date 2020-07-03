@@ -10,6 +10,7 @@ import AddProduct from "./addProduct";
 import Category from "./category";
 import apiUrl from "../utils/apiInfo";
 import ManageTable from "../components/manageTable";
+import DetailsTable from "../components/collapseTable";
 
 function Product() {
     let location = useLocation().pathname.split("/");
@@ -24,15 +25,13 @@ function Product() {
     }, [location]);
 
     const [columns,] = useState([
-                                        { title: 'Purchase ID', field: 'purchaseId' },
-                                        { title: 'Product Name', field: 'productId' },
-                                        { title: 'Product Quantity', field: 'productQuantity' },
-                                        { title: 'Purchase Price', field: 'purchasePrice' },
-                                        { title: 'Purchase Discount', field: 'purchaseDiscount' },
-                                        { title: 'Sales Price', field: 'salesPrice' },
-                                       
-
-                                    ]);
+                        { title: 'Product Name', field: 'productName' },
+                        { title: 'Product Code', field: 'productCode' },
+                        { title: 'Product Type', field: 'productCategoryName' },
+                        { title: 'Product Quantity', field: 'productQuantity' },
+                        { title: 'Total Purchase Price', field: 'productPrice' },
+                        { title: 'Sales Price (per product)', field: 'salestPrice' },
+                    ]);
     const [data,setData] = useState([]);
     
     const FetchData = async () => {
@@ -46,7 +45,7 @@ function Product() {
               headers: myHeaders,
               redirect: 'follow'
           };
-          const res = await fetch(apiUrl+"Purchases", requestOptions);
+          const res = await fetch(apiUrl+"Products/productWithCategories", requestOptions);
           const json = await res.json();
           setData(json);
 
@@ -84,7 +83,9 @@ function Product() {
 
                 <Route exact path="/product">
                         <div style={{margin:20}}>
-                            <ProductTable data={{ columns : columns , data : data}}/>
+                            <DetailsTable 
+                                fetchDetails={"Purchases/by-productId/"}
+                                data={data} columns={columns}/>
                         </div>
                 </Route>
                 <Route exact path="/product/manage-product">
@@ -94,7 +95,7 @@ function Product() {
                                 hasUnique={true}
                                 uniqueKey="companyId" 
                                 uniqueName="companyName" 
-                                apiUrl="Companies/" 
+                                apiUrl="Products/productWithCategories" 
                                 ondataChange={() => console.log()} 
                                 data={{ columns : columns , data : data}}
                                 

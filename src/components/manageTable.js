@@ -47,7 +47,7 @@ function ManageTable(props){
         if(state.data.length === 0){
             FetchData(url,setState);
         }
-    });
+    },[]);
 
     useEffect(() => {
         const timer = setTimeout(() => {

@@ -88,10 +88,11 @@ const addProductFormFileds = [
     {
         label : "Product Name",
         placeholder : "Fresh oil",
-        type : 0,
+        type : 4,
+        fetchUrl : "Products/find/",
         required : true,
         disabled : false,
-        validation : [9999]
+        validation : [1]
     },
     {
         label : "Product Code",
@@ -114,6 +115,18 @@ const addProductFormFileds = [
         disabled : false,
         validation : [9999]
 
+    },
+    {
+        label : "Supplier Name",
+        placeholder : "Please Select Supplier Name",
+        type : 3,
+        dialogFormContent : <AddSupplier />,
+        fetchUrl : apiUrl+"Suppliers",
+        selectName : "supplierName",
+        selectKey : "supplierId",
+        required : true,
+        disabled : false,
+        validation : [0]
     },
     {
         label : "Product Quantity",
@@ -165,26 +178,6 @@ const addProductFormFileds = [
         },
         required : true,
         disabled : true,
-        validation : [0]
-    },
-    {
-        label : "Sales Price ( Per Product )",
-        placeholder : "700.00 tk",
-        type : 0,
-        required : true,
-        disabled : false,
-        validation : [0]
-    },
-    {
-        label : "Supplier Name",
-        placeholder : "Please Select Supplier Name",
-        type : 3,
-        dialogFormContent : <AddSupplier />,
-        fetchUrl : apiUrl+"Suppliers",
-        selectName : "supplierName",
-        selectKey : "supplierId",
-        required : true,
-        disabled : false,
         validation : [0]
     },
     {

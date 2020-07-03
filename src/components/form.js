@@ -60,7 +60,7 @@ class Form extends React.Component {
             case 1 ://check if exists to db
                 errorArray = this.state.hasAnyError;
 
-                let isCompanyExits = (result) => {
+                let isDataExists = (result) => {
                     if( result === "true"){
                         errorArray[fieldIndex] = true;
                         this.setState({
@@ -77,7 +77,7 @@ class Form extends React.Component {
                         });
                     }
                 }
-                submitForm(fetchUrl+value,"GET","",isCompanyExits);
+                submitForm(fetchUrl+value,"GET","",isDataExists);
                 break;
 
             default:

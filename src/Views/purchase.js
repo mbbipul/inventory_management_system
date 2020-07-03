@@ -97,7 +97,7 @@ function Purchase () {
                                 hasUnique={true}
                                 uniqueKey="companyId" 
                                 uniqueName="companyName" 
-                                apiUrl="Companies/" 
+                                apiUrl="Purchases/" 
                                 ondataChange={() => console.log()} 
                                 data={{ columns : columns , data : data}}
                                 
