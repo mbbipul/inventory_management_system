@@ -30,6 +30,11 @@ class AddPurchase extends React.Component {
     }
 
     submitPurchaseForm = (state) => {
+        let exactPurchasePrice = parseFloat(state.PurchasePrice)-parseFloat(state.PurchaseDiscount);
+
+        let paid = exactPurchasePrice - parseFloat(state.PurchasePaymentAmount) ;
+        let paidStatus = paid > 0 ? false : true ;
+
         let purchase = {
             "supplierId" : state.SupplierName.supplierId,
             "productId" : 1,
@@ -38,8 +43,8 @@ class AddPurchase extends React.Component {
             "purchasePrice" : parseFloat(state.PurchasePrice),
             "salesPrice" : parseFloat(state.SalesPrice),
             "purchasePaymentAmount" : parseFloat(state.PurchasePaymentAmount),
-            "purchasePaidStatus" : false,
-            "purchaseDuePaymentDate" :state.PurchaseDuePaymentDate,
+            "purchasePaidStatus" : paidStatus,
+            "purchaseDuePaymentDate" : state.PurchaseDuePaymentDate.toString(),
             "purchaseDiscount" : parseFloat(state.PurchaseDiscount)
 
         }

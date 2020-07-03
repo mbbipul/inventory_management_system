@@ -1,16 +1,12 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 
-function MaterialTableDetailsPanel(props) {
+function DetailsTable(props) {
   return (
     <MaterialTable
       title="All Product Category"
-      columns={[
-        { title: 'Category Name', field: 'productCategoryName',headerStyle :  {textAlign: 'center'} },
-        { title: 'Total Sales(৳)', field: 'sales',type : "currency",headerStyle :  {textAlign: 'right'}  },
-        { title: 'Total Earn(৳) ', field: 'earn',type : "currency",headerStyle :  {textAlign: 'right'} }
-      ]}
-      data={props.data.data}
+      columns={props.columns}
+      data={props.data}
       detailPanel={rowData => {
         return (
          <p>Hello</p>
@@ -20,4 +16,4 @@ function MaterialTableDetailsPanel(props) {
   )
 }
 
-export default MaterialTableDetailsPanel;
+export default DetailsTable;

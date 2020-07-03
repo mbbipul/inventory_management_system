@@ -9,6 +9,7 @@ import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import apiUrl from "../utils/apiInfo";
 import AddPurchase from "./addPurchase";
+import DetailsTable from "../components/collapseTable";
 
 function Purchase () {
 
@@ -83,7 +84,7 @@ function Purchase () {
                 <Switch>
                     <Route exact path="/purchase">
                         <div style={{margin:20}}>
-                            <ProductTable data={{ columns : columns , data : data}}/>
+                            <DetailsTable columns={columns} data={data} />
                         </div>
                     </Route>
                     <Route exact path="/purchase/add-purchase">

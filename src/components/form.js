@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextField ,Grid , MenuItem , Divider , Button} from '@material-ui/core';
+import {TextField ,Grid , MenuItem , Divider , Button, Paper} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
@@ -275,8 +275,8 @@ class Form extends React.Component {
                                     </Grid>    ;
                                     break;
                                 case 7: // value from others
-                                    let dependsValue = 0; 
-                                    let textfield = "";
+                                    var dependsValue = 0; 
+                                    var textfield = "";
 
                                     switch(field.dependsOn.operation){
                                         
@@ -288,7 +288,7 @@ class Form extends React.Component {
                                                 }
                                                 textfield = <TextField
                                                     disabled={field.disabled}
-                                                    label={field.label}
+                                                    label={field.label+field.labelExtra}
                                                     name={field.label}
                                                     error={error}
                                                     helperText={helperText}
@@ -330,7 +330,6 @@ class Form extends React.Component {
                                                 margin="normal"
                                                 required={field.required}
                                                 InputLabelProps={{
-                                                    shrink: true,
                                                 }}
                                                 variant="outlined"
                                                 onKeyUp={() => this.handleOnDependsError(dError,i)}
@@ -345,6 +344,30 @@ class Form extends React.Component {
                                     item = <Grid key={i} item xs={6}>
                                        {textfield}
                                     </Grid>    ;
+                                    break;
+                                case 8 : 
+                                    dependsValue = 0.00;
+                                    switch(field.dependsOn.operation){
+                                        case 1 : 
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] -
+                                                this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
+                                            if(Number.isNaN(dependsValue)){
+                                                    dependsValue = 0.00;
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    item = <Grid key={i} item xs={6}>
+                                                <Paper  elevation={3} style={{color:"green",padding:1,textAlign:"center",marginTop:13}}>
+                                                    <h3>
+                                                    {
+                                                        field.label+" : "+
+                                                        dependsValue
+                                                    }
+                                                    </h3>
+                                                </Paper>
+                                            </Grid>;
                                     break;
                                 case 999:// break line
                                     item = <Grid key={i} item xs={12}>

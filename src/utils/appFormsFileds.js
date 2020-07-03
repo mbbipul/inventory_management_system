@@ -124,7 +124,7 @@ const addProductFormFileds = [
         validation : [0]
     },
     {
-        label : "Product Price",
+        label : "Purchase Price",
         placeholder : "450.00 tk",
         type : 0,
         required : true,
@@ -140,6 +140,14 @@ const addProductFormFileds = [
         disabled : false,
         validation : [0]
     },
+    {
+        label : "Purchase Price With Discount",
+        type : 8,
+        dependsOn : {
+            field : ["Purchase Price","Purchase Discount"],
+            operation : 1
+        },
+    },
 
     {
         label : "",
@@ -147,9 +155,14 @@ const addProductFormFileds = [
         type : 999,
     },
     {
-        label : "Purchase Price ( Per Product )",
+        label : "Purchase Price",
+        labelExtra : " ( Per Product )",
         placeholder : "000.00 tk",
-        type : 0,
+        type : 7,
+        dependsOn : {
+            field : ["Purchase Price","Product Quantity"],
+            operation : 3
+        },
         required : true,
         disabled : true,
         validation : [0]
@@ -173,6 +186,35 @@ const addProductFormFileds = [
         required : true,
         disabled : false,
         validation : [0]
+    },
+    {
+        label : "Sales Price",
+        labelExtra : " ( Per Product )",
+        placeholder : "700.00 tk",
+        type : 5,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Purchase Payment Amount",
+        placeholder : "500.00 tk",
+        type : 7,
+        dependsOn : {
+            field : ["Purchase Price","Purchase Discount"],
+            operation : 4 //substruct operation with check this value is not larger
+        },
+        required : true,
+        disabled : false,
+        validation : [999]
+    },
+    {
+        label : "Purchase Due Payment Date",
+        placeholder : "12-12-2021",
+        type : 6,
+        required : true,
+        disabled : false,
+        validation : [999]
     },
     {
         label : "Details",
@@ -235,6 +277,14 @@ const addPurchaseFormFields = [
         required : true,
         disabled : false,
         validation : [0]
+    },
+    {
+        label : "Purchase Price With Discount",
+        type : 8,
+        dependsOn : {
+            field : ["Purchase Price","Purchase Discount"],
+            operation : 1
+        },
     },
     {
         label : "",

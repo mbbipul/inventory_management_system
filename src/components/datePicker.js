@@ -8,7 +8,7 @@ import {
 export default function MaterialUIPickers(props) {
   // The first commit of Material-UI
   const [selectedDate, setSelectedDate] = React.useState(
-    new Date(props.date).getTime()
+    new Date().getTime()
   );
 
   useEffect(()=> {

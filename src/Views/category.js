@@ -16,6 +16,7 @@ import MaterialTableDetailsPanel from "../components/collapseTable";
 
 import apiUrl from "../utils/apiInfo";
 import ManageTable from "../components/manageTable";
+import DetailsTable from "../components/collapseTable";
 
 const FetchData = async (url,setState) => {
 
@@ -132,7 +133,7 @@ function Category(){
     let tabs = [
         {
             tab : "All Categories",
-            tabPanel : <MaterialTableDetailsPanel  data={categories} />
+            tabPanel : <DetailsTable  data={categories.data} columns={categories.columns} />
         },
         {
             tab : "Manage Category",
