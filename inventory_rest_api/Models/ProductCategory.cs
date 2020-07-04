@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace inventory_rest_api.Models
@@ -9,5 +10,7 @@ namespace inventory_rest_api.Models
 
         [Required]
         public string ProductCategoryName { get; set; }
+        public ICollection<Product> Products { get; set;}
+
     }
 }

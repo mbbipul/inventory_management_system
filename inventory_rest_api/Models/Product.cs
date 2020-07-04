@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace inventory_rest_api.Models
 {
@@ -26,5 +28,8 @@ namespace inventory_rest_api.Models
 
         public String ProductDetails { get ; set ; }
 
+        [JsonIgnore]
+        public ProductCategory ProductCategories { get ; set;}
+        public ICollection<Purchase> Purchases { get; set;}
     }
 }

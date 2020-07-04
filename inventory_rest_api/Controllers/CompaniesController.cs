@@ -19,7 +19,8 @@ namespace inventory_rest_api.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetCompanies(){
-            return await _context.Companies.ToListAsync();
+            return await _context.Companies
+                            .Include(company => company.Suppliers).ToListAsync();
         }
 
         [HttpGet("{id}")]

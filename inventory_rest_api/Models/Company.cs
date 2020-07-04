@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace inventory_rest_api.Models
@@ -15,6 +16,7 @@ namespace inventory_rest_api.Models
         [Required]
         public string CompanyContact { get; set; }
 
+        public ICollection<Supplier> Suppliers { get ; set ;}
         
     }
 }

@@ -24,7 +24,8 @@ namespace inventory_rest_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductTypes()
         {
-            return await _context.ProductCategories.ToListAsync();
+            return await _context.ProductCategories
+                                .Include(productCategory => productCategory.Products).ToListAsync();
         }
 
         [HttpGet("type")]

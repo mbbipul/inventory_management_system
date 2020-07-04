@@ -19,7 +19,8 @@ namespace inventory_rest_api.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetProducts(){
-            return await _context.Products.ToListAsync();
+            return await _context.Products
+                                .Include(product => product.Purchases).ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -49,10 +50,9 @@ namespace inventory_rest_api.Controllers
 
         [HttpGet("productWithCategories")]
         public async Task<ActionResult<IEnumerable>> GetJoin(){
-            var query = from products in _context.Products
-                        join categories in _context.ProductCategories
-                            on products.ProductCategoryId equals categories.ProductCategoryId
-                        select new ProductWithCategory(products,categories);
+            var query = _context.Products
+                            .Include(product => product.Purchases);
+            
             return await query.ToListAsync();
 
         }

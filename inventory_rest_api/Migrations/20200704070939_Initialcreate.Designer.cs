@@ -9,7 +9,7 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200703124542_Initialcreate")]
+    [Migration("20200704070939_Initialcreate")]
     partial class Initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,8 @@ namespace inventory_rest_api.Migrations
 
                     b.HasKey("ProductId");
 
+                    b.HasIndex("ProductCategoryId");
+
                     b.ToTable("Products");
                 });
 
@@ -135,6 +137,8 @@ namespace inventory_rest_api.Migrations
 
                     b.HasKey("PurchaseId");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("Purchases");
                 });
 
@@ -165,7 +169,36 @@ namespace inventory_rest_api.Migrations
 
                     b.HasKey("SupplierId");
 
+                    b.HasIndex("CompanyId");
+
                     b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Product", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.ProductCategory", "ProductCategories")
+                        .WithMany("Products")
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Purchase", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Product", "Product")
+                        .WithMany("Purchases")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Company", "Company")
+                        .WithMany("Suppliers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

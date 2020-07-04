@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace inventory_rest_api.Models
 {
@@ -20,6 +21,8 @@ namespace inventory_rest_api.Models
 
         public string SupplierEmail { get; set; }
 
-        
+        [JsonIgnore]
+        public Company Company { get ; set; }
+
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace inventory_rest_api.Models
 {
@@ -37,6 +38,9 @@ namespace inventory_rest_api.Models
         [Required]
         public long PurchaseDiscount { get; set; }
 
+
+        [JsonIgnore]
+        public Product Product { get ; set; }
 
     }
 }
