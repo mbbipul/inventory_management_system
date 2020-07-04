@@ -49,7 +49,6 @@ class AddProduct extends React.Component {
             this.setState({product : product});
             let purchase = {
                 "supplierId" : state.SupplierName.supplierId,
-                "productId" : product.productId,
                 "productQuantity" : parseInt(state.ProductQuantity),
                 "purchaseDate" : Date.now().toString(),
                 "purchasePrice" : parseFloat(state.PurchasePrice),
@@ -57,9 +56,12 @@ class AddProduct extends React.Component {
                 "purchasePaymentAmount" : parseFloat(state.PurchasePaymentAmount),
                 "purchasePaidStatus" : paidStatus,
                 "purchaseDuePaymentDate" : state.PurchaseDuePaymentDate.toString(),
-                "purchaseDiscount" : parseFloat(state.PurchaseDiscount)
+                "purchaseDiscount" : parseFloat(state.PurchaseDiscount),
+                "productId" : product.productId
     
             }
+            console.log(product);
+            console.log(purchase)
             submitForm("Purchases","POST",purchase,this.onProductAddSucces);
 
         });

@@ -37,7 +37,7 @@ class AddPurchase extends React.Component {
 
         let purchase = {
             "supplierId" : state.SupplierName.supplierId,
-            "productId" : 1,
+            "productId" : state.ProductName.productId,
             "productQuantity" : parseInt(state.ProductQuantity),
             "purchaseDate" : Date.now().toString(),
             "purchasePrice" : parseFloat(state.PurchasePrice),
