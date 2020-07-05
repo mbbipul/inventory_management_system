@@ -21,7 +21,7 @@ namespace inventory_rest_api.Models
                     ProductCategoryId = 5,
                     ProductCode = "231234",
                     ProductPrice = 400,
-                    ProductQuantity = 10,
+                    TotalProducts = 10,
                     ProductDetails = "product",
 
                 },
@@ -30,7 +30,7 @@ namespace inventory_rest_api.Models
                     ProductCategoryId = 5,
                     ProductCode = "231234",
                     ProductPrice = 400,
-                    ProductQuantity = 10,
+                    TotalProducts = 10,
                     ProductDetails = "product",
 
 
@@ -39,7 +39,7 @@ namespace inventory_rest_api.Models
                     ProductCategoryId = 5,
                     ProductCode = "231234",
                     ProductPrice = 400,
-                    ProductQuantity = 10,
+                    TotalProducts = 10,
                     ProductDetails = "product",
 
 

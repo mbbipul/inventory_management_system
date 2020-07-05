@@ -20,10 +20,15 @@ namespace inventory_rest_api.Models
         public long ProductCategoryId { get ; set; }
 
         [Required]
-        public int ProductQuantity { get ; set; }
+        public int TotalProducts { get ; set; }
 
         [Required]
+        public int TotalProductInStock { get; set; }
+        
+        [Required]
         public long ProductPrice { get ; set;  }
+
+        [Required]
         public long SalestPrice { get ; set;  }
 
         public String ProductDetails { get ; set ; }

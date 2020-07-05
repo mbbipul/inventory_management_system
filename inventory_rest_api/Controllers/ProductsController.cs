@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using inventory_rest_api.Models;
@@ -50,40 +51,55 @@ namespace inventory_rest_api.Controllers
 
         [HttpGet("productWithCategories")]
         public async Task<ActionResult<IEnumerable>> GetJoin(){
-            var query = _context.Products
-                            .Include(product => product.Purchases);
-            
+            var query = from products in _context.Products.Include(product => product.Purchases)
+                        join categories in _context.ProductCategories
+                            on products.ProductCategoryId equals categories.ProductCategoryId
+                        select new ProductsWithCategory(products,categories);
             return await query.ToListAsync();
 
         }
         // PUT: api/Products/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducts(long id, Product products)
+        [HttpPut("{salesMethod}/{id}")]
+        public async Task<ActionResult<Product>> PutProducts(int salesMethod,long id, Product products)
         {
             if (id != products.ProductId)
             {
                 return BadRequest();
             }
- 
-            _context.Entry(products).State = EntityState.Modified;
- 
-            try
-            {
-                await _context.SaveChangesAsync();
+            
+            if(!ProductsExists(id)){
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+            
+            var product = await _context.Products.FirstAsync(p => p.ProductId == id);
+            
+            
+            product.TotalProducts += products.TotalProducts ;
+            product.TotalProductInStock += products.TotalProductInStock;
+            product.ProductPrice += products.ProductPrice;
+
+            switch (salesMethod)
             {
-                if (!ProductsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                case 0: // product price / product quantity in stock
+                    product.SalestPrice =  product.ProductPrice / product.TotalProductInStock ;
+                    break;
+                case 1 :
+                    product.SalestPrice =  (products.SalestPrice + product.SalestPrice) /2 ; //average
+                    break;
+                
+                default: // current 
+                    break;
             }
- 
-            return NoContent();
+
+            product.SalestPrice = products.SalestPrice;
+
+            Console.Write(product);
+
+
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+
+            return products;
         }
  
         // POST: api/Products
@@ -98,7 +114,7 @@ namespace inventory_rest_api.Controllers
  
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Product>> DeleteProducts(int id)
+        public async Task<ActionResult<Product>> DeleteProducts(long id)
         {
             var products = await _context.Products.FindAsync(id);
             if (products == null)
