@@ -68,3 +68,7 @@ body{
   background-color: #0c0c4b!important;
   color: aliceblue!important;
 }
+
+.MuiAccordionSummary-expandIcon{
+  display: none!important;
+}

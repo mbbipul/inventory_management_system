@@ -4,6 +4,7 @@ import Form from '../components/form';
 import { addPurchaseFormFields } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
+import HistoryVisual from '../components/historyWithVisualization';
 
 class AddPurchase extends React.Component {
 
@@ -17,6 +18,7 @@ class AddPurchase extends React.Component {
     }
 
     onPurchaseAddSucces = (result) => {
+
         this.setState({
             purchase : JSON.parse(result),
             openSnackbar : true,
@@ -40,7 +42,7 @@ class AddPurchase extends React.Component {
             "productId" : state.ProductName.productId,
             "productQuantity" : parseInt(state.ProductQuantity),
             "purchaseDate" : Date.now().toString(),
-            "purchasePrice" : parseFloat(state.PurchasePrice),
+            "purchasePrice" : parseFloat(exactPurchasePrice),
             "salesPrice" : parseFloat(state.SalesPrice),
             "purchasePaymentAmount" : parseFloat(state.PurchasePaymentAmount),
             "purchasePaidStatus" : paidStatus,
@@ -49,12 +51,27 @@ class AddPurchase extends React.Component {
 
         }
         console.log(purchase);
-        submitForm("Purchases","POST",purchase,this.onPurchaseAddSucces);
+        submitForm("Purchases","POST",purchase,(res) => {
+             let product = {
+                "productId" : state.ProductName.productId,
+                "productName" : state.ProductName.productName,
+                "productCode" : state.ProductName.productCode,
+                "productCategoryId" : state.ProductName.productCategoryId,
+                "totalProducts" : parseInt(state.ProductQuantity),
+                "totalProductInStock" : parseInt(state.ProductQuantity),
+                "productPrice" : parseInt(exactPurchasePrice),
+                "salestPrice" : parseInt(state.SalesPrice),
+                "productDetails" : state.ProductName.productId.productDetails,
+            }
+            submitForm("Products/"+2+"/"+purchase.productId,"PUT",product,this.onPurchaseAddSucces(res));
+
+        });
         
     }
     render(){
         return (
             <Card style={{margin:40}}>
+
                 <CardHeader
                     title="Add New Product"
                 />

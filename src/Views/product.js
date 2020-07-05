@@ -84,8 +84,8 @@ function Product() {
                 <Route exact path="/product">
                         <div style={{margin:20}}>
                             <DetailsTable 
-                                fetchDetails={"Purchases/by-productId/"}
-                                data={data} columns={columns}/>
+                                data={data} 
+                                columns={columns}/>
                         </div>
                 </Route>
                 <Route exact path="/product/manage-product">

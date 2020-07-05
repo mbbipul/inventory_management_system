@@ -113,7 +113,7 @@ class Form extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        e.target.reset();
+        // e.target.reset();
         this.props.onSubmit(this.state);
     }
 
@@ -281,8 +281,8 @@ class Form extends React.Component {
                                     switch(field.dependsOn.operation){
                                         
                                         case 3 : 
-                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] /
-                                                this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
+                                            dependsValue = (this.state[field.dependsOn.field[0].replace(/\s/g, '')] -this.state[field.dependsOn.field[1].replace(/\s/g, '')]) /
+                                                this.state[field.dependsOn.field[2].replace(/\s/g, '')] ;
                                                 if(Number.isNaN(dependsValue)){
                                                         dependsValue = 0.00;
                                                 }

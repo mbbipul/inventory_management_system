@@ -173,7 +173,7 @@ const addProductFormFileds = [
         placeholder : "000.00 tk",
         type : 7,
         dependsOn : {
-            field : ["Purchase Price","Product Quantity"],
+            field : ["Purchase Price","Purchase Discount","Product Quantity"],
             operation : 3
         },
         required : true,
@@ -290,7 +290,7 @@ const addPurchaseFormFields = [
         placeholder : "000.00 tk",
         type : 7,
         dependsOn : {
-            field : ["Purchase Price","Product Quantity"],
+            field : ["Purchase Price","Purchase Discount","Product Quantity"],
             operation : 3
         },
         required : true,
