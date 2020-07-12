@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace inventory_rest_api.Models
 {
@@ -17,12 +18,14 @@ namespace inventory_rest_api.Models
         public int ProductQuantity { get ; set; }
 
         [Required]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime SalesDate { get; set; }
+        public string SalesDate { get; set; }
         
         [Required]
         public long SalesPrice { get; set; }
+
+
+        [Required]
+        public long SalesPaymentAmount { get; set; }
 
         [Required]
         public long SalesDueAmount { get; set; }
@@ -30,13 +33,13 @@ namespace inventory_rest_api.Models
         [Required]
         public bool SalesPaidStatus { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime SalesDuePaymentDate { get; set;}
+        public string SalesDuePaymentDate { get; set;}
 
         [Required]
         public long SalesDiscount { get; set; }
 
+        [JsonIgnore]
+        public Product Product { get ; set; }
 
     }
 }

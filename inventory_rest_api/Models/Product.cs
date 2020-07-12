@@ -35,6 +35,9 @@ namespace inventory_rest_api.Models
 
         [JsonIgnore]
         public ProductCategory ProductCategories { get ; set;}
+
         public ICollection<Purchase> Purchases { get; set;}
+        public ICollection<Sales> Sales { get; set;}
+
     }
 }

@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inventory_rest_api.Models;
 
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200712141826_Customer")]
+    partial class Customer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,51 +180,6 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Purchases");
                 });
 
-            modelBuilder.Entity("inventory_rest_api.Models.Sales", b =>
-                {
-                    b.Property<long>("SalesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SalesDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("SalesDiscount")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SalesDueAmount")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("SalesDuePaymentDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("SalesPaidStatus")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("SalesPaymentAmount")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SalesPrice")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("SalesId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Sales");
-                });
-
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
                 {
                     b.Property<long>("SupplierId")
@@ -268,15 +225,6 @@ namespace inventory_rest_api.Migrations
                 {
                     b.HasOne("inventory_rest_api.Models.Product", "Product")
                         .WithMany("Purchases")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("inventory_rest_api.Models.Sales", b =>
-                {
-                    b.HasOne("inventory_rest_api.Models.Product", "Product")
-                        .WithMany("Sales")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

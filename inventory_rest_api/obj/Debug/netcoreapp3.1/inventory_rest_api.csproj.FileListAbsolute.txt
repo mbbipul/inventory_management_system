@@ -133,3 +133,9 @@
 /home/bb/development/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.dll
 /home/bb/development/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.pdb
 /home/bb/development/projects/inventory_management_system/inventory_rest_api/obj/Debug/netcoreapp3.1/inventory_rest_api.genruntimeconfig.cache
+/home/bb/development/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/Microsoft.Build.dll
+/home/bb/development/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/Microsoft.Build.Framework.dll
+/home/bb/development/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/Microsoft.Build.Tasks.Core.dll
+/home/bb/development/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/Microsoft.Build.Utilities.Core.dll
+/home/bb/development/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/dotnet-aspnet-codegenerator.dll
+/home/bb/development/projects/inventory_management_system/inventory_rest_api/bin/Debug/netcoreapp3.1/System.Xml.XPath.XmlDocument.dll
