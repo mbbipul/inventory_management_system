@@ -10,8 +10,10 @@ import { useSelector } from 'react-redux';
 import DashBoard from './Views/dashboard';
 import Product from './Views/product';
 import Supplier from './Views/supplier';
+import Customer from './Views/customer';
 import Company from './Views/company';
 import Purchase from './Views/purchase';
+import Sales from './Views/sales';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -56,7 +58,7 @@ function App() {
             <DashBoard />
           </Route>
           <Route path="/sales">
-            <DashBoard />
+            <Sales />
           </Route>
           <Route path="/purchase">
             <Purchase />
@@ -69,6 +71,9 @@ function App() {
           </Route>
           <Route path="/company">
             <Company />
+          </Route>
+          <Route path="/customer">
+            <Customer />
           </Route>
         </Switch>
         </main>

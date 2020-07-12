@@ -4,6 +4,7 @@ import AddSupplier from "../Views/addSupplier";
 import AddProduct from "../Views/addProduct";
 import AddCompany from '../Views/addCompany';
 import { Link } from 'react-router-dom';
+import AddCustomer from '../Views/addCustomer';
 
 const addCompanyFormFields = [
     {
@@ -330,13 +331,13 @@ const addPurchaseFormFields = [
 
 const newSalesFormFields = [
     {
-        label : "Cusomer Name",
+        label : "Customer Name",
         placeholder : "BB Roy",
         type : 3,
-        dialogFormContent : <AddSupplier />,
-        fetchUrl : apiUrl+"Suppliers",
-        selectName : "supplierName",
-        selectKey : "supplierId",
+        dialogFormContent : <AddCustomer />,
+        fetchUrl : apiUrl+"Customers",
+        selectName : "customerName",
+        selectKey : "customerId",
         required : true,
         disabled : false,
         validation : [9999]
@@ -372,11 +373,32 @@ const newSalesFormFields = [
         validation : [0]
     },
     {
-        label : "Purchase Payment Amount",
+        label : "Sales Discount",
+        placeholder : "200.00 tk",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Sales Price With Discount",
+        type : 8,
+        dependsOn : {
+            field : ["Sales Price","Sales Discount"],
+            operation : 1
+        },
+    },
+    {
+        label : "",
+        disabled : false,
+        type : 999,
+    },
+    {
+        label : "Sales Payment Amount",
         placeholder : "500.00 tk",
         type : 7,
         dependsOn : {
-            field : ["Purchase Price","Purchase Discount"],
+            field : ["Sales Price","Sales Discount"],
             operation : 4 //substruct operation with check this value is not larger
         },
         required : true,
@@ -384,7 +406,7 @@ const newSalesFormFields = [
         validation : [999]
     },
     {
-        label : "Purchase Due Payment Date",
+        label : "Sales Due Payment Date",
         placeholder : "12-12-2021",
         type : 6,
         required : true,
