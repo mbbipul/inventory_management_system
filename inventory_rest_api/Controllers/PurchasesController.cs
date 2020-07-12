@@ -24,7 +24,9 @@ namespace inventory_rest_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
         {
-            return await _context.Purchases.ToListAsync();
+            return await _context.Purchases
+                            .OrderBy( purchase => purchase.PurchaseDate)
+                            .ToListAsync();
         }
 
         // GET: api/Purchase/5

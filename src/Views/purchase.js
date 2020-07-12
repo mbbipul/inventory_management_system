@@ -15,13 +15,72 @@ import TodaysReport from "../components/todaysReport";
 
 function Purchase () {
     const [reportTabs,setReportTabs] = useState(0);
+    const [data,setData] = useState([]);
+    const [unchangeData,setUnchangeData] = useState([]);
 
-    
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
     useEffect(() => {
         console.log(reportTabs);
+        switch (reportTabs) {
+            case 0:
+                setData(unchangeData);
+                break;
+            case 1 :
+                var filterValue = unchangeData.filter(purchase => 
+                    new Date(parseInt(purchase.purchaseDate)).getDate() === new Date().getDate() && 
+                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
+                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
+
+                );
+                setData(filterValue);
+                break;
+            case 2 :
+                var filterValue = unchangeData.filter(purchase => 
+                    new Date(parseInt(purchase.purchaseDate)).getDate() === new Date().getDate() -1 && 
+                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
+                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
+                );
+                setData(filterValue);
+                break;
+
+            case 3:
+                var filterValue = unchangeData.filter(purchase => 
+                    new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-2 &&
+                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
+                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
+                );
+                setData(filterValue);
+                break;
+            case 3:
+                var filterValue = unchangeData.filter(purchase => 
+                    new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-2 &&
+                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
+                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
+                );
+                setData(filterValue);
+                break;
+            case 4:
+                var filterValue = unchangeData.filter(purchase => 
+                    new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-6 &&
+                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
+                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
+                );
+                setData(filterValue);
+                break;
+                
+            case 5:
+                var filterValue = unchangeData.filter(purchase => 
+                    new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-29 &&
+                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
+                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
+                );
+                setData(filterValue);
+                break;
+            default:
+                break;
+        }
     },[reportTabs])
 
     useEffect(() => {
@@ -44,7 +103,6 @@ function Purchase () {
                                         { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
 
                                     ]);
-    const [data,setData] = useState([]);
     
     const FetchData = async () => {
 
@@ -59,9 +117,11 @@ function Purchase () {
           };
           const res = await fetch(apiUrl+"Purchases", requestOptions);
           const json = await res.json();
+          console.log(json);
+          setUnchangeData(json);
+        //   var dateFormatData = json.map(() => true) ; 
+        //   dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString())
           setData(json);
-
-          // console.log("json - ", json);
         } catch (error) {
           console.log("error - ", error);
         }
@@ -88,6 +148,10 @@ function Purchase () {
     },[]);
 
     let tabs = [
+        {
+            tab : "All",
+            tabPanel : <TodaysReport />
+        },
         {
             tab : "Todays Report",
             tabPanel : <TodaysReport />

@@ -21,7 +21,9 @@ namespace inventory_rest_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetProducts(){
             return await _context.Products
-                                .Include(product => product.Purchases).ToListAsync();
+                                .Include(product => product.Purchases)
+                                .OrderBy( product => product.ProductId)
+                                .ToListAsync();
         }
 
         [HttpGet("{id}")]
