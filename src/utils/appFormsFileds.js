@@ -328,10 +328,120 @@ const addPurchaseFormFields = [
     }
 ];
 
+const newSalesFormFields = [
+    {
+        label : "Cusomer Name",
+        placeholder : "BB Roy",
+        type : 3,
+        dialogFormContent : <AddSupplier />,
+        fetchUrl : apiUrl+"Suppliers",
+        selectName : "supplierName",
+        selectKey : "supplierId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+
+    },
+    {
+        label : "Product Name",
+        placeholder : "Ice Cream",
+        type : 3,
+        dialogFormContent : <Link style={{marginLeft:"30%"}} to="/product/add-product"  target="_blank">Please Click Here to Add new Product</Link>,
+        fetchUrl : apiUrl+"Products",
+        selectName : "productName",
+        selectKey : "productId",
+        required : false,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Product Quantity",
+        placeholder : "5",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Sales Price",
+        labelExtra : " ( Per Product )",
+        placeholder : "700.00 tk",
+        type : 5,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Purchase Payment Amount",
+        placeholder : "500.00 tk",
+        type : 7,
+        dependsOn : {
+            field : ["Purchase Price","Purchase Discount"],
+            operation : 4 //substruct operation with check this value is not larger
+        },
+        required : true,
+        disabled : false,
+        validation : [999]
+    },
+    {
+        label : "Purchase Due Payment Date",
+        placeholder : "12-12-2021",
+        type : 6,
+        required : true,
+        disabled : false,
+        validation : [999]
+    }
+    
+] ;
+
+const addCustomerFormFields = [
+    {
+        label : "Customer Name",
+        placeholder : "BB Roy",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Customer Address",
+        placeholder : "Barishal Sador",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Customer Contact",
+        placeholder : " +8801xxxxxxxxx",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Customer Email",
+        placeholder : "bb@gmail.com",
+        type : 0,
+        required : false,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Customer NID",
+        placeholder : "75587784XXXXX",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+];
 
 export { 
     addProductFormFileds , 
     addCompanyFormFields , 
     addSupplierFormFileds ,
-    addPurchaseFormFields
+    addPurchaseFormFields,
+    newSalesFormFields,
+    addCustomerFormFields
 };
