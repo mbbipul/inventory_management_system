@@ -21,6 +21,7 @@ namespace inventory_rest_api.Models
 
         public DbSet<Sales> Sales { get; set; } 
 
+        public DbSet<Cost> Costs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
