@@ -119,6 +119,22 @@ const sideBarItems = [
         ]
     },
     {
+        name : "Employee",
+        icon : "account_box",
+        ref : "/employee",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Employee",
+                ref : "employee/add-employee"
+            },
+            {
+                name : "Manage Employee",
+                ref : "employee/manage-employee"
+            }
+        ]
+    },
+    {
         name : "Company",
         icon : "business",
         ref : "/company",

@@ -486,6 +486,50 @@ const addCostFormFields = [
     },
 ];
 
+const addEmployeeFormFields = [
+    {
+        label : "Employee Name",
+        placeholder : "BB Roy",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Employee Address",
+        placeholder : "Barishal Sador",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Employee Contact",
+        placeholder : " +8801xxxxxxxxx",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Employee Email",
+        placeholder : "bb@gmail.com",
+        type : 0,
+        required : false,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Employee NID",
+        placeholder : "75587784XXXXX",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+];
+
+
 export { 
     addProductFormFileds , 
     addCompanyFormFields , 
@@ -493,5 +537,6 @@ export {
     addPurchaseFormFields,
     newSalesFormFields,
     addCustomerFormFields,
-    addCostFormFields
+    addCostFormFields,
+    addEmployeeFormFields
 };
