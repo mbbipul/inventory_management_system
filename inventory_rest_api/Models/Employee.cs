@@ -1,13 +1,28 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace inventory_rest_api.Models
 {
     public class Employee
     {
-        public long EmployeeId { get; }
+        [Key]
+        public long EmployeeId { get; set;}
+
+        [Required]
         public String EmployeeName { get; set;}
+
         public String EmployeeEmail { get; set; }
-        public String EmployeeMobile { get ; set; }
+        
+        [Required]
+        public String EmployeeContact { get ; set; }
+
+        [Required]
         public String EmployeeAddress { get ; set; }
+
+        [Required]
+        public String Date { get ; set; }
+
+        [Required]
         public String EmployeeNID { get; set; }
     }
 }; 

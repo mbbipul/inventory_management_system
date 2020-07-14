@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using inventory_rest_api.Models;
 
 namespace inventory_rest_api.Models
 {
@@ -51,6 +52,8 @@ namespace inventory_rest_api.Models
 
 
         }
+
+        public DbSet<inventory_rest_api.Models.Employee> Employee { get; set; }
 
     }
 }
