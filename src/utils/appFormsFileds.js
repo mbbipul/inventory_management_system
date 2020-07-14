@@ -459,11 +459,39 @@ const addCustomerFormFields = [
     },
 ];
 
+const addCostFormFields = [
+    {
+        label : "Cost Type",
+        placeholder : "extra",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Cost Amount",
+        placeholder : "6566.00 tk",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Cost Description",
+        placeholder : "bla bla bla",
+        type : 2,
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+];
+
 export { 
     addProductFormFileds , 
     addCompanyFormFields , 
     addSupplierFormFileds ,
     addPurchaseFormFields,
     newSalesFormFields,
-    addCustomerFormFields
+    addCustomerFormFields,
+    addCostFormFields
 };

@@ -134,6 +134,22 @@ const sideBarItems = [
             }
         ]
     },
+    {
+        name : "Cost",
+        icon : "payment",
+        ref : "/cost",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Cost",
+                ref : "cost/add-cost"
+            },
+            {
+                name : "Manage Cost",
+                ref : "cost/manage-cost"
+            }
+        ]
+    },
 ]
 
 export {appBarActionItems,sideBarItems};

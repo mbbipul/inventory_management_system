@@ -14,6 +14,7 @@ import Customer from './Views/customer';
 import Company from './Views/company';
 import Purchase from './Views/purchase';
 import Sales from './Views/sales';
+import Cost from './Views/cost';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -74,6 +75,9 @@ function App() {
           </Route>
           <Route path="/customer">
             <Customer />
+          </Route>
+          <Route path="/cost">
+            <Cost />
           </Route>
         </Switch>
         </main>
