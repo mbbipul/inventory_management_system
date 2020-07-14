@@ -166,6 +166,22 @@ const sideBarItems = [
             }
         ]
     },
+    {
+        name : "Salary",
+        icon : "monetization_on",
+        ref : "/salary",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Salary",
+                ref : "salary/add-salary"
+            },
+            {
+                name : "Manage Salary",
+                ref : "salary/manage-salary"
+            }
+        ]
+    },
 ]
 
 export {appBarActionItems,sideBarItems};

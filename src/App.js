@@ -16,6 +16,7 @@ import Purchase from './Views/purchase';
 import Sales from './Views/sales';
 import Cost from './Views/cost';
 import Employee from './Views/employee';
+import Salary from './Views/salary';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -83,6 +84,10 @@ function App() {
           <Route path="/employee">
             <Employee />
           </Route>
+          <Route path="/salary">
+            <Salary />
+          </Route>
+
         </Switch>
         </main>
     </Router>

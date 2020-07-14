@@ -486,6 +486,28 @@ const addCostFormFields = [
     },
 ];
 
+const addSalaryFormFields = [
+    {
+        label : "Employee Name",
+        placeholder : "BB Roy",
+        type : 3,
+        fetchUrl : apiUrl+"Employees",
+        selectName : "employeeName",
+        selectKey : "employeeId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Salary Amount",
+        placeholder : "6566.00 tk",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    }
+];
+
 const addEmployeeFormFields = [
     {
         label : "Employee Name",
@@ -538,5 +560,6 @@ export {
     newSalesFormFields,
     addCustomerFormFields,
     addCostFormFields,
-    addEmployeeFormFields
+    addEmployeeFormFields,
+    addSalaryFormFields
 };
