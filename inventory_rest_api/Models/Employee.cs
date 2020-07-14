@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace inventory_rest_api.Models
@@ -24,5 +25,8 @@ namespace inventory_rest_api.Models
 
         [Required]
         public String EmployeeNID { get; set; }
+        
+        public ICollection<Salary> Salaries { get; set;}
+
     }
 }; 

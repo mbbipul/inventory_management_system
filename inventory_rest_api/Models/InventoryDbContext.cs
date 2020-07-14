@@ -24,6 +24,11 @@ namespace inventory_rest_api.Models
 
         public DbSet<Cost> Costs { get; set; }
 
+        public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<Salary> Salaries { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -49,7 +54,12 @@ namespace inventory_rest_api.Models
                 .WithOne(productCategory => productCategory.ProductCategories)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-
+            
+            modelBuilder.Entity<Employee>()
+                .HasMany(salary => salary.Salaries)
+                .WithOne(employee => employee.Employee)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
 

@@ -239,6 +239,29 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Purchases");
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.Salary", b =>
+                {
+                    b.Property<long>("SalaryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SalaryAmount")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SalaryPaymentDate")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("SalaryId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Salaries");
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Sales", b =>
                 {
                     b.Property<long>("SalesId")
@@ -330,6 +353,15 @@ namespace inventory_rest_api.Migrations
                     b.HasOne("inventory_rest_api.Models.Product", "Product")
                         .WithMany("Purchases")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Salary", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Employee", "Employee")
+                        .WithMany("Salaries")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
