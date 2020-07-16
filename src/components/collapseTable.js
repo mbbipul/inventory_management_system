@@ -5,35 +5,15 @@ import IconCard from './iconCard';
 
 function DetailsTable(props) {
 
-  let  overViewItems = [
-    {
-        name : "Total Products",
-        count : "120",
-        icon : "storefront"
-    }
-    ,{
-      name : "Total Purchase Price",
-      count : "189.00 tk",
-      icon : "shop_two"
-    },
-    {
-        name : "Total Sales Price",
-        count : "234.00 tk",
-        icon : "shopping_basket"
-    },
-    {
-        name : "Total Profit",
-        count : "1200.00 tk",
-        icon : "money"
-    }
-]
+
   return (
     <MaterialTable
-      title="All Product Category"
+      title={props.title}
       columns={props.columns}
       data={props.data}
       detailPanel={rowData => {
-
+        let overViewItems = props.detailsPane(rowData);
+        
         return (
           <div
             style={{backgroundColor:"#b4c9cc"}}>

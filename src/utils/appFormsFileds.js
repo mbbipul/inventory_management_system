@@ -347,6 +347,7 @@ const newSalesFormFields = [
         label : "Product Name",
         placeholder : "Ice Cream",
         type : 3,
+        dependOnThis : "Product purchase Details",
         dialogFormContent : <Link style={{marginLeft:"30%"}} to="/product/add-product"  target="_blank">Please Click Here to Add new Product</Link>,
         fetchUrl : apiUrl+"Products",
         selectName : "productName",
@@ -354,6 +355,28 @@ const newSalesFormFields = [
         required : false,
         disabled : false,
         validation : [9999]
+    },
+    {
+        label : "Product purchase Details",
+        type : 9,
+        dependsOn : "ProductName",
+        content : [ {
+                        label : "Purchase Price (per)",
+                        postText : " tk",
+                        data : "productPrice"
+
+                    },
+                    {
+                        label : "Pre Sales price (per)",
+                        postText : " tk",
+                        data : "salestPrice"
+                    },
+                    {
+                        label : "Product Quantity In Stock",
+                        postText : "",
+                        data : "salestPrice"
+
+                    }]
     },
     {
         label : "Product Quantity",

@@ -28,7 +28,7 @@ function Product() {
                         { title: 'Product Name', field: 'productName' },
                         { title: 'Product Code', field: 'productCode' },
                         { title: 'Product Type', field: 'productCategoryName' },
-                        { title: 'Product Quantity', field: 'productQuantity' },
+                        { title: 'Product Quantity (In stock)', field: 'totalProductInStock' },
                         { title: 'Total Purchase Price', field: 'productPrice' },
                         { title: 'Sales Price (per product)', field: 'salestPrice' },
                     ]);
@@ -76,6 +76,29 @@ function Product() {
         FetchData();
     },[]);
 
+    const detailsPane = rowData => {
+        let  overViewItems  = [{
+            name : "Total Products",
+            count : rowData.totalProducts,
+            icon : "storefront"
+        }
+        ,{
+          name : "Total Purchase Price",
+          count : rowData.purchases.map(p=>p.purchasePrice).reduce((a,c)=>a+c) +" tk" ,
+          icon : "shop_two"
+        },
+        {
+            name : "Total Sales Price",
+            count : rowData.purchases.map(p=>p.salesPrice).reduce((a,c)=>a+c) +" tk",
+            icon : "shopping_basket"
+        },
+        {
+            name : "Total Profit",
+            count : "1200.00 tk",
+            icon : "money"
+        }];
+        return overViewItems;
+    }
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
@@ -84,6 +107,7 @@ function Product() {
                 <Route exact path="/product">
                         <div style={{margin:20}}>
                             <DetailsTable 
+                                detailsPane={detailsPane}
                                 data={data} 
                                 columns={columns}/>
                         </div>

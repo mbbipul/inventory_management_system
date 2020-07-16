@@ -23,64 +23,66 @@ function Purchase () {
     
     useEffect(() => {
         console.log(reportTabs);
+        let filterValue = [];
         switch (reportTabs) {
             case 0:
-                setData(unchangeData);
+                filterValue = unchangeData;
                 break;
             case 1 :
-                var filterValue = unchangeData.filter(purchase => 
+                filterValue = unchangeData.filter(purchase => 
                     new Date(parseInt(purchase.purchaseDate)).getDate() === new Date().getDate() && 
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
 
                 );
-                setData(filterValue);
                 break;
             case 2 :
-                var filterValue = unchangeData.filter(purchase => 
+                filterValue = unchangeData.filter(purchase => 
                     new Date(parseInt(purchase.purchaseDate)).getDate() === new Date().getDate() -1 && 
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
 
             case 3:
-                var filterValue = unchangeData.filter(purchase => 
+                filterValue = unchangeData.filter(purchase => 
                     new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-2 &&
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
             case 3:
-                var filterValue = unchangeData.filter(purchase => 
+                filterValue = unchangeData.filter(purchase => 
                     new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-2 &&
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
             case 4:
-                var filterValue = unchangeData.filter(purchase => 
+                filterValue = unchangeData.filter(purchase => 
                     new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-6 &&
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
                 
             case 5:
-                var filterValue = unchangeData.filter(purchase => 
+                filterValue = unchangeData.filter(purchase => 
                     new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-29 &&
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
             default:
                 break;
+            
         }
+        // console.log(filterValue);
+        var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
+        dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
+        dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
+        setData(dateFormatData);
+       
     },[reportTabs])
 
     useEffect(() => {
@@ -119,9 +121,10 @@ function Purchase () {
           const json = await res.json();
           console.log(json);
           setUnchangeData(json);
-        //   var dateFormatData = json.map(() => true) ; 
-        //   dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString())
-          setData(json);
+          var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
+          dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
+          dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
+          setData(dateFormatData);
         } catch (error) {
           console.log("error - ", error);
         }
@@ -186,6 +189,29 @@ function Purchase () {
         }
     ];
 
+    const detailsPane = rowData => {
+        let  overViewItems  = [{
+            name : "Total Products",
+            count : 56,
+            icon : "storefront"
+        }
+        ,{
+          name : "Total Purchase Price",
+          count : 23,
+          icon : "shop_two"
+        },
+        {
+            name : "Total Sales Price",
+            count : 45,
+            icon : "shopping_basket"
+        },
+        {
+            name : "Total Profit",
+            count : "1200.00 tk",
+            icon : "money"
+        }];
+        return overViewItems;
+    }
         return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
@@ -193,7 +219,11 @@ function Purchase () {
                 <Switch>
                     <Route exact path="/purchase">
                         <div style={{margin:20}}>
-                            <DetailsTable columns={columns} data={data} />
+                            <DetailsTable 
+                                detailsPane={detailsPane}
+                                title="Purchase"
+                                columns={columns} 
+                                data={data} />
                         </div>
                     </Route>
                     <Route exact path="/purchase/add-purchase">

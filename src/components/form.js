@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextField ,Grid , MenuItem , Divider , Button, Paper} from '@material-ui/core';
+import {TextField ,Grid , MenuItem , Divider , Button, Paper, Card, Chip} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
@@ -12,7 +12,6 @@ class Form extends React.Component {
         this.apiUrl = "https://localhost:5001/api/";
         this.state = {
             hasAnyError: [],
-
         };
     }
 
@@ -89,10 +88,15 @@ class Form extends React.Component {
         });
     }
 
-    handleAutoComplete = (fieldName,value) => {
+    handleAutoComplete = (field,value) => {
 
-        const name = fieldName.replace(/\s/g, '');
+        const name = field.label.replace(/\s/g, '');
 
+        if (field.hasOwnProperty("dependOnThis")){
+            this.setState({
+                [field.dependOnThis+"show"]: value === null ? false : true,
+            });
+        }
         this.setState({
             [name]: value,
         });
@@ -217,7 +221,7 @@ class Form extends React.Component {
                                                 validation={field.validation}
                                                 selectKey={field.selectKey}
                                                 selectName={field.selectName}
-                                                onDataChange={this.handleAutoComplete}
+                                                onDataChange={(fieldName,value)=>this.handleAutoComplete(field,value)}
 
                                             />
                                         </Grid>;
@@ -306,12 +310,40 @@ class Form extends React.Component {
                                             break;
 
                                         case 4 : 
-                                            console.log("gi");
                                             dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] -
                                                 this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
                                             console.log(dependsValue);
                                             let dError = false;
                                             if(this.state[field.label.replace(/\s/g, '')] > dependsValue ){
+
+                                                dError = true;
+                                                helperText = field.label + " Cannot greater than actual "+field.dependsOn.field[0];
+                                            }else{
+                                                dError = false;
+
+                                            }
+                                            textfield =  <TextField
+                                                disabled={field.disabled}
+                                                label={field.label}
+                                                name={field.label}
+                                                error={dError}
+                                                helperText={helperText}
+                                                fullWidth
+                                                placeholder={field.placeholder}
+                                                margin="normal"
+                                                required={field.required}
+                                                InputLabelProps={{
+                                                }}
+                                                variant="outlined"
+                                                onKeyUp={() => this.handleOnDependsError(dError,i)}
+                                                onChange={(event) => {this.handleInputChange(event,i,field);}}
+                                            />  
+
+                                            break;
+                                        case 5 : 
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] ;
+                                            dError = false;
+                                            if(this.state[field.label.replace(/\s/g, '')] > dependsValue[field.dependsOn.field[1]] ){
 
                                                 dError = true;
                                                 helperText = field.label + " Cannot greater than actual "+field.dependsOn.field[0];
@@ -345,7 +377,7 @@ class Form extends React.Component {
                                        {textfield}
                                     </Grid>    ;
                                     break;
-                                case 8 : 
+                                case 8 : //depends on many
                                     dependsValue = 0.00;
                                     switch(field.dependsOn.operation){
                                         case 1 : 
@@ -368,6 +400,29 @@ class Form extends React.Component {
                                                     </h3>
                                                 </Paper>
                                             </Grid>;
+                                    break;
+
+                                case 9:
+                                    if(this.state.hasOwnProperty(field.label+"show") && this.state[field.label+"show"]){
+                                        item = <Grid key={i} item xs={12}>
+                                                <div >
+                                                    {
+                                                        field.content.map((c,i) => {
+                                                            let data = c.label+" : "+this.state[field.dependsOn][c.data]+c.postText;
+                                                            if(i===0){
+                                                                data = c.label+" : "+this.state[field.dependsOn][c.data]/this.state[field.dependsOn].totalProductInStock+c.postText;
+                                                            }
+                                                            return(
+                                                                <Chip label={<span style={{color:"green"}}>{data}</span>} style={{marginRight : 50}} />
+
+                                                            )
+
+                                                        })
+                                                    }
+                                                </div>
+                                            </Grid>;
+                                    }
+                                    
                                     break;
                                 case 999:// break line
                                     item = <Grid key={i} item xs={12}>
