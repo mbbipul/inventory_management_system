@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using inventory_rest_api.Models;
+using System.Collections;
 
 namespace inventory_rest_api.Controllers
 {
@@ -43,7 +44,17 @@ namespace inventory_rest_api.Controllers
             return sales;
         }
 
+        [HttpGet("sales-product-customer")]
+        public async Task<ActionResult<IEnumerable>> GetSalesProductCustomers(){
+            var query = from sales in _context.Sales
+                        join product in _context.Products
+                            on sales.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        select new {sales,product,customer};
+            return await query.ToListAsync();
 
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSales(long id, Sales sales)
         {

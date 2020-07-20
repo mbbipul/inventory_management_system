@@ -374,14 +374,18 @@ const newSalesFormFields = [
                     {
                         label : "Product Quantity In Stock",
                         postText : "",
-                        data : "salestPrice"
+                        data : "totalProductInStock"
 
                     }]
     },
     {
         label : "Product Quantity",
         placeholder : "5",
-        type : 0,
+        type : 8,
+        dependsOn : {
+            field : ["Product Name","totalProductInStock"],
+            operation : 2
+        },
         required : true,
         disabled : false,
         validation : [0]
@@ -407,8 +411,8 @@ const newSalesFormFields = [
         label : "Sales Price With Discount",
         type : 8,
         dependsOn : {
-            field : ["Sales Price","Sales Discount"],
-            operation : 1
+            field : ["Sales Price","Product Quantity","Sales Discount"],
+            operation : 3
         },
     },
     {
@@ -421,8 +425,8 @@ const newSalesFormFields = [
         placeholder : "500.00 tk",
         type : 7,
         dependsOn : {
-            field : ["Sales Price","Sales Discount"],
-            operation : 4 //substruct operation with check this value is not larger
+            field : ["Sales Price","Product Quantity","Sales Discount"],
+            operation : 6// multiply substruct operation with check this value is not larger
         },
         required : true,
         disabled : false,

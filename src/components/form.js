@@ -281,6 +281,7 @@ class Form extends React.Component {
                                 case 7: // value from others
                                     var dependsValue = 0; 
                                     var textfield = "";
+                                    let dError = false;
 
                                     switch(field.dependsOn.operation){
                                         
@@ -313,7 +314,6 @@ class Form extends React.Component {
                                             dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] -
                                                 this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
                                             console.log(dependsValue);
-                                            let dError = false;
                                             if(this.state[field.label.replace(/\s/g, '')] > dependsValue ){
 
                                                 dError = true;
@@ -369,6 +369,38 @@ class Form extends React.Component {
                                             />  
 
                                             break;
+                                        case 6 : 
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')]*this.state[field.dependsOn.field[1].replace(/\s/g, '')] -
+                                                this.state[field.dependsOn.field[2].replace(/\s/g, '')] ;  
+                                            dError = false;
+                                            console.log(dependsValue);
+                                            if(parseInt(this.state[field.label.replace(/\s/g, '')]) > dependsValue ){
+
+                                                dError = true;
+                                                helperText = field.label + " Cannot greater than actual "+field.dependsOn.field[0];
+                                            }else{
+                                                dError = false;
+
+                                            }
+                                            textfield =  <TextField
+                                                disabled={field.disabled}
+                                                label={field.label}
+                                                name={field.label}
+                                                error={dError}
+                                                helperText={helperText}
+                                                fullWidth
+                                                placeholder={field.placeholder}
+                                                margin="normal"
+                                                required={field.required}
+                                                InputLabelProps={{
+                                                }}
+                                                variant="outlined"
+                                                onKeyUp={() => this.handleOnDependsError(dError,i)}
+                                                onChange={(event) => {this.handleInputChange(event,i,field);}}
+                                            />  
+
+                                            break;
+
                                         default:
                                             break;
                                     }
@@ -379,26 +411,84 @@ class Form extends React.Component {
                                     break;
                                 case 8 : //depends on many
                                     dependsValue = 0.00;
+                                    let content = "";
                                     switch(field.dependsOn.operation){
-                                        case 1 : 
+                                        case 1 : //subs
                                             dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] -
                                                 this.state[field.dependsOn.field[1].replace(/\s/g, '')] ;
                                             if(Number.isNaN(dependsValue)){
                                                     dependsValue = 0.00;
                                             }
+                                            content = 
+                                                    <Paper  elevation={3} style={{color:"green",padding:1,textAlign:"center",marginTop:13}}>
+                                                            <h3>
+                                                            {
+                                                                field.label+" : "+
+                                                                dependsValue
+                                                            }
+                                                            </h3>
+                                                    </Paper>;
+                                            break;
+
+                                        case 2 :
+                                            let dError = false;
+
+                                            dependsValue = 0 ;
+                                            if(typeof this.state[field.dependsOn.field[0].replace(/\s/g, '')] !== 'undefined'){
+                                                dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')][field.dependsOn.field[1]];
+                                            
+                                                if(this.state[field.label.replace(/\s/g, '')] > dependsValue ){
+
+                                                    dError = true;
+                                                    helperText = "Only " + this.state[field.dependsOn.field[0].replace(/\s/g, '')][field.dependsOn.field[1]] + " Products are in stock! ";
+                                                }
+                                                else{
+                                                    dError = false;
+                                                    if(this.state[field.label.replace(/\s/g, '')]==""){
+                                                        dError = true;
+                                                    }
+
+                                                }
+                                            }
+
+                                            content =  <TextField
+                                                disabled={field.disabled}
+                                                label={field.label}
+                                                name={field.label}
+                                                error={dError}
+                                                helperText={helperText}
+                                                fullWidth
+                                                placeholder={field.placeholder}
+                                                margin="normal"
+                                                required={field.required}
+                                                InputLabelProps={{
+                                                }}
+                                                variant="outlined"
+                                                onKeyUp={() => this.handleOnDependsError(dError,i)}
+                                                onChange={(event) => {this.handleInputChange(event,i,field);}}
+                                            />  
+                                            break;
+                                        case 3 : 
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')]*this.state[field.dependsOn.field[1].replace(/\s/g, '')] -
+                                                this.state[field.dependsOn.field[2].replace(/\s/g, '')] ;
+                                            if(Number.isNaN(dependsValue)){
+                                                    dependsValue = 0.00;
+                                            }
+                                            content = 
+                                                    <Paper  elevation={3} style={{color:"green",padding:1,textAlign:"center",marginTop:13}}>
+                                                            <h3>
+                                                            {
+                                                                field.label+" : "+
+                                                                dependsValue
+                                                            }
+                                                            </h3>
+                                                    </Paper>;
                                             break;
                                         default:
                                             break;
                                     }
                                     item = <Grid key={i} item xs={6}>
-                                                <Paper  elevation={3} style={{color:"green",padding:1,textAlign:"center",marginTop:13}}>
-                                                    <h3>
-                                                    {
-                                                        field.label+" : "+
-                                                        dependsValue
-                                                    }
-                                                    </h3>
-                                                </Paper>
+                                                {content}
                                             </Grid>;
                                     break;
 
