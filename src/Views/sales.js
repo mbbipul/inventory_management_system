@@ -22,65 +22,64 @@ function Sales () {
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
     useEffect(() => {
-        console.log(reportTabs);
+        let filterValue = [];
         switch (reportTabs) {
             case 0:
-                setData(unchangeData);
+                filterValue = unchangeData;
                 break;
             case 1 :
-                var filterValue = unchangeData.filter(sales => 
+                filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() === new Date().getDate() && 
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
 
                 );
-                setData(filterValue);
                 break;
             case 2 :
-                var filterValue = unchangeData.filter(sales => 
+                filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() === new Date().getDate() -1 && 
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
 
             case 3:
-                var filterValue = unchangeData.filter(sales => 
+                filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-2 &&
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
             case 3:
-                var filterValue = unchangeData.filter(sales => 
+                filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-2 &&
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
             case 4:
-                var filterValue = unchangeData.filter(sales => 
+                filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-6 &&
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
                 
             case 5:
-                var filterValue = unchangeData.filter(sales => 
+                filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-29 &&
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
-                setData(filterValue);
                 break;
             default:
                 break;
         }
+        var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
+        dateFormatData.map(sales => sales.salesDate = new Date(parseInt(sales.salesDate)).toDateString());
+        dateFormatData.map(sales => sales.salesDuePaymentDate = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
+        setData(dateFormatData);
+        console.log(dateFormatData);
     },[reportTabs])
 
     useEffect(() => {
@@ -93,7 +92,8 @@ function Sales () {
 
     const [columns,] = useState([
                         { title: 'Sales ID', field: 'salesId', },
-                        { title: 'Product Name', field: 'productId' },
+                        { title: 'Customer Name', field: 'customerName', },
+                        { title: 'Product Name', field: 'productName' },
                         { title: 'Product Quantity', field: 'productQuantity' },
                         { title: 'Sales Price', field: 'salesPrice' ,type : 'numeric'},
                         { title: 'Sales Date', field: 'salesDate' },
@@ -113,13 +113,13 @@ function Sales () {
               headers: myHeaders,
               redirect: 'follow'
           };
-          const res = await fetch(apiUrl+"Sales", requestOptions);
+          const res = await fetch(apiUrl+"Sales/sales-product-customer", requestOptions);
           const json = await res.json();
-          console.log(json);
           setUnchangeData(json);
-        //   var dateFormatData = json.map(() => true) ; 
-        //   dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString())
-          setData(json);
+          var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
+          dateFormatData.map(sales => sales.salesDate = new Date(parseInt(sales.salesDate)).toDateString());
+          dateFormatData.map(sales => sales.salesDuePaymentDate = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
+          setData(dateFormatData);
         } catch (error) {
           console.log("error - ", error);
         }
@@ -183,6 +183,31 @@ function Sales () {
             </div>
         }
     ];
+
+
+    const detailsPane = rowData => {
+        let  overViewItems  = [{
+            name : "Total Products",
+            count : 56,
+            icon : "storefront"
+        }
+        ,{
+          name : "Total Purchase Price",
+          count : 23,
+          icon : "shop_two"
+        },
+        {
+            name : "Total Sales Price",
+            count : 45,
+            icon : "shopping_basket"
+        },
+        {
+            name : "Total Profit",
+            count : "1200.00 tk",
+            icon : "money"
+        }];
+        return overViewItems;
+    }
         return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
@@ -190,7 +215,10 @@ function Sales () {
                 <Switch>
                     <Route exact path="/sales">
                         <div style={{margin:20}}>
-                            <DetailsTable columns={columns} data={data} />
+                            <DetailsTable 
+                                detailsPane={detailsPane}
+                                columns={columns} 
+                                data={data} />
                         </div>
                     </Route>
                     <Route exact path="/sales/new-sales">

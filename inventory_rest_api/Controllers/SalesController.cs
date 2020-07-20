@@ -51,7 +51,33 @@ namespace inventory_rest_api.Controllers
                             on sales.ProductId equals product.ProductId
                         join customer in _context.Customers
                             on sales.CustomerId equals customer.CustomerId
-                        select new {sales,product,customer};
+                        select new {
+                                sales.SalesId,
+                                sales.CustomerId,
+                                sales.ProductQuantity,
+                                sales.SalesDate,
+                                sales.SalesPrice,
+                                sales.SalesPaymentAmount,
+                                sales.SalesDueAmount,
+                                sales.SalesPaidStatus,
+                                sales.SalesDuePaymentDate,
+                                sales.SalesDiscount,
+                                product.ProductId,
+                                product.ProductName,
+                                product.ProductCode,
+                                product.ProductCategoryId,
+                                product.TotalProducts,
+                                product.TotalProductInStock,
+                                product.ProductPrice,
+                                product.SalestPrice,
+                                product.ProductDetails,
+                                customer.CustomerName,
+                                customer.CustomerEmail,
+                                customer.CustomerContact,
+                                customer.CustomerAddress,
+                                customer.CustomerJoinDate,
+                                customer.CustomerNID
+                            };
             return await query.ToListAsync();
 
         }
