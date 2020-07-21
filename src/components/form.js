@@ -434,7 +434,7 @@ class Form extends React.Component {
                                             let dError = false;
 
                                             dependsValue = 0 ;
-                                            if(typeof this.state[field.dependsOn.field[0].replace(/\s/g, '')] !== 'undefined'){
+                                            if(typeof this.state[field.dependsOn.field[0].replace(/\s/g, '')] !== 'undefined' && this.state[field.dependsOn.field[0].replace(/\s/g, '')] !== null){
                                                 dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')][field.dependsOn.field[1]];
                                             
                                                 if(this.state[field.label.replace(/\s/g, '')] > dependsValue ){
