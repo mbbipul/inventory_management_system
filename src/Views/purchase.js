@@ -22,7 +22,6 @@ function Purchase () {
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
     useEffect(() => {
-        console.log(reportTabs);
         let filterValue = [];
         switch (reportTabs) {
             case 0:
@@ -119,7 +118,6 @@ function Purchase () {
           };
           const res = await fetch(apiUrl+"Purchases", requestOptions);
           const json = await res.json();
-          console.log(json);
           setUnchangeData(json);
           var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
           dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());

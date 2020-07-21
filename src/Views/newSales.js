@@ -50,7 +50,21 @@ class NewSales extends React.Component {
 
         }
         console.log(sales);
-        submitForm("Sales","POST",sales,this.onSalesAddSucces);
+        submitForm("Sales","POST",sales,(res) => {
+            let product = {
+               "productId" : state.ProductName.productId,
+               "productName" : state.ProductName.productName,
+               "productCode" : state.ProductName.productCode,
+               "productCategoryId" : state.ProductName.productCategoryId,
+               "totalProducts" : 0,
+               "totalProductInStock" : parseInt(state.ProductQuantity),
+               "productPrice" : 0,
+               "salestPrice" : 0,
+               "productDetails" : "s",
+           }
+           submitForm("Products/bySales/"+product.productId,"PUT",product,this.onSalesAddSucces(res));
+
+       });
         
     }
     render(){
