@@ -94,16 +94,32 @@ namespace inventory_rest_api.Controllers
             }
 
             product.SalestPrice = products.SalestPrice;
-
-            Console.Write(product);
-
-
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
 
             return products;
         }
  
+        [HttpPut("bySales/{id}")]
+        public async Task<ActionResult<Product>> PutProductsBySales(long id, Product products)
+        {
+            if (id != products.ProductId)
+            {
+                return BadRequest();
+            }
+            
+            if(!ProductsExists(id)){
+                return NotFound();
+            }
+
+            var product = await _context.Products.FirstAsync(p => p.ProductId == id);
+            
+            product.TotalProductInStock -= products.TotalProductInStock;
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+
+            return products;
+        }
         // POST: api/Products
         [HttpPost]
         public async Task<ActionResult> PostProducts(Product product)
