@@ -24,6 +24,7 @@ namespace inventory_rest_api.Models
         [Required]
         public long PurchasePrice { get; set; }
 
+        // public long CurrentPurchasePrice
         [Required]
         public long SalesPrice { get; set; }
 
@@ -40,6 +41,9 @@ namespace inventory_rest_api.Models
 
         [JsonIgnore]
         public Product Product { get ; set; }
+
+        [JsonIgnore]
+        public ProductPurchaseHistory ProductPurchaseHistory { get; set; }
 
     }
 }

@@ -28,6 +28,8 @@ namespace inventory_rest_api.Models
 
         public DbSet<Salary> Salaries { get; set; }
 
+        public DbSet<ProductPurchaseHistory> ProductPurchaseHistories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +41,12 @@ namespace inventory_rest_api.Models
 
             modelBuilder.Entity<Product>()
                 .HasMany(sales => sales.Sales)
+                .WithOne(product => product.Product)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(purHis => purHis.ProductPurchaseHistories)
                 .WithOne(product => product.Product)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -61,9 +69,13 @@ namespace inventory_rest_api.Models
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-        }
+            modelBuilder.Entity<ProductPurchaseHistory>()
+                .HasOne(purchase => purchase.Purchase)
+                .WithOne(ph => ph.ProductPurchaseHistory)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
-        public DbSet<inventory_rest_api.Models.Employee> Employee { get; set; }
+        }
 
     }
 }

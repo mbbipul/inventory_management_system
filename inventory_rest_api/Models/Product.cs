@@ -38,6 +38,8 @@ namespace inventory_rest_api.Models
 
         public ICollection<Purchase> Purchases { get; set;}
         public ICollection<Sales> Sales { get; set;}
+        public ICollection<ProductPurchaseHistory> ProductPurchaseHistories { get; set;}
+
 
     }
 }

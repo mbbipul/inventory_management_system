@@ -94,6 +94,15 @@ namespace inventory_rest_api.Controllers
             _context.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
 
+            ProductPurchaseHistory productPurchaseHistory = new ProductPurchaseHistory {
+                ProductId = purchase.ProductId,
+                PurchaseId = purchase.PurchaseId,
+                PerProductPurchasePrice = purchase.PurchasePrice / purchase.ProductQuantity,
+            };
+
+            _context.ProductPurchaseHistories.Add(productPurchaseHistory);
+            await _context.SaveChangesAsync();
+            
             return CreatedAtAction("GetPurchase", new { id = purchase.PurchaseId }, purchase);
         }
 

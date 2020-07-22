@@ -9,8 +9,8 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200714095404_Employee")]
-    partial class Employee
+    [Migration("20200722180730_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -137,7 +137,7 @@ namespace inventory_rest_api.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.ToTable("Employee");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Product", b =>
@@ -194,6 +194,32 @@ namespace inventory_rest_api.Migrations
                     b.HasKey("ProductCategoryId");
 
                     b.ToTable("ProductCategories");
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.ProductPurchaseHistory", b =>
+                {
+                    b.Property<long>("ProductPurchaseHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("PerProductPurchasePrice")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PurchaseId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ProductPurchaseHistoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("PurchaseId")
+                        .IsUnique();
+
+                    b.ToTable("ProductPurchaseHistories");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Purchase", b =>
@@ -347,6 +373,21 @@ namespace inventory_rest_api.Migrations
                         .WithMany("Products")
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.ProductPurchaseHistory", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Product", "Product")
+                        .WithMany("ProductPurchaseHistories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Purchase", "Purchase")
+                        .WithOne("ProductPurchaseHistory")
+                        .HasForeignKey("inventory_rest_api.Models.ProductPurchaseHistory", "PurchaseId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
