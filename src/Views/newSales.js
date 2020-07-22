@@ -31,7 +31,7 @@ class NewSales extends React.Component {
     }
 
     submitPurchaseForm = (state) => {
-        let exactSalesPrice = parseFloat(state.SalesPrice)-parseFloat(state.SalesDiscount);
+        let exactSalesPrice = parseFloat(state.SalesPrice)*parseInt(state.ProductQuantity)-parseFloat(state.SalesDiscount);
 
         let paid = exactSalesPrice - parseFloat(state.SalesPaymentAmount) ;
         let paidStatus = paid > 0 ? false : true ;
@@ -42,7 +42,6 @@ class NewSales extends React.Component {
             "productQuantity" : parseInt(state.ProductQuantity),
             "salesDate" : Date.now().toString(),
             "salesPrice" : parseFloat(exactSalesPrice),
-            "salesPrice" : parseFloat(state.SalesPrice),
             "salesPaymentAmount" : parseFloat(state.SalesPaymentAmount),
             "salesPaidStatus" : paidStatus,
             "salesDuePaymentDate" : state.SalesDuePaymentDate.toString(),

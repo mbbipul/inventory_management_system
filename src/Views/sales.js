@@ -187,20 +187,26 @@ function Sales () {
 
     const detailsPane = rowData => {
         let  overViewItems  = [{
-            name : "Total Products",
-            count : 56,
-            icon : "storefront"
+            name : "Pre Sales Price - per",
+            count : rowData.salestPrice + " tk",
+            icon : "money"
         }
         ,{
-          name : "Total Purchase Price",
-          count : 23,
-          icon : "shop_two"
+          name : "Sales Price - per",
+          count : rowData.salesPrice/rowData.productQuantity + " tk",
+          icon : "money"
+        },
+        {
+            name : "Sales Discount - total",
+            count : rowData.salesDiscount + " tk",
+            icon : "money"
         },
         {
             name : "Total Sales Price",
-            count : 45,
-            icon : "shopping_basket"
-        },
+            count : rowData.salesPrice+" tk",
+            icon : "money"
+        }
+        ,
         {
             name : "Total Profit",
             count : "1200.00 tk",

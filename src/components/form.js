@@ -441,6 +441,9 @@ class Form extends React.Component {
 
                                                     dError = true;
                                                     helperText = "Only " + this.state[field.dependsOn.field[0].replace(/\s/g, '')][field.dependsOn.field[1]] + " Products are in stock! ";
+                                                }else if(dependsValue === 0 ){
+                                                    dError = true;
+                                                    helperText = "Product out of stock! ";
                                                 }
                                                 else{
                                                     dError = false;
