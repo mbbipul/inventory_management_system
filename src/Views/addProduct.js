@@ -28,18 +28,20 @@ class AddProduct extends React.Component {
     }
 
     submitAddProductForm = (state) => {
+     
+        let exactPurchasePrice = parseFloat(state.PurchasePrice)-parseFloat(state.PurchaseDiscount);
+
         let product = {
             "productName" : state.ProductName,
             "productCode" : state.ProductCode,
             "productCategoryId" : state.ProductType.productCategoryId,
             "totalProducts" : parseInt(state.ProductQuantity),
             "totalProductInStock" : parseInt(state.ProductQuantity),
-            "productPrice" : parseInt(state.PurchasePrice),
-            "salestPrice" : parseInt(state.SalesPrice),
+            "productPrice" : exactPurchasePrice,
+            "salestPrice" : parseFloat(state.SalesPrice),
             "productDetails" : state.Details,
         }
 
-        let exactPurchasePrice = parseFloat(state.PurchasePrice)-parseFloat(state.PurchaseDiscount);
 
         let paid = exactPurchasePrice - parseFloat(state.PurchasePaymentAmount) ;
         let paidStatus = paid > 0 ? false : true ;
@@ -52,7 +54,7 @@ class AddProduct extends React.Component {
                 "supplierId" : state.SupplierName.supplierId,
                 "productQuantity" : parseInt(state.ProductQuantity),
                 "purchaseDate" : Date.now().toString(),
-                "purchasePrice" : parseFloat(state.PurchasePrice),
+                "purchasePrice" : exactPurchasePrice,
                 "salesPrice" : parseFloat(state.SalesPrice),
                 "purchasePaymentAmount" : parseFloat(state.PurchasePaymentAmount),
                 "purchasePaidStatus" : paidStatus,
