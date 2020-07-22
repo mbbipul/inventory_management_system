@@ -500,7 +500,7 @@ class Form extends React.Component {
                                                         field.content.map((c,i) => {
                                                             let data = c.label+" : "+this.state[field.dependsOn][c.data]+c.postText;
                                                             if(i===0){
-                                                                data = c.label+" : "+this.state[field.dependsOn][c.data]/this.state[field.dependsOn].totalProductInStock+c.postText;
+                                                                data = c.label+" : "+this.state[field.dependsOn][c.data]/this.state[field.dependsOn].totalProducts+c.postText;
                                                             }
                                                             return(
                                                                 <Chip label={<span style={{color:"green"}}>{data}</span>} style={{marginRight : 50}} />
