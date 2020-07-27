@@ -25,5 +25,15 @@ namespace inventory_rest_api.Controllers
                                 
             return  totalDebit-totalCredit;         
         }
+
+        [HttpGet("isexists/{id}")]
+        public ActionResult<string> GetExists(long id){
+            var pHis = _context.ProductPurchaseHistories
+                            .Any( pph => pph.ProductId == id && pph.PerProductPurchasePrice == 60);
+            if(pHis){
+                return "exists";
+            }
+            return "no";
+        }
     }
 }

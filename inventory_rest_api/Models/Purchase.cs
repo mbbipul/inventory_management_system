@@ -42,8 +42,5 @@ namespace inventory_rest_api.Models
         [JsonIgnore]
         public Product Product { get ; set; }
 
-        [JsonIgnore]
-        public ProductPurchaseHistory ProductPurchaseHistory { get; set; }
-
     }
 }

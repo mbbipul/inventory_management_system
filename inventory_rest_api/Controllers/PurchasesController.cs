@@ -92,15 +92,31 @@ namespace inventory_rest_api.Controllers
         public async Task<ActionResult<Purchase>> PostPurchases(Purchase purchase)
         {
             _context.Purchases.Add(purchase);
-            await _context.SaveChangesAsync();
 
             ProductPurchaseHistory productPurchaseHistory = new ProductPurchaseHistory {
                 ProductId = purchase.ProductId,
-                PurchaseId = purchase.PurchaseId,
+                ProductQuantity = purchase.ProductQuantity,
                 PerProductPurchasePrice = purchase.PurchasePrice / purchase.ProductQuantity,
+                PerProductSalesPrice = purchase.SalesPrice,
+                Date = DateTime.Now.ToUniversalTime().ToString()
             };
 
-            _context.ProductPurchaseHistories.Add(productPurchaseHistory);
+            var pHis = _context.ProductPurchaseHistories
+                            .Any( pph => pph.ProductId == productPurchaseHistory.ProductId && pph.PerProductPurchasePrice == productPurchaseHistory.PerProductPurchasePrice);
+            if(pHis){
+                ProductPurchaseHistory purHistory = await _context.ProductPurchaseHistories
+                            .FirstAsync( pph => pph.ProductId == productPurchaseHistory.ProductId && pph.PerProductPurchasePrice == productPurchaseHistory.PerProductPurchasePrice);
+                
+                purHistory.ProductQuantity += productPurchaseHistory.ProductQuantity;
+
+                purHistory.PerProductSalesPrice = 
+                    purHistory.PerProductSalesPrice < productPurchaseHistory.PerProductSalesPrice ? productPurchaseHistory.PerProductSalesPrice :  purHistory.PerProductSalesPrice;
+
+                _context.ProductPurchaseHistories.Update(purHistory);
+            }else{
+                _context.ProductPurchaseHistories.Add(productPurchaseHistory);
+            }
+
             await _context.SaveChangesAsync();
             
             return CreatedAtAction("GetPurchase", new { id = purchase.PurchaseId }, purchase);

@@ -208,6 +208,8 @@ function Purchase () {
             count : "1200.00 tk",
             icon : "money"
         }];
+
+        
         return overViewItems;
     }
         return(

@@ -1,8 +1,9 @@
 import React from 'react';
-import {TextField ,Grid , MenuItem , Divider , Button, Paper, Card, Chip} from '@material-ui/core';
+import {TextField ,Grid , MenuItem , Divider , Button, Paper, Card, Chip, Box} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
+import ToggleButtons from './toggleButtonGroup';
 
 
 class Form extends React.Component {
@@ -500,18 +501,15 @@ class Form extends React.Component {
                                         item = <Grid key={i} item xs={12}>
                                                 <div >
                                                     {
-                                                        field.content.map((c,i) => {
-                                                            let data = c.label+" : "+this.state[field.dependsOn][c.data]+c.postText;
-                                                            if(i===0){
-                                                                data = c.label+" : "+this.state[field.dependsOn][c.data]/this.state[field.dependsOn].totalProducts+c.postText;
-                                                            }
-                                                            return(
-                                                                <Chip label={<span style={{color:"green"}}>{data}</span>} style={{marginRight : 50}} />
-
-                                                            )
-
-                                                        })
+                                                        field.hasContentRoot && (
+                                                                <ToggleButtons 
+                                                                    field={field}
+                                                                    title={this.state[field.dependsOn]} 
+                                                                    fetchUrl={"PurchaseHistories/product/"}/>
+                                                        )
+                                                        
                                                     }
+                                                  
                                                 </div>
                                             </Grid>;
                                     }

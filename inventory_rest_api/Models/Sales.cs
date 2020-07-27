@@ -15,6 +15,10 @@ namespace inventory_rest_api.Models
         public long ProductId { get; set;}
 
         [Required]
+        public long ProductPurchaseHistoryId { get; set;}
+
+
+        [Required]
         public int ProductQuantity { get ; set; }
 
         [Required]
@@ -40,6 +44,10 @@ namespace inventory_rest_api.Models
 
         [JsonIgnore]
         public Product Product { get ; set; }
+
+        [JsonIgnore]
+        public ProductPurchaseHistory ProductPurchaseHistory { get ; set; }
+
 
     }
 }

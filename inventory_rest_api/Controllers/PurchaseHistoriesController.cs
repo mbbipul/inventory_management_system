@@ -41,6 +41,19 @@ namespace inventory_rest_api.Controllers
             return productPurchaseHistory;
         }
 
+        [HttpGet("product/{id}")]
+        public async Task<ActionResult<IEnumerable<ProductPurchaseHistory>>> GetPurchaseHistoryByProduct(long id)
+        {
+            var productPurchaseHistory = await _context.ProductPurchaseHistories
+                                                    .Where( phr => phr.ProductId == id).ToListAsync();
+
+            if (productPurchaseHistory.Count() <= 0)
+            {
+                return NotFound();
+            }
+
+            return productPurchaseHistory;
+        }
         // PUT: api/PurchaseHistories/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

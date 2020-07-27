@@ -157,6 +157,29 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductPurchaseHistories",
+                columns: table => new
+                {
+                    ProductPurchaseHistoryId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<long>(nullable: false),
+                    ProductQuantity = table.Column<long>(nullable: false),
+                    PerProductPurchasePrice = table.Column<long>(nullable: false),
+                    PerProductSalesPrice = table.Column<long>(nullable: false),
+                    Date = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductPurchaseHistories", x => x.ProductPurchaseHistoryId);
+                    table.ForeignKey(
+                        name: "FK_ProductPurchaseHistories_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Purchases",
                 columns: table => new
                 {
@@ -212,42 +235,10 @@ namespace inventory_rest_api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ProductPurchaseHistories",
-                columns: table => new
-                {
-                    ProductPurchaseHistoryId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<long>(nullable: false),
-                    PurchaseId = table.Column<long>(nullable: false),
-                    PerProductPurchasePrice = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductPurchaseHistories", x => x.ProductPurchaseHistoryId);
-                    table.ForeignKey(
-                        name: "FK_ProductPurchaseHistories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductPurchaseHistories_Purchases_PurchaseId",
-                        column: x => x.PurchaseId,
-                        principalTable: "Purchases",
-                        principalColumn: "PurchaseId");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_ProductPurchaseHistories_ProductId",
                 table: "ProductPurchaseHistories",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductPurchaseHistories_PurchaseId",
-                table: "ProductPurchaseHistories",
-                column: "PurchaseId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductCategoryId",
@@ -287,6 +278,9 @@ namespace inventory_rest_api.Migrations
                 name: "ProductPurchaseHistories");
 
             migrationBuilder.DropTable(
+                name: "Purchases");
+
+            migrationBuilder.DropTable(
                 name: "Salaries");
 
             migrationBuilder.DropTable(
@@ -296,16 +290,13 @@ namespace inventory_rest_api.Migrations
                 name: "Suppliers");
 
             migrationBuilder.DropTable(
-                name: "Purchases");
-
-            migrationBuilder.DropTable(
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Companies");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");

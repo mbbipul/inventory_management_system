@@ -5,6 +5,7 @@ import AddProduct from "../Views/addProduct";
 import AddCompany from '../Views/addCompany';
 import { Link } from 'react-router-dom';
 import AddCustomer from '../Views/addCustomer';
+import ToggleButtons from '../components/toggleButtonGroup';
 
 const addCompanyFormFields = [
     {
@@ -360,21 +361,22 @@ const newSalesFormFields = [
         label : "Product purchase Details",
         type : 9,
         dependsOn : "ProductName",
+        hasContentRoot : true,
         content : [ {
                         label : "Purchase Price (per)",
                         postText : " tk",
-                        data : "productPrice"
+                        data : "perProductPurchasePrice"
 
                     },
                     {
                         label : "Pre Sales price (per)",
                         postText : " tk",
-                        data : "salestPrice"
+                        data : "perProductSalesPrice"
                     },
                     {
                         label : "Product Quantity In Stock",
                         postText : "",
-                        data : "totalProductInStock"
+                        data : "productQuantity"
 
                     }]
     },

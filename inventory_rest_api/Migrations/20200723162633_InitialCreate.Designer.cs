@@ -9,7 +9,7 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200722180730_InitialCreate")]
+    [Migration("20200723162633_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -203,21 +203,25 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("PerProductPurchasePrice")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PerProductSalesPrice")
                         .HasColumnType("bigint");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("PurchaseId")
+                    b.Property<long>("ProductQuantity")
                         .HasColumnType("bigint");
 
                     b.HasKey("ProductPurchaseHistoryId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("PurchaseId")
-                        .IsUnique();
 
                     b.ToTable("ProductPurchaseHistories");
                 });
@@ -382,12 +386,6 @@ namespace inventory_rest_api.Migrations
                         .WithMany("ProductPurchaseHistories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("inventory_rest_api.Models.Purchase", "Purchase")
-                        .WithOne("ProductPurchaseHistory")
-                        .HasForeignKey("inventory_rest_api.Models.ProductPurchaseHistory", "PurchaseId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

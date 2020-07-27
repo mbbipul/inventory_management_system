@@ -65,15 +65,16 @@ namespace inventory_rest_api.Models
             
             modelBuilder.Entity<Employee>()
                 .HasMany(salary => salary.Salaries)
-                .WithOne(employee => employee.Employee)
+                .WithOne(e => e.Employee)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProductPurchaseHistory>()
-                .HasOne(purchase => purchase.Purchase)
-                .WithOne(ph => ph.ProductPurchaseHistory)
+                .HasMany(sales => sales.Sales)
+                .WithOne(pph => pph.ProductPurchaseHistory)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
+
 
         }
 
