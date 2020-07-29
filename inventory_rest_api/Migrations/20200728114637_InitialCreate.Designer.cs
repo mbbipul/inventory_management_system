@@ -9,7 +9,7 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200723162633_InitialCreate")]
+    [Migration("20200728114637_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,6 +307,9 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("ProductPurchaseHistoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
@@ -335,6 +338,8 @@ namespace inventory_rest_api.Migrations
                     b.HasKey("SalesId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductPurchaseHistoryId");
 
                     b.ToTable("Sales");
                 });
@@ -413,6 +418,12 @@ namespace inventory_rest_api.Migrations
                         .WithMany("Sales")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.ProductPurchaseHistory", "ProductPurchaseHistory")
+                        .WithMany("Sales")
+                        .HasForeignKey("ProductPurchaseHistoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

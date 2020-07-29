@@ -23,11 +23,9 @@ namespace inventory_rest_api.Controllers
 
         // GET: api/Sales
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sales>>> GetSales()
+        public async Task<ActionResult<IEnumerable>> GetSales()
         {
-            return await _context.Sales
-                            .OrderBy( sales => sales.SalesDate)
-                            .ToListAsync();
+            return await _context.Sales.ToListAsync();
         }
 
         // GET: api/Sales/5
@@ -51,6 +49,8 @@ namespace inventory_rest_api.Controllers
                             on sales.ProductId equals product.ProductId
                         join customer in _context.Customers
                             on sales.CustomerId equals customer.CustomerId
+                        join pph in _context.ProductPurchaseHistories
+                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
                         select new {
                                 sales.SalesId,
                                 sales.CustomerId,
@@ -76,7 +76,9 @@ namespace inventory_rest_api.Controllers
                                 customer.CustomerContact,
                                 customer.CustomerAddress,
                                 customer.CustomerJoinDate,
-                                customer.CustomerNID
+                                customer.CustomerNID,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice
                             };
             return await query.ToListAsync();
 
@@ -114,6 +116,14 @@ namespace inventory_rest_api.Controllers
         public async Task<ActionResult<Sales>> PostSales(Sales sales)
         {
             _context.Sales.Add(sales);
+
+            ProductPurchaseHistory proPurHis = await _context.ProductPurchaseHistories
+                                .FirstAsync( pph => pph.ProductPurchaseHistoryId == sales.ProductPurchaseHistoryId);
+            
+            proPurHis.ProductQuantity -= sales.ProductQuantity;
+
+            _context.ProductPurchaseHistories.Update(proPurHis);
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSales", new { id = sales.SalesId }, sales);

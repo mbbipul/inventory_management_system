@@ -92,18 +92,19 @@ export default function HistoryVisual(props) {
             </Tabs>
          </AppBar>
         </AccordionSummary>
-     
-        <AccordionDetails style={{backgroundColor : "#c7d1d1"}}>
-            {
-              props.tabs.map( (tab,i) => (
-                <TabPanel value={value} index={i}>
-                  {tab.tabPanel}
-                </TabPanel>
+        { props.hasTabPanel &&
+          <AccordionDetails style={{backgroundColor : "#c7d1d1"}}>
+              {
+                props.tabs.map( (tab,i) => (
+                  <TabPanel value={value} index={i}>
+                    {tab.tabPanel}
+                  </TabPanel>
 
-              ))
-            }
-       
-        </AccordionDetails>
+                ))
+              }
+        
+          </AccordionDetails>
+        }
       </MuiAccordion>
     
     </div>

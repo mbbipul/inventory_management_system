@@ -503,6 +503,7 @@ class Form extends React.Component {
                                                     {
                                                         field.hasContentRoot && (
                                                                 <ToggleButtons 
+                                                                    onChange={(val) => this.setState({ purchaseHistory : val})}
                                                                     field={field}
                                                                     title={this.state[field.dependsOn]} 
                                                                     fetchUrl={"PurchaseHistories/product/"}/>

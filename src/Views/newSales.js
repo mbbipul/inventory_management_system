@@ -39,6 +39,7 @@ class NewSales extends React.Component {
         let sales = {
             "customerId" : state.CustomerName.customerId,
             "productId" : state.ProductName.productId,
+            "productPurchaseHistoryId" : state.purchaseHistory.productPurchaseHistoryId,
             "productQuantity" : parseInt(state.ProductQuantity),
             "salesDate" : Date.now().toString(),
             "salesPrice" : parseFloat(exactSalesPrice),

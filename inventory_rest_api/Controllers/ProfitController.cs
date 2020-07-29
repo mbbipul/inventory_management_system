@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using inventory_rest_api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace inventory_rest_api.Controllers
 {
@@ -35,5 +38,56 @@ namespace inventory_rest_api.Controllers
             }
             return "no";
         }
+
+        [HttpGet("sales")]
+        public ActionResult<long> GetSalesAmount(long id){
+
+            return GetAllSalesAmount();
+        }
+
+        [HttpGet("sales-bydate/{date}")]
+        public ActionResult<long> GetSalesByDate(long date){
+            return GetSalesAmountByDate(date);
+        }
+        
+        [HttpGet("profit-details")]
+        public async Task<ActionResult<IEnumerable>> GetProfitData(){
+            
+            var query = from sales in _context.Sales
+                        join pph in _context.ProductPurchaseHistories
+                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                        select new {
+                            sales.SalesPrice,
+                            AppUtils.DateTime(sales.SalesDate).Day,
+                            AppUtils.DateTime(sales.SalesDate).Month,
+                            AppUtils.DateTime(sales.SalesDate).Year,
+                            sales.ProductQuantity,
+                            pph.PerProductPurchasePrice,
+                            // pph.PerProductSalesPrice
+                        };
+
+            return await query.ToListAsync();
+        }
+
+        public long GetAllSalesAmount(){
+
+            var amount = _context.Sales.Sum(s => s.SalesPrice);
+
+            return amount;
+        }
+
+        public long GetSalesAmountByDate(long dt){
+            
+            DateTime dateTime = AppUtils.DateTime(dt);
+            
+            var query = _context.Sales.AsEnumerable();
+            return query.Where( s => 
+                            AppUtils.DateTime(s.SalesDate).Day  == AppUtils.DateTime(dt).Day &&
+                            AppUtils.DateTime(s.SalesDate).Month  == AppUtils.DateTime(dt).Month
+                    ).Sum(s => s.SalesPrice);
+        }
+
+
+
     }
 }

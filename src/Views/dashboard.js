@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ColumnLineAreaChart from '../components/columnLineAreaChart';
 import PieChart from '../components/pieChart';
 import SimpleTable from '../components/table';
@@ -6,11 +6,30 @@ import {Grid} from '@material-ui/core';
 import {Paper} from '@material-ui/core';
 import IconCard from '../components/iconCard';
 import RouteHeader from '../components/routeHeader';
+import HistoryVisual from '../components/historyWithVisualization';
+import TodaysReport from '../components/todaysReport';
+import submitForm from '../utils/fetchApi';
 
 
-class DashBoard extends React.Component {
+const DashBoard = () =>{
 
-    overViewItems = [
+    const [reportTabs,setReportTabs] = useState(0);
+
+    const [data,setData] = useState([]);
+
+    useEffect(() => {
+        alert(reportTabs);
+    },[reportTabs]);
+
+    const FetchData = () => {
+        submitForm("profit/profit-details","GET","",(res) => setData(JSON.parse(res)));
+    }
+
+    useEffect(() => {
+        FetchData();
+    },[]);
+
+    const overViewItems = [
         {
             name : "Total Customer",
             count : 120,
@@ -32,7 +51,15 @@ class DashBoard extends React.Component {
         }
     ]
     
-    monthlyChartOptions = {
+    const getDataPoints = (rowData) => {
+        
+        let data = [];
+
+        rowData.map((d) => data.push({ x: new Date(d.year, d.month,d.day), y: d.salesPrice }));
+
+        return data;
+    }
+    const monthlyChartOptions = {
         // theme: "dark2",
         animationEnabled: true,
         colorSet: "colorSet2",
@@ -44,14 +71,12 @@ class DashBoard extends React.Component {
         },
         axisY: {
             prefix: "$",
-            labelFormatter: this.addSymbols
         },
         toolTip: {
             shared: true
         },
         legend: {
             cursor: "pointer",
-            itemclick: this.toggleDataSeries,
             verticalAlign: "top"
         },
         data: [{
@@ -60,20 +85,7 @@ class DashBoard extends React.Component {
             showInLegend: true,
             xValueFormatString: "MMMM YYYY",
             yValueFormatString: "$#,##0",
-            dataPoints: [
-                { x: new Date(2017, 0,1), y: 27500 },
-                { x: new Date(2017, 0,2), y: 29000 },
-                { x: new Date(2017, 0,3), y: 22000 },
-                { x: new Date(2017, 0,4), y: 26500 },
-                { x: new Date(2017, 0,5), y: 33000 },
-                { x: new Date(2017, 0,6), y: 37000 },
-                { x: new Date(2017, 0,7), y: 32000 },
-                { x: new Date(2017, 0,8), y: 27500 },
-                { x: new Date(2017, 0,9), y: 29500 },
-                { x: new Date(2017, 0,10),y: 43000 },
-                { x: new Date(2017, 0,11), y: 55000, indexLabel: "High Renewals" },
-                { x: new Date(2017, 0,11), y: 39500 }
-            ]
+            dataPoints: [ getDataPoints(data) ]
         },{
             type: "line",
             name: "Expected Sales",
@@ -117,7 +129,7 @@ class DashBoard extends React.Component {
         }]
     }
 
-    routeHeader = {
+    const routeHeader = {
         title : "Dashboard",
         subTitle : "Home",
         icon : "dashboard",
@@ -127,10 +139,54 @@ class DashBoard extends React.Component {
         }]
     }
 
-	render() {
-		return (
+    let tabs = [
+        {
+            tab : "All",
+            tabPanel : ""
+        },
+        {
+            tab : "Todays Report",
+            tabPanel : ""
+        },
+        {
+            tab : "Yesterdays Report",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        },
+        {
+            tab : "Last 3 Days",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        },
+        {
+            tab : "This week",
+            tabPanel : "gffg" 
+        },
+        {
+            tab : "This Month",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        },
+        {
+            tab : "Jump To",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        }
+    ];
+
+	return (
             <div>
-                <RouteHeader details={this.routeHeader} />
+                <RouteHeader details={routeHeader} />
+
+                <HistoryVisual 
+                    hasTabPanel={false}
+                    handleTabs={setReportTabs} 
+                    tabs={tabs}/>
+
                 <Grid
                     container
                     direction="row"
@@ -138,7 +194,7 @@ class DashBoard extends React.Component {
                     alignItems="flex-start"
                 >
                     <Grid item xs={8}>
-                        <ColumnLineAreaChart options={this.monthlyChartOptions}/>
+                        <ColumnLineAreaChart options={monthlyChartOptions}/>
                     </Grid>
                     <Grid item xs={4}>
                         <Paper  style={{paddingLeft:20,paddingRight:20}}>
@@ -159,7 +215,7 @@ class DashBoard extends React.Component {
                     style={{padding:20}}
                 >
                     {
-                        this.overViewItems.map((item)=>(
+                        overViewItems.map((item)=>(
                             <Grid item xs={3}>
                                 <IconCard item={item}/>
                             </Grid>
@@ -168,7 +224,6 @@ class DashBoard extends React.Component {
                 </Grid>
             </div>
 		);
-	}
 }
 
 export default DashBoard;

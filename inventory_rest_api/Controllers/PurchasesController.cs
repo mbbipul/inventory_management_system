@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using inventory_rest_api.Models;
+using System.Collections;
 
 namespace inventory_rest_api.Controllers
 {
@@ -41,6 +42,36 @@ namespace inventory_rest_api.Controllers
             }
 
             return purchases;
+        }
+
+        [HttpGet("purchase-product")]
+        public async Task<ActionResult<IEnumerable>> GetPurchaseWithProduct(long id)
+        {
+             var query = from purchase in _context.Purchases
+                        join product in _context.Products
+                            on purchase.ProductId equals product.ProductId
+                        join supplier in _context.Suppliers
+                            on purchase.SupplierId equals supplier.SupplierId
+                        select new {
+
+                            purchase.PurchaseId,
+                            purchase.ProductId,
+                            supplier.SupplierId,
+                            purchase.ProductQuantity,
+                            purchase.PurchaseDate,
+                            purchase.PurchaseDiscount,
+                            purchase.PurchaseDuePaymentDate,
+                            purchase.PurchasePaidStatus,
+                            purchase.PurchasePaymentAmount,
+                            purchase.PurchasePrice,
+                            purchase.SalesPrice,
+
+                            product.ProductName,
+                            supplier.SupplierName
+
+                        };
+
+            return await query.ToListAsync();
         }
 
         // [HttpGet("by-productId/{productId}")]

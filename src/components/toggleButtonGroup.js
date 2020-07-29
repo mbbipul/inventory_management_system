@@ -44,7 +44,11 @@ export default function ToggleButtons(props) {
   }
 
   useEffect(() => {
-    console.log(data);
+    props.onChange(data[toggle]);
+  },[toggle]);
+
+  useEffect(() => {
+    props.onChange(data[toggle]);
   },[data]);
 
   useEffect(() => {

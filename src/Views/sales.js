@@ -186,32 +186,44 @@ function Sales () {
 
 
     const detailsPane = rowData => {
-        let  overViewItems  = [{
-            name : "Pre Sales Price - per",
-            count : rowData.salestPrice + " tk",
-            icon : "money"
-        }
-        ,{
-          name : "Sales Price - per",
-          count : rowData.salesPrice/rowData.productQuantity + " tk",
-          icon : "money"
-        },
-        {
-            name : "Sales Discount - total",
-            count : rowData.salesDiscount + " tk",
-            icon : "money"
-        },
-        {
-            name : "Total Sales Price",
-            count : rowData.salesPrice+" tk",
-            icon : "money"
-        }
-        ,
-        {
-            name : "Total Profit",
-            count : "1200.00 tk",
-            icon : "money"
-        }];
+        let  overViewItems  = [
+            ,{
+                name : "Purchase Price - per",
+                count : rowData.perProductPurchasePrice + " tk",
+                icon : "money"
+            },
+            {
+                name : "Pre Sales Price - per",
+                count : rowData.salestPrice + " tk",
+                icon : "money"
+            }
+            ,{
+                name : "Sales Price - per",
+                count : rowData.salesPrice/rowData.productQuantity + " tk",
+                icon : "money"
+            },
+            {
+                name : "Sales Discount - total",
+                count : rowData.salesDiscount + " tk",
+                icon : "money"
+            },
+            {
+                name : "Total Sales Price",
+                count : rowData.perProductPurchasePrice * rowData.productQuantity+" tk",
+                icon : "money"
+            },
+            {
+                name : "Total Sales Price",
+                count : rowData.salesPrice+" tk",
+                icon : "money"
+            }
+            ,
+            {
+                name : "Total Profit",
+                count : (rowData.perProductSalesPrice - rowData.perProductPurchasePrice)*rowData.productQuantity + " tk",
+                icon : "money"
+            }
+        ];
         return overViewItems;
     }
         return(

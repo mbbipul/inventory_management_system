@@ -17,7 +17,6 @@ namespace inventory_rest_api.Models
         [Required]
         public long ProductPurchaseHistoryId { get; set;}
 
-
         [Required]
         public int ProductQuantity { get ; set; }
 

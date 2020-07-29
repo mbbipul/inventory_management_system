@@ -73,7 +73,7 @@ namespace inventory_rest_api.Models
                 .HasMany(sales => sales.Sales)
                 .WithOne(pph => pph.ProductPurchaseHistory)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
 
         }

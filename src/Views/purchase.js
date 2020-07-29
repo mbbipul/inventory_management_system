@@ -5,7 +5,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
-import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import apiUrl from "../utils/apiInfo";
 import AddPurchase from "./addPurchase";
@@ -94,7 +93,8 @@ function Purchase () {
 
     const [columns,] = useState([
                                         { title: 'Purchase ID', field: 'purchaseId' },
-                                        { title: 'Product Name', field: 'productId' },
+                                        { title: 'Supplier Name', field: 'supplierName' },
+                                        { title: 'Product Name', field: 'productName' },
                                         { title: 'Product Quantity', field: 'productQuantity' },
                                         { title: 'Purchase Price', field: 'purchasePrice' },
                                         { title: 'Purchase Date', field: 'purchaseDate' },
@@ -116,7 +116,7 @@ function Purchase () {
               headers: myHeaders,
               redirect: 'follow'
           };
-          const res = await fetch(apiUrl+"Purchases", requestOptions);
+          const res = await fetch(apiUrl+"Purchases/purchase-product", requestOptions);
           const json = await res.json();
           setUnchangeData(json);
           var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
@@ -188,24 +188,20 @@ function Purchase () {
     ];
 
     const detailsPane = rowData => {
-        let  overViewItems  = [{
-            name : "Total Products",
-            count : 56,
-            icon : "storefront"
-        }
-        ,{
-          name : "Total Purchase Price",
-          count : 23,
-          icon : "shop_two"
+        let  overViewItems  = [
+        {
+          name : "Per Purchase Price",
+          count : (rowData.purchasePrice / rowData.productQuantity).toPrecision(6) + " tk",
+          icon : "money"
         },
         {
-            name : "Total Sales Price",
-            count : 45,
-            icon : "shopping_basket"
+            name : "Total Purchase Discount",
+            count : rowData.purchaseDiscount + " tk",
+            icon : "money"
         },
         {
-            name : "Total Profit",
-            count : "1200.00 tk",
+            name : "Expected Profit",
+            count : ((rowData.salesPrice*rowData.productQuantity) - rowData.purchasePrice) + " tk",
             icon : "money"
         }];
 
