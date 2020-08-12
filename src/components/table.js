@@ -30,10 +30,7 @@ function createData(name, tk) {
   return { name, tk };
 }
 
-const rows = [
-  createData('Total Sales', "200000"),
-  createData('Total Purchase', "300000"),
-];
+
 
 const useStyles = makeStyles({
   table: {
@@ -41,9 +38,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CustomizedTables() {
+export default function CustomizedTables(props) {
   const classes = useStyles();
-
+  const rows = [
+    createData('Total Sales', props.rows[0]),
+    createData('Total Purchase', props.rows[1]),
+  ];
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
@@ -59,7 +59,7 @@ export default function CustomizedTables() {
               <StyledTableCell component="th" scope="row">
                 {row.name}
               </StyledTableCell>
-              <StyledTableCell align="left">{row.tk}</StyledTableCell>
+              <StyledTableCell align="left">{row.tk} tk</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

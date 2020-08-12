@@ -17,5 +17,14 @@ namespace inventory_rest_api.Models
             DateTime date= start.AddMilliseconds(dt).ToLocalTime();
             return date;
         }
+
+        public static bool IsDateSame(string date1,DateTime d2){
+
+            DateTime d1 = DateTime(date1);
+
+            return d1.Day == d2.Day && d1.Month == d2.Month 
+                        && d1.Year == d2.Year;
+
+        }
     }
 }

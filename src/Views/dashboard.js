@@ -9,6 +9,7 @@ import RouteHeader from '../components/routeHeader';
 import HistoryVisual from '../components/historyWithVisualization';
 import TodaysReport from '../components/todaysReport';
 import submitForm from '../utils/fetchApi';
+import MaterialUIPickers from '../components/datePicker';
 
 
 const DashBoard = () =>{
@@ -17,32 +18,76 @@ const DashBoard = () =>{
 
     const [data,setData] = useState([]);
 
+    const [reportDetails,setReportDetails] = useState({});
+
+    const [categoriesData,setCategory] = useState([]);
+
+    const [fromDate,setFromDate] = useState("");
+    const [toDate,setToDate] = useState("");
+
     useEffect(() => {
-        alert(reportTabs);
+        switch (reportTabs) {
+            case 0:
+                FetchData(0,"all");
+                break;
+            case 1 :
+                FetchData(2,Date.now());
+                break;
+            case 2 :
+                FetchData(2,Date.now()-8640000);
+                break;
+            case 3 :
+                FetchData(1,Date.now()-(8640000*2));
+                break;
+            case 4 :
+                FetchData(1,Date.now()-(8640000*6));
+                break;
+            case 5:
+                FetchData(1,Date.now()-(8640000*29));
+                break;
+            case 6:
+                if(fromDate > toDate){
+                    alert("ghh");
+                }else{
+                    alert("gh");
+                }
+                break;
+            default:
+                break;
+        }
     },[reportTabs]);
 
-    const FetchData = () => {
-        submitForm("profit/profit-details","GET","",(res) => setData(JSON.parse(res)));
+    const FetchData = (filter,date) => {
+        submitForm("profit/profit-details/"+filter+"-"+date,"GET","",(res) => setData(JSON.parse(res)));
+        submitForm("profit/report-details/"+filter+"-"+date,"GET","",(res) => setReportDetails(JSON.parse(res)));
+
     }
 
     useEffect(() => {
-        FetchData();
-    },[]);
+        let cates = [];
+        if(reportDetails.categories){
+            reportDetails.categories.map((c) => {
+                cates.push({ y: ((c.count*100)/reportDetails.totalProduct).toPrecision(4), label: c.name});
+            })
+        }
+        setCategory(cates);
+
+    },[reportDetails]);
 
     const overViewItems = [
         {
             name : "Total Customer",
-            count : 120,
+            count : reportDetails.customer,
             icon : "supervisor_account"
         },
         {
             name : "Total Product",
-            count : 234,
+            count : reportDetails.totalProduct,
             icon : "storefront"
         },
         {
             name : "Total Supplier",
-            count : 12,
+            count : reportDetails.totalSupplier,
             icon : "supervisor_account"
         },{
             name : "Total Invoice",
@@ -51,11 +96,22 @@ const DashBoard = () =>{
         }
     ]
     
-    const getDataPoints = (rowData) => {
+    const getDataPoints = (rowData,key) => {
         
         let data = [];
 
-        rowData.map((d) => data.push({ x: new Date(d.year, d.month,d.day), y: d.salesPrice }));
+        rowData.map((d) => {
+
+            let date = d.date.split('/');
+            let value = 0;
+            if(key===3){
+                value = d["totalSalesAmount"] - d["totalPurchaseAmount"];
+            }else{
+                value = d[key];
+            }
+            data.push({ x: new Date(date[2],date[0],date[1]), y:  value})
+            
+        });
 
         return data;
     }
@@ -79,54 +135,33 @@ const DashBoard = () =>{
             cursor: "pointer",
             verticalAlign: "top"
         },
-        data: [{
-            type: "column",
-            name: "Actual Sales",
-            showInLegend: true,
-            xValueFormatString: "MMMM YYYY",
-            yValueFormatString: "$#,##0",
-            dataPoints: [ getDataPoints(data) ]
-        },{
-            type: "line",
-            name: "Expected Sales",
-            showInLegend: true,
-            yValueFormatString: "$#,##0",
-            dataPoints: [
-                { x: new Date(2017, 0,1), y: 38000 },
-                { x: new Date(2017, 0,2), y: 39000 },
-                { x: new Date(2017, 0,3), y: 35000 },
-                { x: new Date(2017, 0,4), y: 37000 },
-                { x: new Date(2017, 0,5), y: 42000 },
-                { x: new Date(2017, 0,6), y: 48000 },
-                { x: new Date(2017, 0,7), y: 41000 },
-                { x: new Date(2017, 0,8), y: 38000 },
-                { x: new Date(2017, 0,9), y: 42000 },
-                { x: new Date(2017, 0,10),y: 45000 },
-                { x: new Date(2017, 0,11), y: 48000 },
-                { x: new Date(2017, 0,11), y: 47000 }
-            ]
-        },{
-            type: "area",
-            name: "Profit",
-            markerBorderColor: "white",
-            markerBorderThickness: 2,
-            showInLegend: true,
-            yValueFormatString: "$#,##0",
-            dataPoints: [
-                { x: new Date(2017, 0,1), y: 11500 },
-                { x: new Date(2017, 0,2), y: 10500 },
-                { x: new Date(2017, 0,3), y: 9000 },
-                { x: new Date(2017, 0,4), y: 13500 },
-                { x: new Date(2017, 0,5), y: 13890 },
-                { x: new Date(2017, 0,6), y: 18500 },
-                { x: new Date(2017, 0,7), y: 16000 },
-                { x: new Date(2017, 0,8), y: 14500 },
-                { x: new Date(2017, 0,9), y: 15880 },
-                { x: new Date(2017, 0,10),y: 24000 },
-                { x: new Date(2017, 0,11), y: 31000 },
-                { x: new Date(2017, 0,11), y: 19000 }
-            ]
-        }]
+        data: [
+            {
+                type: "column",
+                name: "Sales Price",
+                showInLegend: true,
+                xValueFormatString: "MMMM YYYY",
+                yValueFormatString: "$#,##0",
+                dataPoints: getDataPoints(data,"totalSalesAmount") 
+            },
+            {
+                type: "line",
+                name: "Purchase Price",
+                showInLegend: true,
+                yValueFormatString: "$#,##0",
+                dataPoints: getDataPoints(data,"totalPurchaseAmount") 
+
+            },
+            {
+                type: "area",
+                name: "Profit",
+                markerBorderColor: "white",
+                markerBorderThickness: 2,
+                showInLegend: true,
+                yValueFormatString: "$#,##0",
+                dataPoints : getDataPoints(data,3)
+            }
+        ]
     }
 
     const routeHeader = {
@@ -138,6 +173,8 @@ const DashBoard = () =>{
             icon : "dashboard"
         }]
     }
+
+    
 
     let tabs = [
         {
@@ -172,12 +209,25 @@ const DashBoard = () =>{
         },
         {
             tab : "Jump To",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
-        }
-    ];
+            tabPanel :  <Grid
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center">
 
+                            <grid item xs >
+                                <strong>From</strong>
+                                <MaterialUIPickers onChange={(date) => setFromDate(date)} />
+                            </grid>
+                            <grid style={{marginLeft:100}} item xs >
+                                <strong>To</strong>
+                                <MaterialUIPickers onChange={(date) => setToDate(date)} />
+                            </grid>
+                        </Grid>
+        },
+
+    ];
+      
 	return (
             <div>
                 <RouteHeader details={routeHeader} />
@@ -199,9 +249,12 @@ const DashBoard = () =>{
                     <Grid item xs={4}>
                         <Paper  style={{paddingLeft:20,paddingRight:20}}>
                             <h1>Todays Report</h1>
-                            <SimpleTable />
+                            <SimpleTable rows={[reportDetails.todaysSales,reportDetails.todaysPurchase]}/>
                             <br />
-                            <PieChart />
+                            <PieChart 
+                                title="Product Categories Overview"
+                                data={categoriesData}
+                            />
                         </Paper>
                     </Grid>
                 </Grid>

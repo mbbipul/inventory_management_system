@@ -50,13 +50,6 @@ function Sales () {
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
                 break;
-            case 3:
-                filterValue = unchangeData.filter(sales => 
-                    new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-2 &&
-                    new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
-                    new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
-                );
-                break;
             case 4:
                 filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-6 &&
@@ -229,7 +222,7 @@ function Sales () {
         return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <HistoryVisual handleTabs={setReportTabs} tabs={tabs}/>
+                <HistoryVisual hasTabPanel={true} handleTabs={setReportTabs} tabs={tabs}/>
                 <Switch>
                     <Route exact path="/sales">
                         <div style={{margin:20}}>

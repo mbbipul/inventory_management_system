@@ -29,6 +29,20 @@ namespace inventory_rest_api.Controllers
             return  totalDebit-totalCredit;         
         }
 
+        [HttpGet("report-details/{filter}-{date}")]
+        public ActionResult<Object> GetReportDetails(int filter,string date){
+            var query = new {
+                Customer = GetCustomerNumber(),
+                TotalProduct = GetTotalProductNumber(),
+                TotalSupplier = _context.Suppliers.Count(),
+                TodaysSales = GetSalesAmountByDate(filter,date),
+                TodaysPurchase = GetPurchaseAmountByDate(filter,date),
+                Categories = GetCategoriesReport()
+            };
+
+            return query;
+        }
+
         [HttpGet("isexists/{id}")]
         public ActionResult<string> GetExists(long id){
             var pHis = _context.ProductPurchaseHistories
@@ -39,21 +53,22 @@ namespace inventory_rest_api.Controllers
             return "no";
         }
 
-        [HttpGet("sales")]
+        [HttpGet("sales-amount")]
         public ActionResult<long> GetSalesAmount(long id){
 
             return GetAllSalesAmount();
         }
 
         [HttpGet("sales-bydate/{date}")]
-        public ActionResult<long> GetSalesByDate(long date){
-            return GetSalesAmountByDate(date);
+        public  IEnumerable GetSalesByDate(long date){
+            return  GetSalesDetailsByDate(date);
         }
         
-        [HttpGet("profit-details")]
-        public async Task<ActionResult<IEnumerable>> GetProfitData(){
+        
+        [HttpGet("profit-details/{filter}-{date}")]
+        public ActionResult<IEnumerable> GetAllProfitData(int filter,string date){
             
-            var query = from sales in _context.Sales
+            var query = from sales in _context.Sales 
                         join pph in _context.ProductPurchaseHistories
                             on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
                         select new {
@@ -61,12 +76,50 @@ namespace inventory_rest_api.Controllers
                             AppUtils.DateTime(sales.SalesDate).Day,
                             AppUtils.DateTime(sales.SalesDate).Month,
                             AppUtils.DateTime(sales.SalesDate).Year,
-                            sales.ProductQuantity,
-                            pph.PerProductPurchasePrice,
+                            Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
+                            PurchasePrice = pph.PerProductPurchasePrice * sales.ProductQuantity,
                             // pph.PerProductSalesPrice
                         };
 
-            return await query.ToListAsync();
+
+            if(filter==0){
+                return query.AsEnumerable()
+                        .GroupBy( 
+                            s => s.Date,
+                            (key,g) => new { 
+                                Date = key , 
+                                TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
+                                TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
+                            }
+                ).ToList();
+            }else if(filter==1){
+                DateTime qd = AppUtils.DateTime(date);
+                
+                return query.AsEnumerable()
+                        .Where(s => s.Day >= qd.Day && s.Month == qd.Month && s.Year == qd.Year )
+                        .GroupBy( 
+                            s => s.Date,
+                            (key,g) => new { 
+                                Date = key , 
+                                TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
+                                TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
+                            }
+                ).ToList();
+            }
+            
+            DateTime qDate = AppUtils.DateTime(date);
+
+            return query.AsEnumerable()
+                        .Where(s => s.Day == qDate.Day && s.Month == qDate.Month && s.Year == qDate.Year )
+                        .GroupBy( 
+                            s => s.Date,
+                            (key,g) => new { 
+                                Date = key , 
+                                TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
+                                TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
+                            }
+            ).ToList();
+
         }
 
         public long GetAllSalesAmount(){
@@ -76,17 +129,106 @@ namespace inventory_rest_api.Controllers
             return amount;
         }
 
-        public long GetSalesAmountByDate(long dt){
+        public  IEnumerable GetSalesDetailsByDate(long dt){
             
             DateTime dateTime = AppUtils.DateTime(dt);
             
-            var query = _context.Sales.AsEnumerable();
-            return query.Where( s => 
-                            AppUtils.DateTime(s.SalesDate).Day  == AppUtils.DateTime(dt).Day &&
-                            AppUtils.DateTime(s.SalesDate).Month  == AppUtils.DateTime(dt).Month
+            var query = from sales in _context.Sales
+                        join pph in _context.ProductPurchaseHistories
+                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                        select new {
+                            sales.SalesPrice,
+                            AppUtils.DateTime(sales.SalesDate).Day,
+                            AppUtils.DateTime(sales.SalesDate).Month,
+                            AppUtils.DateTime(sales.SalesDate).Year,
+                            Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
+                            PurchasePrice = pph.PerProductPurchasePrice * sales.ProductQuantity,
+                            // pph.PerProductSalesPrice
+                        };
+            
+            return query.AsEnumerable().Where( s => 
+                            s.Day  == AppUtils.DateTime(dt).Day &&
+                            s.Month  == AppUtils.DateTime(dt).Month &&
+                            s.Year  == AppUtils.DateTime(dt).Year
+                    ).ToList();
+        }
+
+        public int GetCustomerNumber() {
+            return _context.Customers.Count();
+        }
+
+         public int GetTotalProductNumber() {
+            return _context.Products.Count();
+        }
+
+        public long GetSalesAmountByDate(int filter,string d){
+
+            var query = from sales in _context.Sales 
+                        select new {
+                            sales.SalesPrice,
+                            AppUtils.DateTime(sales.SalesDate).Day,
+                            AppUtils.DateTime(sales.SalesDate).Month,
+                            AppUtils.DateTime(sales.SalesDate).Year,
+                        };
+
+            if(filter == 0){
+                return query.Sum(s => s.SalesPrice);
+            }else if(filter == 1){
+                DateTime dt = AppUtils.DateTime(d);
+
+                return query.AsEnumerable().Where( s => 
+                            s.Day  >= dt.Day &&
+                            s.Month  == dt.Month &&
+                            s.Year  == dt.Year
+                    ).Sum(s => s.SalesPrice);
+            }
+
+            DateTime date = AppUtils.DateTime(d);
+
+            return query.AsEnumerable().Where( s => 
+                            s.Day  == date.Day &&
+                            s.Month  == date.Month &&
+                            s.Year  == date.Year
                     ).Sum(s => s.SalesPrice);
         }
 
+        public long GetPurchaseAmountByDate(int filter,string d){
+
+            var query = from purchase in _context.Purchases 
+                        select new {
+                            purchase.PurchasePrice,
+                            purchase.ProductQuantity,
+                            AppUtils.DateTime(purchase.PurchaseDate).Day,
+                            AppUtils.DateTime(purchase.PurchaseDate).Month,
+                            AppUtils.DateTime(purchase.PurchaseDate).Year,
+                        };
+            if(filter==0){
+                return query.Sum(p => p.PurchasePrice*p.ProductQuantity);
+            }else if(filter==1){
+                  DateTime dt = AppUtils.DateTime(d);
+
+                return query.AsEnumerable().Where( p => 
+                            p.Day  >= dt.Day &&
+                            p.Month  == dt.Month &&
+                            p.Year  == dt.Year
+                    ).Sum(p => p.PurchasePrice*p.ProductQuantity);
+            }
+
+            DateTime date = AppUtils.DateTime(d);
+
+            return query.AsEnumerable().Where( p => 
+                            p.Day  == date.Day &&
+                            p.Month  == date.Month &&
+                            p.Year  == date.Year
+                    ).Sum(p => p.PurchasePrice*p.ProductQuantity);
+        }
+
+        public IEnumerable GetCategoriesReport(){
+            var query = _context.ProductCategories.Include(p=>p.Products).AsEnumerable()
+                            .Select((c,i) => new { name = c.ProductCategoryName , count = c.Products.Count() }) 
+                            .ToList()  ;
+            return query;
+        }
 
 
     }
