@@ -47,9 +47,9 @@ const DashBoard = () =>{
                 break;
             case 6:
                 if(fromDate > toDate){
-                    alert("ghh");
+                    alert("Starting date cannot larger than Last Date");
                 }else{
-                    alert("gh");
+                    
                 }
                 break;
             default:
