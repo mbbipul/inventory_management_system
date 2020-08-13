@@ -43,6 +43,25 @@ namespace inventory_rest_api.Controllers
             return query;
         }
 
+        [HttpGet("report-details_range/{date1}-{date2}")]
+        public ActionResult<Object> GetReportDetailsRange(string date1,string date2){
+             var query = new {
+                Customer = GetCustomerNumber(),
+                TotalProduct = GetTotalProductNumber(),
+                TotalSupplier = _context.Suppliers.Count(),
+                TodaysSales = _context.Sales.AsEnumerable()
+                                .Where(s => (double.Parse(s.SalesDate) > double.Parse(date1)) && (double.Parse(s.SalesDate) < double.Parse(date2)))
+                                .Sum(s => s.SalesPrice),
+                                
+                TodaysPurchase = _context.Purchases.AsEnumerable()
+                                .Where(p => (double.Parse(p.PurchaseDate) > double.Parse(date1)) && (double.Parse(p.PurchaseDate) < double.Parse(date2)))
+                                .Sum(s => s.PurchasePrice),
+                Categories = GetCategoriesReport()
+            };
+
+            return query;
+        }
+
         [HttpGet("isexists/{id}")]
         public ActionResult<string> GetExists(long id){
             var pHis = _context.ProductPurchaseHistories
@@ -64,6 +83,37 @@ namespace inventory_rest_api.Controllers
             return  GetSalesDetailsByDate(date);
         }
         
+        [HttpGet("profit-details_range/{date1}-{date2}")]
+        public ActionResult<IEnumerable> GetProfitByDateRange(string date1,string date2){
+             var query = from sales in _context.Sales 
+                        join pph in _context.ProductPurchaseHistories
+                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                        select new {
+                            sales.SalesPrice,
+                            SalesDate = double.Parse(sales.SalesDate) ,
+                            Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
+                            PurchasePrice = pph.PerProductPurchasePrice * sales.ProductQuantity,
+                            // pph.PerProductSalesPrice
+                        };
+
+            double d1 = double.Parse(date1);
+            double d2 = double.Parse(date2);
+
+            return query.AsEnumerable()
+                    .Where(s => 
+                        s.SalesDate > d1 && s.SalesDate < d2
+                    )
+                   
+                    .GroupBy( 
+                        s => s.Date,
+                        (key,g) => new { 
+                            Date = key , 
+                            TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
+                            TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
+                        }
+            ).ToList();
+
+        }
         
         [HttpGet("profit-details/{filter}-{date}")]
         public ActionResult<IEnumerable> GetAllProfitData(int filter,string date){
