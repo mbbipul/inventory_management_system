@@ -49,7 +49,7 @@ export default function CustomizedTables(props) {
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Todays Report</StyledTableCell>
+            <StyledTableCell>{props.title} Report</StyledTableCell>
             <StyledTableCell align="left">Taka</StyledTableCell>
           </TableRow>
         </TableHead>
