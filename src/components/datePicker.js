@@ -33,7 +33,7 @@ export default function MaterialUIPickers(props) {
         format="dd-MM-yyyy"
         required={props.required}
         value={selectedDate}
-        onChange={(date) => {handleDateChange(date);props.onChange(date)}}
+        onChange={(date) => {handleDateChange(date)}}
         KeyboardButtonProps={{
           "aria-label": "change date"
         }}
