@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ColumnLineAreaChart from '../components/columnLineAreaChart';
 import PieChart from '../components/pieChart';
 import SimpleTable from '../components/table';
-import {Grid} from '@material-ui/core';
+import {Grid, Card} from '@material-ui/core';
 import {Paper} from '@material-ui/core';
 import IconCard from '../components/iconCard';
 import RouteHeader from '../components/routeHeader';
 import HistoryVisual from '../components/historyWithVisualization';
-import TodaysReport from '../components/todaysReport';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from '../components/datePicker';
 
@@ -25,6 +24,7 @@ const DashBoard = () =>{
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
 
+    const [reportCardTitle,setreportCardTitle] = useState("All");
     useEffect(() => {
         switch (reportTabs) {
             case 0:
@@ -32,31 +32,45 @@ const DashBoard = () =>{
                 break;
             case 1 :
                 FetchData(2,Date.now());
+                setreportCardTitle("Today's");
                 break;
             case 2 :
                 FetchData(2,Date.now()-8640000);
+                setreportCardTitle("Yesterday's");
                 break;
             case 3 :
                 FetchData(1,Date.now()-(8640000*2));
+                setreportCardTitle("Last 3 Day's");
                 break;
             case 4 :
                 FetchData(1,Date.now()-(8640000*6));
+                setreportCardTitle("This week's");
                 break;
             case 5:
                 FetchData(1,Date.now()-(8640000*29));
+                setreportCardTitle("This Month's");
                 break;
             case 6:
                 if(fromDate > toDate){
                     alert("Starting date cannot larger than Last Date");
-                }else{
-                    
                 }
+                setreportCardTitle(new Date(fromDate).toDateString()+" - "+new Date(toDate).toDateString());
+
                 break;
             default:
                 break;
         }
     },[reportTabs]);
 
+    useEffect(() => {
+        submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
+        submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+    },[fromDate]);
+
+    useEffect(() => {
+        submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
+        submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+    },[toDate]);
     const FetchData = (filter,date) => {
         submitForm("profit/profit-details/"+filter+"-"+date,"GET","",(res) => setData(JSON.parse(res)));
         submitForm("profit/report-details/"+filter+"-"+date,"GET","",(res) => setReportDetails(JSON.parse(res)));
@@ -208,7 +222,7 @@ const DashBoard = () =>{
             </div>
         },
         {
-            tab : "Jump To",
+            tab : "Jump To",    
             tabPanel :  <Grid
                             container
                             direction="row"
@@ -244,12 +258,19 @@ const DashBoard = () =>{
                     alignItems="flex-start"
                 >
                     <Grid item xs={8}>
-                        <ColumnLineAreaChart options={monthlyChartOptions}/>
+                        {
+                            data.length === 0 ? (
+                                <Card style={{marginLeft:20,padding:200}} className={"light-pink-blue-gradient"}>
+                                    <h1>No Data To Show</h1>
+                                </Card>
+                            ) :
+                            <ColumnLineAreaChart options={monthlyChartOptions}/>
+                        }
                     </Grid>
                     <Grid item xs={4}>
                         <Paper  style={{paddingLeft:20,paddingRight:20}}>
-                            <h1>Todays Report</h1>
-                            <SimpleTable rows={[reportDetails.todaysSales,reportDetails.todaysPurchase]}/>
+                            <h1>{reportCardTitle} Report</h1>
+                            <SimpleTable title={reportCardTitle} rows={[reportDetails.todaysSales,reportDetails.todaysPurchase]}/>
                             <br />
                             <PieChart 
                                 title="Product Categories Overview"

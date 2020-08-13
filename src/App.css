@@ -91,3 +91,8 @@ body{
   background-color: #0e130e;
   color: white;
 }
+
+.light-pink-blue-gradient {
+  background: rgb(190,146,198);
+  background: linear-gradient(90deg, rgba(190,146,198,1) 0%, rgba(135,215,210,1) 25%, rgba(112,15,222,1) 74%, rgba(0,129,255,1) 100%);
+}
