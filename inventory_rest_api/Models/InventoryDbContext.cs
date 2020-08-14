@@ -18,9 +18,13 @@ namespace inventory_rest_api.Models
 
         public DbSet<Purchase> Purchases { get; set; } 
 
+        public DbSet<PurchaseDueProduct> PurchaseDueProducts { get; set; } 
+
         public DbSet<Customer> Customers { get; set; } 
 
         public DbSet<Sales> Sales { get; set; } 
+
+        public DbSet<SalesDueProduct> SalesDueProducts { get; set; } 
 
         public DbSet<Cost> Costs { get; set; }
 
@@ -48,6 +52,18 @@ namespace inventory_rest_api.Models
             modelBuilder.Entity<Product>()
                 .HasMany(purHis => purHis.ProductPurchaseHistories)
                 .WithOne(product => product.Product)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Purchase>()
+                .HasOne(p => p.PurchaseDueProduct)
+                .WithOne(p => p.Purchase)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Sales>()
+                .HasOne(s => s.SalesDueProduct)
+                .WithOne(s => s.Sales)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 

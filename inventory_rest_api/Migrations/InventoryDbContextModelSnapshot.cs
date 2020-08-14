@@ -269,6 +269,27 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Purchases");
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.PurchaseDueProduct", b =>
+                {
+                    b.Property<long>("PurchaseDueProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProductQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<long>("PurchaseId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("PurchaseDueProductId");
+
+                    b.HasIndex("PurchaseId")
+                        .IsUnique();
+
+                    b.ToTable("PurchaseDueProducts");
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Salary", b =>
                 {
                     b.Property<long>("SalaryId")
@@ -342,6 +363,27 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Sales");
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.SalesDueProduct", b =>
+                {
+                    b.Property<long>("SalesDueProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProductQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<long>("SalesId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("SalesDueProductId");
+
+                    b.HasIndex("SalesId")
+                        .IsUnique();
+
+                    b.ToTable("SalesDueProducts");
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
                 {
                     b.Property<long>("SupplierId")
@@ -401,6 +443,15 @@ namespace inventory_rest_api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.PurchaseDueProduct", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Purchase", "Purchase")
+                        .WithOne("PurchaseDueProduct")
+                        .HasForeignKey("inventory_rest_api.Models.PurchaseDueProduct", "PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Salary", b =>
                 {
                     b.HasOne("inventory_rest_api.Models.Employee", "Employee")
@@ -422,6 +473,15 @@ namespace inventory_rest_api.Migrations
                         .WithMany("Sales")
                         .HasForeignKey("ProductPurchaseHistoryId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.SalesDueProduct", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Sales", "Sales")
+                        .WithOne("SalesDueProduct")
+                        .HasForeignKey("inventory_rest_api.Models.SalesDueProduct", "SalesId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

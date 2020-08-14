@@ -2,16 +2,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace inventory_rest_api.Models
 {
-    public class PurchaseDueProduct
+    public class SalesDueProduct
     {
-        public long PurchaseDueProductId { get; set;}
+        public long SalesDueProductId { get; set;}
 
         [Required]
-        public long PurchaseId { get ; set;}
+        public long SalesId { get ; set;}
 
         [Required]
         public int ProductQuantity { get ; set;}
 
-        public Purchase Purchase { get ; set ; }
+        public Sales Sales { get ; set ; }
     }
 }

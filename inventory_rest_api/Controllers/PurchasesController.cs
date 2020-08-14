@@ -73,7 +73,7 @@ namespace inventory_rest_api.Controllers
 
             return await query.ToListAsync();
         }
-
+        
         // [HttpGet("by-productId/{productId}")]
         // public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchasesByProductId(long productId){
         //     var purchases = await _context.Purchases
