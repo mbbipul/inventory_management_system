@@ -264,7 +264,7 @@ const DashBoard = () =>{
                                     <h1>No Data To Show</h1>
                                 </Card>
                             ) :
-                            <ColumnLineAreaChart options={monthlyChartOptions}/>
+                            <ColumnLineAreaChart title={reportCardTitle} options={monthlyChartOptions}/>
                         }
                     </Grid>
                     <Grid item xs={4}>

@@ -5,7 +5,8 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var CanvasJS = CanvasJSReact.CanvasJS;
  
 class ColumnLineAreaChart extends Component {
-		constructor() {
+	
+	constructor() {
 		super();
 		this.toggleDataSeries = this.toggleDataSeries.bind(this);
 		this.addSymbols = this.addSymbols.bind(this);
@@ -30,7 +31,7 @@ class ColumnLineAreaChart extends Component {
 	render() {
 		return (
 		<Paper style={{height:640,width:750,paddingLeft:20}}>
-			<h1>Monthly Sales & Profit</h1>
+			<h1>{this.props.title} Sales & Profit</h1>
 			<CanvasJSChart options = {this.props.options} 
 				onRef={ref => this.chart = ref}
 			/>

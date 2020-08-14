@@ -89,21 +89,21 @@ function Purchase () {
             setHeaderSubtitile(location[1]);
 
         }
-    }, [location]);
+    }, [location]); 
 
-    const [columns,] = useState([
-                                        { title: 'Purchase ID', field: 'purchaseId' },
-                                        { title: 'Supplier Name', field: 'supplierName' },
-                                        { title: 'Product Name', field: 'productName' },
-                                        { title: 'Product Quantity', field: 'productQuantity' },
-                                        { title: 'Purchase Price', field: 'purchasePrice' },
-                                        { title: 'Purchase Date', field: 'purchaseDate' },
-                                        { title: 'Sales Price', field: 'salesPrice' },
-                                        { title: 'Purchase Payment Amount', field: 'purchasePaymentAmount' },
-                                        { title: 'Purchase Paid Status', field: 'purchasePaidStatus' },
-                                        { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
+    const [columns,] =  useState([
+                            { title: 'Purchase ID', field: 'purchaseId' },
+                            { title: 'Supplier Name', field: 'supplierName' },
+                            { title: 'Product Name', field: 'productName' },
+                            { title: 'Product Quantity', field: 'productQuantity' },
+                            { title: 'Purchase Price', field: 'purchasePrice' },
+                            { title: 'Purchase Date', field: 'purchaseDate' },
+                            { title: 'Sales Price', field: 'salesPrice' },
+                            { title: 'Purchase Payment Amount', field: 'purchasePaymentAmount' },
+                            { title: 'Purchase Paid Status', field: 'purchasePaidStatus' },
+                            { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
 
-                                    ]);
+                        ]);
     
     const FetchData = async () => {
 
@@ -211,7 +211,7 @@ function Purchase () {
         return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <HistoryVisual handleTabs={setReportTabs} tabs={tabs}/>
+                <HistoryVisual hasTabPanel={true} handleTabs={setReportTabs} tabs={tabs}/>
                 <Switch>
                     <Route exact path="/purchase">
                         <div style={{margin:20}}>
