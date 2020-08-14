@@ -11,6 +11,9 @@ import AddPurchase from "./addPurchase";
 import DetailsTable from "../components/collapseTable";
 import HistoryVisual from "../components/historyWithVisualization";
 import TodaysReport from "../components/todaysReport";
+import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
+import { green } from '@material-ui/core/colors';
+import CloseIcon from '@material-ui/icons/Close';
 
 function Purchase () {
     const [reportTabs,setReportTabs] = useState(0);
@@ -20,6 +23,18 @@ function Purchase () {
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
+    function CustomPaidStatus (props) {
+        return (
+            <div>
+                {
+                    props.status ? 
+                        <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                        <CloseIcon color='error' />
+                }
+            </div>
+        )
+    }
+
     useEffect(() => {
         let filterValue = [];
         switch (reportTabs) {
@@ -79,6 +94,13 @@ function Purchase () {
         var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
         dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
         dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
+        
+        dateFormatData.map((d) => {
+            d.purchasePaymentAmount = <CustomPaidStatus status={d.purchasePaidStatus}/>
+            d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
+            return d;
+        });
+
         setData(dateFormatData);
        
     },[reportTabs])
@@ -98,33 +120,39 @@ function Purchase () {
                             { title: 'Product Quantity', field: 'productQuantity' },
                             { title: 'Purchase Price', field: 'purchasePrice' },
                             { title: 'Purchase Date', field: 'purchaseDate' },
-                            { title: 'Sales Price', field: 'salesPrice' },
-                            { title: 'Purchase Payment Amount', field: 'purchasePaymentAmount' },
+                            // { title: 'Sales Price', field: 'salesPrice' },
+                            { title: 'Purchase Due Product', field: 'purchasePaymentAmount' },
                             { title: 'Purchase Paid Status', field: 'purchasePaidStatus' },
-                            { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
+                            // { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
 
                         ]);
     
     const FetchData = async () => {
 
         try {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-    
-          var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          const res = await fetch(apiUrl+"Purchases/purchase-product", requestOptions);
-          const json = await res.json();
-          setUnchangeData(json);
-          var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
-          dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
-          dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
-          setData(dateFormatData);
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+        
+            var requestOptions = {
+                method: "GET",
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+            const res = await fetch(apiUrl+"Purchases/purchase-product", requestOptions);
+            const json = await res.json();
+            setUnchangeData(json);
+            var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
+            dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
+            dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
+            dateFormatData.map((d) => {
+                    d.purchasePaymentAmount = <CustomPaidStatus status={d.purchasePaidStatus}/>
+                    d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
+                    return d;
+            });
+
+            setData(dateFormatData);
         } catch (error) {
-          console.log("error - ", error);
+            console.log("error - ", error);
         }
     };
     

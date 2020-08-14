@@ -19,6 +19,11 @@ import '../../App.css';
 import NestedList from '../../components/nestedList';
 import { useSelector , useDispatch} from 'react-redux';
 import {extendAppDrawerSideBar,collapseAppDrawerSideBar} from '../../actions';
+
+import Badge from '@material-ui/core/Badge';
+import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
+import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
+
 const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
@@ -83,6 +88,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  rightToolbar: {
+    marginLeft: "auto",
+    marginRight: 30
+  },
 }));
 
 export default function AppDrawer() {
@@ -122,9 +131,23 @@ export default function AppDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>
+                    <Typography variant="h6" className={classes.flexGrow }>
                         Inventory Mangement System
                     </Typography>
+
+                    <section className={classes.rightToolbar}>
+                      <IconButton  aria-label="show 4 new mails" color="inherit">
+                        <Badge badgeContent={4} color="secondary">
+                          <ShopTwoOutlinedIcon />
+                        </Badge>
+                      </IconButton>
+                      <IconButton  aria-label="show 4 new mails" color="inherit">
+                        <Badge badgeContent={300} color="secondary">
+                          <ShoppingBasketOutlinedIcon />
+                        </Badge>
+                      </IconButton>
+                    </section>
+
                 </Toolbar>
             </AppBar>
       <Drawer
