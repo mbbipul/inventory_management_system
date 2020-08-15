@@ -23,6 +23,7 @@ import {extendAppDrawerSideBar,collapseAppDrawerSideBar} from '../../actions';
 import Badge from '@material-ui/core/Badge';
 import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
 import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 200;
 
@@ -136,11 +137,14 @@ export default function AppDrawer() {
                     </Typography>
 
                     <section className={classes.rightToolbar}>
-                      <IconButton  aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                          <ShopTwoOutlinedIcon />
-                        </Badge>
-                      </IconButton>
+                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-due-products"}  >
+                        <IconButton  aria-label="show 4 new mails" color="inherit">
+                          <Badge badgeContent={4} color="secondary">
+                          
+                            <ShopTwoOutlinedIcon />
+                          </Badge>
+                        </IconButton>
+                      </Link>
                       <IconButton  aria-label="show 4 new mails" color="inherit">
                         <Badge badgeContent={300} color="secondary">
                           <ShoppingBasketOutlinedIcon />

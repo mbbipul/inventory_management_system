@@ -47,7 +47,7 @@ namespace inventory_rest_api.Controllers
         [HttpGet("purchase-product")]
         public async Task<ActionResult<IEnumerable>> GetPurchaseWithProduct(long id)
         {
-             var query = from purchase in _context.Purchases
+            var query = from purchase in _context.Purchases
                         join product in _context.Products
                             on purchase.ProductId equals product.ProductId
                         join supplier in _context.Suppliers
@@ -74,19 +74,40 @@ namespace inventory_rest_api.Controllers
             return await query.ToListAsync();
         }
         
-        // [HttpGet("by-productId/{productId}")]
-        // public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchasesByProductId(long productId){
-        //     var purchases = await _context.Purchases
-        //                                 .Where(p => p.ProductId == productId)
-        //                                 .OrderBy(p => p.PurchaseDate)
-        //                                 .ToListAsync();
+        [HttpGet("purchase/product-dues")]
+        public async Task<ActionResult<IEnumerable>> GetPurcahseProductDues(long id){
+            var query = from purchaseDueProducts in _context.PurchaseDueProducts
+                        join purchase in _context.Purchases
+                            on purchaseDueProducts.PurchaseId equals purchase.PurchaseId
+                        join product in _context.Products
+                            on purchase.ProductId equals product.ProductId
+                        join supplier in _context.Suppliers
+                            on purchase.SupplierId equals supplier.SupplierId
+                        select new {
+                            purchaseDueProducts.PurchaseDueProductId,
+                            purchase.PurchaseId,
+                            purchase.ProductId,
+                            supplier.SupplierId,
+                            purchase.ProductQuantity,
+                            purchase.PurchaseDate,
+                            purchase.PurchaseDiscount,
+                            purchase.PurchaseDuePaymentDate,
+                            purchase.PurchasePaidStatus,
+                            purchase.PurchasePaymentAmount,
+                            purchase.PurchasePrice,
+                            purchase.SalesPrice,
 
-        //     return purchases;
-        // }
+                            product.ProductName,
+                            supplier.SupplierName,
 
-        // PUT: api/Purchase/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+                            PurchaseDueProductsQuantity = purchaseDueProducts.ProductQuantity
+
+                        };
+
+            return await query.ToListAsync();
+        }
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPurchases(long id, Purchase purchase)
         {
@@ -116,6 +137,32 @@ namespace inventory_rest_api.Controllers
             return NoContent();
         }
 
+
+        [HttpPost("purchase/update-purchase-due/{id}")]
+        public async Task<ActionResult<PurchaseDueProduct>> PutPurchaseDueProduct(long id,PurchaseDueProduct purchaseDueProduct){
+            if (id != purchaseDueProduct.PurchaseDueProductId)
+            {
+                return BadRequest();
+            }
+
+            bool query = _context.PurchaseDueProducts.Any(p => p.PurchaseDueProductId == purchaseDueProduct.PurchaseDueProductId);
+
+            if(query){
+                PurchaseDueProduct res = _context.PurchaseDueProducts.First(p => p.PurchaseDueProductId == purchaseDueProduct.PurchaseDueProductId);
+
+                if( res.ProductQuantity == purchaseDueProduct.ProductQuantity){
+                    _context.PurchaseDueProducts.Remove(res);
+                    await _context.SaveChangesAsync();
+                    return res;
+                }
+                res.ProductQuantity -= purchaseDueProduct.ProductQuantity;
+                _context.PurchaseDueProducts.Update(res);
+                await _context.SaveChangesAsync();
+
+            }
+            return NoContent();
+        }
+ 
         // POST: api/Purchase
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -148,6 +195,16 @@ namespace inventory_rest_api.Controllers
                 _context.ProductPurchaseHistories.Add(productPurchaseHistory);
             }
 
+                        await _context.SaveChangesAsync();
+
+
+            PurchaseDueProduct purchaseDueProduct = new PurchaseDueProduct {
+                PurchaseId = purchase.PurchaseId,
+                ProductQuantity = purchase.ProductQuantity
+            };
+
+            _context.PurchaseDueProducts.Add(purchaseDueProduct);
+            
             await _context.SaveChangesAsync();
             
             return CreatedAtAction("GetPurchase", new { id = purchase.PurchaseId }, purchase);
