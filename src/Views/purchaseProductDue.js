@@ -84,18 +84,41 @@ export default function PurchaseProductDue(props) {
     },[]);
 
     const handleDialog = (data) => {
+        console.log(data);
         var purchaseDue = {
             purchaseDueProductId : data.purchaseDueProductId,
             purchaseId : data.purchaseId,
-            productQuantity : parseInt(fieldValue)
+            productQuantity : parseInt(fieldValue),
+            purchaseDueProductsQuantity : data.purchaseDueProductsQuantity
         }
+       
         setOpen(true);
         setPurchaseDueProduct(purchaseDue);
     }
     const handleUpdate = () => {
-       
-        submitForm("purchases/update-purchase-due","PUT",purchaseDueProduct,() => alert("Ok"));
+      var purchaseDue = {
+        purchaseDueProductId : purchaseDueProduct.purchaseDueProductId,
+        purchaseId : purchaseDueProduct.purchaseId,
+        productQuantity : parseInt(fieldValue)
+      }
+      if(parseInt(fieldValue) > purchaseDueProduct.purchaseDueProductsQuantity){
+        alert("Your purchase product quantity is less than "+fieldValue);
+      }else{
+        submitForm("purchases/purchase/update-purchase-due/"+purchaseDueProduct.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+        setOpen(false);
+
+      }
     }
+
+    const markDOne = (data) => {
+      var purchaseDue = {
+        purchaseDueProductId : data.purchaseDueProductId,
+        purchaseId : data.purchaseId,
+        productQuantity : data.purchaseDueProductsQuantity
+      }
+      submitForm("purchases/purchase/update-purchase-due/"+data.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+    }
+
     return(
         <div>
             <Dialog open={open} aria-labelledby="form-dialog-title">
@@ -136,7 +159,7 @@ export default function PurchaseProductDue(props) {
                     rowData => ({
                     icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
                     tooltip: 'Mark Purchase Product Recieved',
-                    onClick: (event, rowData) => alert("You want to delete " + rowData.name),
+                    onClick: (event, rowData) => markDOne(rowData),
                     disabled: rowData.birthYear < 2000
                     })
                 ]}
