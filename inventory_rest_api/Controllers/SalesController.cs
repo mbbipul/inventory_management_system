@@ -42,6 +42,43 @@ namespace inventory_rest_api.Controllers
             return sales;
         }
 
+        [HttpGet("total-sales-due-products")]
+        public ActionResult<int> GetTotalDueSalesProduct(){
+            return _context.SalesDueProducts.Count();
+        }
+        
+        [HttpGet("sales/product-dues")]
+        public async Task<ActionResult<IEnumerable>> GetSalesProductDues(long id){
+            var query = from salesDueProduct in _context.SalesDueProducts
+                        join sales in _context.Sales
+                            on salesDueProduct.SalesId equals sales.SalesId
+                        join product in _context.Products
+                            on sales.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        select new {
+                            salesDueProduct.SalesDueProductId,
+                            sales.SalesId,
+                            sales.ProductId,
+                            sales.CustomerId,
+                            sales.ProductQuantity,
+                            sales.SalesDate,
+                            sales.SalesDiscount,
+                            sales.SalesDuePaymentDate,
+                            sales.SalesPaidStatus,
+                            sales.SalesPaymentAmount,
+                            sales.SalesPrice,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                            SalesDueProductsQuantity = salesDueProduct.ProductQuantity
+
+                        };
+
+            return await query.ToListAsync();
+        }
+
         [HttpGet("sales-product-customer")]
         public async Task<ActionResult<IEnumerable>> GetSalesProductCustomers(){
             var query = from sales in _context.Sales
@@ -112,6 +149,31 @@ namespace inventory_rest_api.Controllers
             return NoContent();
         }
 
+        [HttpPost("sales/update-sales-due/{id}")]
+        public async Task<ActionResult<SalesDueProduct>> PutPurchaseDueProduct(long id,SalesDueProduct salesDueProduct){
+            if (id != salesDueProduct.SalesDueProductId)
+            {
+                return BadRequest();
+            }
+
+            bool query = _context.SalesDueProducts.Any(p => p.SalesDueProductId == salesDueProduct.SalesDueProductId);
+
+            if(query){
+                SalesDueProduct res = _context.SalesDueProducts.First(p => p.SalesDueProductId == salesDueProduct.SalesDueProductId);
+
+                if( res.ProductQuantity == salesDueProduct.ProductQuantity){
+                    _context.SalesDueProducts.Remove(res);
+                    await _context.SaveChangesAsync();
+                    return res;
+                }
+                res.ProductQuantity -= salesDueProduct.ProductQuantity;
+                _context.SalesDueProducts.Update(res);
+                await _context.SaveChangesAsync();
+
+            }
+            return NoContent();
+        }
+
         [HttpPost]
         public async Task<ActionResult<Sales>> PostSales(Sales sales)
         {
@@ -123,6 +185,15 @@ namespace inventory_rest_api.Controllers
             proPurHis.ProductQuantity -= sales.ProductQuantity;
 
             _context.ProductPurchaseHistories.Update(proPurHis);
+
+            await _context.SaveChangesAsync();
+
+            SalesDueProduct salesDueProduct = new SalesDueProduct {
+                SalesId = sales.SalesId,
+                ProductQuantity = sales.ProductQuantity
+            };
+
+            _context.SalesDueProducts.Add(salesDueProduct);
 
             await _context.SaveChangesAsync();
 
