@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Oi78wST/syV+cpp92tT0s7q+9PX5gxIT4BvlbZXEimo6YE6CcQTKLjXP7wpaGJdK4R6sUSQP4R3AJ5Sghab6aw==",
+  "dgSpecHash": "ZBAH6ONeWno1XbS+cNUzY/1D5rdRYQTbBxPWPcLtWx2u19uP0LZDPyVR/dZ6QGaM2+41VsXEMTI0z0698ycMrw==",
   "success": true,
   "projectFilePath": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
   "expectedPackageFiles": [

@@ -74,6 +74,11 @@ namespace inventory_rest_api.Controllers
             return await query.ToListAsync();
         }
         
+        [HttpGet("total-purchase-due-products")]
+        public ActionResult<int> GetTotalDueProducts(){
+            return _context.PurchaseDueProducts.Count();
+        }
+        
         [HttpGet("purchase/product-dues")]
         public async Task<ActionResult<IEnumerable>> GetPurcahseProductDues(long id){
             var query = from purchaseDueProducts in _context.PurchaseDueProducts
