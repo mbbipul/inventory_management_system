@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, {  } from 'react';
 import MaterialTable from 'material-table';
-import { Grid, Tab } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import IconCard from './iconCard';
-import Table from './productTable';
 
 function DetailsTable(props) {
 

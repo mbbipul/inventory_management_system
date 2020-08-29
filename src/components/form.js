@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextField ,Grid , MenuItem , Divider , Button, Paper, Card, Chip, Box} from '@material-ui/core';
+import {TextField ,Grid , MenuItem , Divider , Button, Paper} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
@@ -448,7 +448,7 @@ class Form extends React.Component {
                                                 }
                                                 else{
                                                     dError = false;
-                                                    if(this.state[field.label.replace(/\s/g, '')]==""){
+                                                    if(this.state[field.label.replace(/\s/g, '')]===""){
                                                         dError = true;
                                                     }
 

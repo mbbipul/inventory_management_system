@@ -1,11 +1,9 @@
 import React from 'react';
 import apiUrl from "./apiInfo";
 import AddSupplier from "../Views/addSupplier";
-import AddProduct from "../Views/addProduct";
 import AddCompany from '../Views/addCompany';
 import { Link } from 'react-router-dom';
 import AddCustomer from '../Views/addCustomer';
-import ToggleButtons from '../components/toggleButtonGroup';
 
 const addCompanyFormFields = [
     {

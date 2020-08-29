@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {Drawer} from '@material-ui/core';
@@ -24,6 +24,7 @@ import Badge from '@material-ui/core/Badge';
 import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
 import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import { Link } from 'react-router-dom';
+import { PurcDueProConsumer } from '../../context/appContext';
 
 const drawerWidth = 200;
 
@@ -97,7 +98,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AppDrawer() {
 
-   
   const classes = useStyles();
   const theme = useTheme();
   const open = useSelector(state => state.isSideBarExtend);
@@ -139,10 +139,13 @@ export default function AppDrawer() {
                     <section className={classes.rightToolbar}>
                       <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-due-products"}  >
                         <IconButton  aria-label="show 4 new mails" color="inherit">
-                          <Badge badgeContent={4} color="secondary">
-                          
-                            <ShopTwoOutlinedIcon />
-                          </Badge>
+                          <PurcDueProConsumer >
+                            {({proNumber}) => (
+                              <Badge badgeContent={proNumber} color="secondary">
+                                <ShopTwoOutlinedIcon />
+                              </Badge>
+                            )}
+                          </PurcDueProConsumer>
                         </IconButton>
                       </Link>
                       <IconButton  aria-label="show 4 new mails" color="inherit">

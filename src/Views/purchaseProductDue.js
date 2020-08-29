@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import apiUrl from '../utils/apiInfo';
-import ManageTable from '../components/manageTable';
 import submitForm from '../utils/fetchApi';
 import MaterialTable from 'material-table';
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
-import CloseIcon from '@material-ui/icons/Close';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,46 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-function FormDialog() {
-    const [open, setOpen] = React.useState(true);
-
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    return (
-      <div>
-
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To subscribe to this website, please enter your email address here. We will send updates
-              occasionally.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} color="primary">
-              Subscribe
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    );
-  }
+import PurcDueProContext from '../context/appContext';
 
   
 export default function PurchaseProductDue(props) {
@@ -68,15 +25,18 @@ export default function PurchaseProductDue(props) {
         { title: 'Purchase Due Product Id   ', field: 'purchaseId' },
         { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Product Name', field: 'productName' },
-        { title: 'Purchase Due Product Quantity', field: 'productQuantity' },
+        { title: 'Purchase Due Product Quantity', field: 'purchaseDueProductsQuantity' },
         { title: 'Purchase Date', field: 'purchaseDate' },
 
     ]);
 
+    const {  setProNumber } = React.useContext(PurcDueProContext);
+
     const FetchData = async () => {
 
         submitForm("purchases/purchase/product-dues","GET","",(res) => setData(JSON.parse(res)))
-      
+        setProNumber();
+        
     };
 
     useEffect(() => {
@@ -147,7 +107,7 @@ export default function PurchaseProductDue(props) {
                 </DialogActions>
             </Dialog>
             <MaterialTable
-                title="Positioning Actions Column Preview"
+                title="Manage Purchase Due Products"
                 columns={columns}
                 data={data}
                 actions={[
@@ -163,6 +123,7 @@ export default function PurchaseProductDue(props) {
                     disabled: rowData.birthYear < 2000
                     })
                 ]}
+             
                 options={{
                     actionsColumnIndex: -1
                 }}

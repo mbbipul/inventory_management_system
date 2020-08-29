@@ -5,9 +5,11 @@ import { addPurchaseFormFields } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
 import HistoryVisual from '../components/historyWithVisualization';
+import PurcDueProContext from '../context/appContext';
 
 class AddPurchase extends React.Component {
 
+    static contextType = PurcDueProContext;
 
     constructor(props){
         super(props);
@@ -15,10 +17,11 @@ class AddPurchase extends React.Component {
             purchase : {},
             openSnackbar : false,
         }
+        console.log(this.purDueCon);
+
     }
 
-    onPurchaseAddSucces = (result) => {
-
+    onPurchaseAddSucces = (result) => { 
         this.setState({
             purchase : JSON.parse(result),
             openSnackbar : true,
@@ -31,7 +34,8 @@ class AddPurchase extends React.Component {
         })
     }
 
-    submitPurchaseForm = (state) => {
+    submitPurchaseForm = (state) => {       
+        const context = this.context;
         let exactPurchasePrice = parseFloat(state.PurchasePrice)-parseFloat(state.PurchaseDiscount);
 
         let paid = exactPurchasePrice - parseFloat(state.PurchasePaymentAmount) ;
@@ -63,7 +67,7 @@ class AddPurchase extends React.Component {
                 "salestPrice" : parseInt(state.SalesPrice),
                 "productDetails" : state.ProductName.productId.productDetails,
             }
-            submitForm("Products/"+2+"/"+purchase.productId,"PUT",product,this.onPurchaseAddSucces(res));
+            submitForm("Products/"+2+"/"+purchase.productId,"PUT",product,() => {this.onPurchaseAddSucces(res);context.setProNumber();             });
 
         });
         
@@ -91,5 +95,6 @@ class AddPurchase extends React.Component {
         )
     }
 }
+
 
 export default AddPurchase;

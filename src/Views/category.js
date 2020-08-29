@@ -12,7 +12,6 @@ import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 import submitForm from "../utils/fetchApi";
 import Alert from '@material-ui/lab/Alert';
-import MaterialTableDetailsPanel from "../components/collapseTable";
 
 import apiUrl from "../utils/apiInfo";
 import ManageTable from "../components/manageTable";
