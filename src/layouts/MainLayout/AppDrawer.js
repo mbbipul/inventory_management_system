@@ -24,7 +24,7 @@ import Badge from '@material-ui/core/Badge';
 import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
 import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import { Link } from 'react-router-dom';
-import { PurcDueProConsumer } from '../../context/appContext';
+import { AppContextConsumer } from '../../context/appContext';
 
 const drawerWidth = 200;
 
@@ -138,21 +138,28 @@ export default function AppDrawer() {
 
                     <section className={classes.rightToolbar}>
                       <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-due-products"}  >
-                        <IconButton  aria-label="show 4 new mails" color="inherit">
-                          <PurcDueProConsumer >
-                            {({proNumber}) => (
-                              <Badge badgeContent={proNumber} color="secondary">
+                        <IconButton  aria-label="purchase due" color="inherit">
+                          <AppContextConsumer >
+                            {({purDueNumber}) => (
+                              <Badge badgeContent={purDueNumber} color="secondary">
                                 <ShopTwoOutlinedIcon />
                               </Badge>
                             )}
-                          </PurcDueProConsumer>
+                          </AppContextConsumer>
                         </IconButton>
                       </Link>
-                      <IconButton  aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={300} color="secondary">
-                          <ShoppingBasketOutlinedIcon />
-                        </Badge>
-                      </IconButton>
+                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-due-products"}  >
+                        <IconButton  aria-label="sales due" color="inherit">
+                          <AppContextConsumer >
+                            {({salesDueNumber}) => (
+                              <Badge badgeContent={salesDueNumber} color="secondary">
+                                <ShoppingBasketOutlinedIcon />
+                              </Badge>
+                            )}
+                          </AppContextConsumer>
+                        </IconButton>
+                      </Link>
+                   
                     </section>
 
                 </Toolbar>

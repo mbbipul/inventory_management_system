@@ -13,29 +13,29 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
 
   
-export default function PurchaseProductDue(props) {
+export default function SalesProductDue(props) {
 
     const [data,setData] = useState([]);
     const [open,setOpen] = useState(false);
 
     const [fieldValue,setFieldValue] = useState("");
-    const [purchaseDueProduct,setPurchaseDueProduct] = useState("");
+    const [salesDueProduct,setSalesDueProduct] = useState("");
 
     const [columns,] =  useState([
-        { title: 'Purchase Due Product Id   ', field: 'purchaseId' },
-        { title: 'Supplier Name', field: 'supplierName' },
+        { title: 'Sales Due Product Id   ', field: 'saleseId' },
+        { title: 'Customer Name', field: 'customerName' },
         { title: 'Product Name', field: 'productName' },
-        { title: 'Purchase Due Product Quantity', field: 'purchaseDueProductsQuantity' },
-        { title: 'Purchase Date', field: 'purchaseDate' },
+        { title: 'Sales Due Product Quantity', field: 'salesDueProductsQuantity' },
+        { title: 'Sales Date', field: 'saleseDate' },
 
     ]);
 
-    const {  setProNumber } = React.useContext(AppContext);
+    const {  setSalesDueNumber } = React.useContext(AppContext);
 
     const FetchData = async () => {
 
-        submitForm("purchases/purchase/product-dues","GET","",(res) => setData(JSON.parse(res)))
-        setProNumber();
+        submitForm("sales/sales/product-dues","GET","",(res) => setData(JSON.parse(res)))
+        setSalesDueNumber();
         
     };
 
@@ -45,47 +45,47 @@ export default function PurchaseProductDue(props) {
 
     const handleDialog = (data) => {
         console.log(data);
-        var purchaseDue = {
-            purchaseDueProductId : data.purchaseDueProductId,
-            purchaseId : data.purchaseId,
+        var salesDue = {
+            salesDueProductId : data.salesDueProductId,
+            salesId : data.salesId,
             productQuantity : parseInt(fieldValue),
-            purchaseDueProductsQuantity : data.purchaseDueProductsQuantity
+            salesDueProductsQuantity : data.salesDueProductsQuantity
         }
        
         setOpen(true);
-        setPurchaseDueProduct(purchaseDue);
+        setSalesDueProduct(salesDue);
     }
     const handleUpdate = () => {
-      var purchaseDue = {
-        purchaseDueProductId : purchaseDueProduct.purchaseDueProductId,
-        purchaseId : purchaseDueProduct.purchaseId,
+      var salesDue = {
+        salesDueProductId : salesDueProduct.salesDueProductId,
+        salesId : salesDueProduct.salesId,
         productQuantity : parseInt(fieldValue)
       }
-      if(parseInt(fieldValue) > purchaseDueProduct.purchaseDueProductsQuantity){
-        alert("Your purchase product quantity is less than "+fieldValue);
+      if(parseInt(fieldValue) > salesDueProduct.salesDueProductsQuantity){
+        alert("Your sales product quantity is less than "+fieldValue);
       }else{
-        submitForm("purchases/purchase/update-purchase-due/"+purchaseDueProduct.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+        submitForm("sales/sales/update-sales-due/"+salesDueProduct.salesDueProductId,"POST",salesDue,() => FetchData());
         setOpen(false);
 
       }
     }
 
     const markDOne = (data) => {
-      var purchaseDue = {
-        purchaseDueProductId : data.purchaseDueProductId,
-        purchaseId : data.purchaseId,
-        productQuantity : data.purchaseDueProductsQuantity
+      var salesDue = {
+        saleseDueProductId : data.salesDueProductId,
+        salesId : data.salesId,
+        productQuantity : data.salesDueProductsQuantity
       }
-      submitForm("purchases/purchase/update-purchase-due/"+data.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+      submitForm("sales/sales/update-sales-due/"+data.salesDueProductId,"POST",salesDue,() => FetchData());
     }
 
     return(
         <div>
             <Dialog open={open} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Purchase Due Products</DialogTitle>
+                <DialogTitle id="form-dialog-title">Sales Due Products</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                    Update Recieve Information Of Purchase Due Products
+                    Update Recieve Information Of sales Due Products
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -107,7 +107,7 @@ export default function PurchaseProductDue(props) {
                 </DialogActions>
             </Dialog>
             <MaterialTable
-                title="Manage Purchase Due Products"
+                title="Manage Sales Due Products"
                 columns={columns}
                 data={data}
                 actions={[
@@ -118,7 +118,7 @@ export default function PurchaseProductDue(props) {
                     },
                     rowData => ({
                     icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                    tooltip: 'Mark Purchase Product Recieved',
+                    tooltip: 'Mark Sales Product Recieved',
                     onClick: (event, rowData) => markDOne(rowData),
                     disabled: rowData.birthYear < 2000
                     })

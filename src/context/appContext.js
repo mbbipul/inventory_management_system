@@ -1,11 +1,13 @@
 import React from 'react'
 
-const PurcDueProContext = React.createContext({
-    proNumber : 0,
+const AppContext = React.createContext({
+    purDueNumber : 0,
+    salesDueNumber : 0,
+    setSalesDueNumber : () => {},
     setProNumber : () => {},
 });
 
-export const PurcDueProProvider = PurcDueProContext.Provider
-export const PurcDueProConsumer = PurcDueProContext.Consumer
+export const AppContextProvider = AppContext.Provider
+export const AppContextConsumer = AppContext.Consumer
 
-export default PurcDueProContext;                                                                                                                                                                                                                                                                
+export default AppContext;                                                                                                                                                                                                                                                                

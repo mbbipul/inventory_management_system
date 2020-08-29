@@ -18,8 +18,9 @@ import Cost from './Views/cost';
 import Employee from './Views/employee';
 import Salary from './Views/salary';
 import PurchaseProductDue from './Views/purchaseProductDue';
-import { PurcDueProProvider } from './context/appContext';
+import { AppContextProvider } from './context/appContext';
 import submitForm from './utils/fetchApi';
+import SalesProductDue from './Views/salesProductDue';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -38,14 +39,21 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const isDrawerExtend = useSelector(state => state.isSideBarExtend);
-  const [providerValue,setProValue] = useState(0);
 
-  const fetchPurchaseDueProducts = () => {
-    submitForm("purchases/total-purchase-due-products","GET","",(res) => setProValue(res));
+  const [purDueProd,setPurDueProd] = useState(0);
+  const [salesDueProd,setSalesDueProd] = useState(0);
+
+  const fetchPurDueProducts = () => {
+    submitForm("purchases/total-purchase-due-products","GET","",(res) => setPurDueProd(res));
+  }
+
+  const fetchSalDueProducts = () => {
+    submitForm("sales/total-sales-due-products","GET","",(res) => setSalesDueProd(res));
 
   }
   useEffect(() => {
-    fetchPurchaseDueProducts();
+    fetchPurDueProducts();
+    fetchSalDueProducts();
   },[])
 
   var content = {
@@ -61,13 +69,15 @@ function App() {
     }
   }
 
-  const purDueProv = {
-    proNumber : providerValue,
-    setProNumber : fetchPurchaseDueProducts,
+  const dueProducts = {
+    purDueNumber : purDueProd,
+    salesDueNumber : salesDueProd,
+    setSalesDueNumber : fetchSalDueProducts,
+    setProNumber : fetchPurDueProducts,
   }
   
   return (
-    <PurcDueProProvider value={purDueProv}>
+    <AppContextProvider value={dueProducts}>
       <Router>
         <AppDrawer />
         <main style={content}  >
@@ -78,6 +88,9 @@ function App() {
             </Route>
             <Route exact path="/dashboard">
               <DashBoard />
+            </Route>
+            <Route exact path="/sales/sales-due-products">
+              <SalesProductDue />
             </Route>
             <Route path="/sales">
               <Sales />
@@ -114,7 +127,7 @@ function App() {
           </Switch>
           </main>
       </Router>
-    </PurcDueProProvider>
+    </AppContextProvider>
   );
 }
 

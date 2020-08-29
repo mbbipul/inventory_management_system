@@ -11,8 +11,8 @@
 # production
 /build
 
-/inventory_rest_api/bin
-/inventory_rest_api/obj
+inventory_rest_api/bin
+inventory_rest_api/obj
 
 # misc
 .DS_Store

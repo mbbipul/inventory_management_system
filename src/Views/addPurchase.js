@@ -5,11 +5,11 @@ import { addPurchaseFormFields } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
 import HistoryVisual from '../components/historyWithVisualization';
-import PurcDueProContext from '../context/appContext';
+import AppContext from '../context/appContext';
 
 class AddPurchase extends React.Component {
 
-    static contextType = PurcDueProContext;
+    static contextType = AppContext;
 
     constructor(props){
         super(props);
