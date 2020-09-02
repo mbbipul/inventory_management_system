@@ -79,6 +79,11 @@ namespace inventory_rest_api.Controllers
             return _context.PurchaseDueProducts.Count();
         }
         
+        [HttpGet("total-purchase-payment-due")]
+        public ActionResult<int> GetTotalDuePayment(){
+            return _context.Purchases.Where( p => p.PurchasePaidStatus == false).Count();
+        }
+
         [HttpGet("purchase/product-dues")]
         public async Task<ActionResult<IEnumerable>> GetPurcahseProductDues(long id){
             var query = from purchaseDueProducts in _context.PurchaseDueProducts
@@ -113,6 +118,37 @@ namespace inventory_rest_api.Controllers
         }
 
 
+        [HttpGet("purchase-payment-due")]
+        public async Task<ActionResult<IEnumerable>> GetPurcahsePaymentDue(long id){
+
+            var query = from purchase in _context.Purchases where purchase.PurchasePaidStatus == false
+                        join product in _context.Products
+                            on purchase.ProductId equals product.ProductId
+                        join supplier in _context.Suppliers
+                            on purchase.SupplierId equals supplier.SupplierId
+                        select new {
+                            purchase.PurchaseId,
+                            purchase.ProductId,
+                            supplier.SupplierId,
+                            purchase.ProductQuantity,
+                            purchase.PurchaseDate,
+                            purchase.PurchaseDiscount,
+                            purchase.PurchaseDuePaymentDate,
+                            purchase.PurchasePaidStatus,
+
+                            PurchasePaymentDue = purchase.PurchasePrice - purchase.PurchasePaymentAmount,
+                           
+                            purchase.PurchasePrice,
+                            purchase.SalesPrice,
+
+                            product.ProductName,
+                            supplier.SupplierName,
+
+                        }; 
+            return await query.ToListAsync();
+            
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPurchases(long id, Purchase purchase)
         {
@@ -142,6 +178,24 @@ namespace inventory_rest_api.Controllers
             return NoContent();
         }
 
+        [HttpPut("purchase-payment-due/{id}-{amount}-{date}")]
+        public async Task<ActionResult<string>> PutPurchasePaymentDue(long id,long amount,string date){
+            Purchase purchase = await _context.Purchases.Where( p => p.PurchaseId == id).FirstAsync();
+
+            if (amount == (purchase.PurchasePrice - purchase.PurchasePaymentAmount)){
+                purchase.PurchasePaidStatus = true;
+               
+            }
+            purchase.PurchasePaymentAmount += amount;
+            purchase.PurchaseDuePaymentDate = date;
+
+            _context.Purchases.Update(purchase);
+
+            await _context.SaveChangesAsync(); 
+            return "Successfully update";
+
+
+        }
 
         [HttpPost("purchase/update-purchase-due/{id}")]
         public async Task<ActionResult<PurchaseDueProduct>> PutPurchaseDueProduct(long id,PurchaseDueProduct purchaseDueProduct){
