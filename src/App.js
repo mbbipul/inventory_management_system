@@ -21,6 +21,7 @@ import PurchaseProductDue from './Views/purchaseProductDue';
 import { AppContextProvider } from './context/appContext';
 import submitForm from './utils/fetchApi';
 import SalesProductDue from './Views/salesProductDue';
+import PurchasePaymentDue from './Views/purchasePaymentDue';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -41,6 +42,7 @@ function App() {
   const isDrawerExtend = useSelector(state => state.isSideBarExtend);
 
   const [purDueProd,setPurDueProd] = useState(0);
+  const [purPaymentDue,setPurPaymentDue] = useState(0);
   const [salesDueProd,setSalesDueProd] = useState(0);
 
   const fetchPurDueProducts = () => {
@@ -51,9 +53,15 @@ function App() {
     submitForm("sales/total-sales-due-products","GET","",(res) => setSalesDueProd(res));
 
   }
+
+  const fetchPurPaymentDue = () => {
+    submitForm("purchases/total-purchase-payment-due","GET","",(res) => setPurPaymentDue(res));
+
+  }
   useEffect(() => {
     fetchPurDueProducts();
     fetchSalDueProducts();
+    fetchPurPaymentDue();
   },[])
 
   var content = {
@@ -72,8 +80,10 @@ function App() {
   const dueProducts = {
     purDueNumber : purDueProd,
     salesDueNumber : salesDueProd,
+    purPaymentDue : purPaymentDue,
     setSalesDueNumber : fetchSalDueProducts,
     setProNumber : fetchPurDueProducts,
+    setPurPaymentDue : fetchPurPaymentDue,
   }
   
   return (
@@ -97,6 +107,9 @@ function App() {
             </Route>
             <Route exact path="/purchase/purchase-due-products">
               <PurchaseProductDue />
+            </Route>
+            <Route exact path="/purchase/purchase-payment-due">
+              <PurchasePaymentDue />
             </Route>
             <Route path="/purchase">
               <Purchase />

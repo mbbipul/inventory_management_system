@@ -15,7 +15,7 @@ function ManageTable(props){
 
     let [alertText,setAlertText] = useState("");
     
-    const [datas, setData] = React.useState(props.data);
+    const [datas, setData] = React.useState([]);
 
    
     const FetchData = async (url,setData) => {
@@ -40,11 +40,8 @@ function ManageTable(props){
       };
       
     useEffect(() => {
-        // Update the document title using the browser API
-        if(datas.length === 0){
-            FetchData(url,setData);
-        }
-    },[]);
+        setData(props.data);
+    },[props.data]);
 
     useEffect(() => {
         const timer = setTimeout(() => {

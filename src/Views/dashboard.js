@@ -63,14 +63,25 @@ const DashBoard = () =>{
     },[reportTabs]);
 
     useEffect(() => {
-        submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
-        submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+        if(fromDate > toDate){
+            alert("Starting date cannot larger than Last Date");
+        }else{
+            submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
+            submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+        }
+     
     },[fromDate]);
 
     useEffect(() => {
-        submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
-        submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+        if(fromDate > toDate){
+            alert("Starting date cannot larger than Last Date");
+        }else{
+            submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
+            submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+        }
+      
     },[toDate]);
+
     const FetchData = (filter,date) => {
         submitForm("profit/profit-details/"+filter+"-"+date,"GET","",(res) => setData(JSON.parse(res)));
         submitForm("profit/report-details/"+filter+"-"+date,"GET","",(res) => setReportDetails(JSON.parse(res)));
@@ -229,14 +240,14 @@ const DashBoard = () =>{
                             justify="center"
                             alignItems="center">
 
-                            <grid item xs >
+                            <Grid item xs >
                                 <strong>From</strong>
                                 <MaterialUIPickers onChange={(date) => setFromDate(date)} />
-                            </grid>
-                            <grid style={{marginLeft:100}} item xs >
+                            </Grid>
+                            <Grid style={{marginLeft:100}} item xs >
                                 <strong>To</strong>
                                 <MaterialUIPickers onChange={(date) => setToDate(date)} />
-                            </grid>
+                            </Grid>
                         </Grid>
         },
 

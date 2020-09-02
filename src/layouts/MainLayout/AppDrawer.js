@@ -25,6 +25,8 @@ import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
 import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import { Link } from 'react-router-dom';
 import { AppContextConsumer } from '../../context/appContext';
+import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
+import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
 
 const drawerWidth = 200;
 
@@ -148,6 +150,17 @@ export default function AppDrawer() {
                           </AppContextConsumer>
                         </IconButton>
                       </Link>
+                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-payment-due"}  >
+                        <IconButton  aria-label="purchase payment due" color="inherit">
+                          <AppContextConsumer >
+                            {({purPaymentDue}) => (
+                              <Badge badgeContent={purPaymentDue} color="secondary">
+                                <AccountBalanceWalletOutlinedIcon />
+                              </Badge>
+                            )}
+                          </AppContextConsumer>
+                        </IconButton>
+                      </Link>
                       <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-due-products"}  >
                         <IconButton  aria-label="sales due" color="inherit">
                           <AppContextConsumer >
@@ -159,7 +172,18 @@ export default function AppDrawer() {
                           </AppContextConsumer>
                         </IconButton>
                       </Link>
-                   
+                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-payment-due"}  >
+                        <IconButton  aria-label="sales payment due" color="inherit">
+                          <AppContextConsumer >
+                            {({purDueNumber}) => (
+                              <Badge badgeContent={purDueNumber} color="secondary">
+                                <CreditCardOutlinedIcon />
+                              </Badge>
+                            )}
+                          </AppContextConsumer>
+                        </IconButton>
+                      </Link>
+                     
                     </section>
 
                 </Toolbar>

@@ -14,6 +14,8 @@ import TodaysReport from "../components/todaysReport";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
+import MaterialUIPickers from "../components/datePicker";
+import { Grid } from "@material-ui/core";
 
 function Purchase () {
     const [reportTabs,setReportTabs] = useState(0);
@@ -22,7 +24,9 @@ function Purchase () {
 
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
-    
+    const [fromDate,setFromDate] = useState("");
+    const [toDate,setToDate] = useState("");
+
     function CustomPaidStatus (props) {
         return (
             <div>
@@ -85,6 +89,12 @@ function Purchase () {
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
+                break;
+            case 6:
+                if(fromDate > toDate){
+                    alert("Starting date cannot larger than Last Date");
+                }
+
                 break;
             default:
                 break;
@@ -208,11 +218,24 @@ function Purchase () {
             </div>
         },
         {
-            tab : "Jump To",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
-        }
+            tab : "Jump To",    
+            tabPanel :  <Grid
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center">
+
+                            <Grid item xs >
+                                <strong>From</strong>
+                                <MaterialUIPickers onChange={(date) => setFromDate(date)} />
+                            </Grid>
+                            <Grid style={{marginLeft:100}} item xs >
+                                <strong>To</strong>
+                                <MaterialUIPickers onChange={(date) => setToDate(date)} />
+                            </Grid>
+                        </Grid>
+        },
+
     ];
 
     const detailsPane = rowData => {
@@ -260,7 +283,7 @@ function Purchase () {
                                 hasUnique={true}
                                 uniqueKey="companyId" 
                                 uniqueName="companyName" 
-                                apiUrl="Purchases/" 
+                                apiUrl={"Purchases/purchase-product"}
                                 ondataChange={() => console.log("chaange")} 
                                 columns={columns} 
                                 data={data} />
