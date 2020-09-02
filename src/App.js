@@ -22,6 +22,7 @@ import { AppContextProvider } from './context/appContext';
 import submitForm from './utils/fetchApi';
 import SalesProductDue from './Views/salesProductDue';
 import PurchasePaymentDue from './Views/purchasePaymentDue';
+import SalesPaymentDue from './Views/salesPaymentDue';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -44,6 +45,7 @@ function App() {
   const [purDueProd,setPurDueProd] = useState(0);
   const [purPaymentDue,setPurPaymentDue] = useState(0);
   const [salesDueProd,setSalesDueProd] = useState(0);
+  const [salesPaymentDue,setSalesPaymentDue] = useState(0);
 
   const fetchPurDueProducts = () => {
     submitForm("purchases/total-purchase-due-products","GET","",(res) => setPurDueProd(res));
@@ -56,12 +58,17 @@ function App() {
 
   const fetchPurPaymentDue = () => {
     submitForm("purchases/total-purchase-payment-due","GET","",(res) => setPurPaymentDue(res));
-
   }
+
+  const fetchSalesPaymentDue = () => {
+    submitForm("sales/total-sales-payment-due","GET","",(res) => setSalesPaymentDue(res));
+  }
+
   useEffect(() => {
     fetchPurDueProducts();
     fetchSalDueProducts();
     fetchPurPaymentDue();
+    fetchSalesPaymentDue();
   },[])
 
   var content = {
@@ -81,9 +88,11 @@ function App() {
     purDueNumber : purDueProd,
     salesDueNumber : salesDueProd,
     purPaymentDue : purPaymentDue,
+    salesPaymentDue : salesPaymentDue,
     setSalesDueNumber : fetchSalDueProducts,
     setProNumber : fetchPurDueProducts,
     setPurPaymentDue : fetchPurPaymentDue,
+    setSalesPaymentDue : fetchSalesPaymentDue,
   }
   
   return (
@@ -101,6 +110,9 @@ function App() {
             </Route>
             <Route exact path="/sales/sales-due-products">
               <SalesProductDue />
+            </Route>
+            <Route exact path="/sales/sales-payment-due">
+              <SalesPaymentDue />
             </Route>
             <Route path="/sales">
               <Sales />

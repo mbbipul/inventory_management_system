@@ -175,8 +175,8 @@ export default function AppDrawer() {
                       <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-payment-due"}  >
                         <IconButton  aria-label="sales payment due" color="inherit">
                           <AppContextConsumer >
-                            {({purDueNumber}) => (
-                              <Badge badgeContent={purDueNumber} color="secondary">
+                            {({salesPaymentDue}) => (
+                              <Badge badgeContent={salesPaymentDue} color="secondary">
                                 <CreditCardOutlinedIcon />
                               </Badge>
                             )}

@@ -15,7 +15,7 @@ import MaterialUIPickers from '../components/datePicker';
 
 
   
-export default function PurchasePaymentDue(props) {
+export default function SalesPaymentDue(props) {
 
     const [data,setData] = useState([]);
     const [open,setOpen] = useState(false);
@@ -24,24 +24,24 @@ export default function PurchasePaymentDue(props) {
     const [nextPaymentDueDate,setNextPaymentDueDate] = useState(new Date().getTime());
 
     const [columns,] =  useState([
-        { title: 'Purchase Id   ', field: 'purchaseId' },
-        { title: 'Supplier Name', field: 'supplierName' },
+        { title: 'Sales Id   ', field: 'salesId' },
+        { title: 'Customer Name', field: 'customerName' },
         { title: 'Product Name', field: 'productName' },
-        { title: 'Purchase Payment Due Amount', field: 'purchasePaymentDue' },
-        { title: 'Purchase Date', field: 'purchaseDate' },
-        { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
+        { title: 'Sales Payment Due Amount', field: 'salesPaymentDue' },
+        { title: 'Sales Date', field: 'salesDate' },
+        { title: 'Sales Due Payment Date', field: 'salesDuePaymentDate' },
 
 
     ]);
 
-    const [purchaseWithDue,setPurchaseWithDue] = useState({});
+    const [salesWithDue,setSalesWithDue] = useState({});
 
-    const {  setPurPaymentDue } = React.useContext(AppContext);
+    const {  setSalesPaymentDue } = React.useContext(AppContext);
 
     const FetchData = async () => {
 
-        submitForm("purchases/purchase-payment-due","GET","",(res) => setData(JSON.parse(res)))
-        setPurPaymentDue();
+        submitForm("sales/sales-payment-due","GET","",(res) => setData(JSON.parse(res)))
+        setSalesPaymentDue();
         
     };
 
@@ -52,28 +52,28 @@ export default function PurchasePaymentDue(props) {
     const handleDialog = (data) => {
         
         setOpen(true);
-        setPurchaseWithDue(data);
+        setSalesWithDue(data);
     }
     const handleUpdate = () => {
-        if(parseFloat(fieldValue) > purchaseWithDue.purchasePaymentDue){
-            alert("Your purchase due amount is more than "+purchaseWithDue.purchasePaymentDue);
+        if(parseFloat(fieldValue) > salesWithDue.salesPaymentDue){
+            alert("Your Sales due amount is more than "+salesWithDue.salesPaymentDue);
         }else{
-            submitForm("purchases/purchase-payment-due/"+ 
-                    purchaseWithDue.purchaseId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+            submitForm("sales/sales-payment-due/"+ 
+                    salesWithDue.salesId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
             setOpen(false);     
 
         }
     }
 
     const markDOne = (data) => {
-        submitForm("purchases/purchase-payment-due/"+ 
-            data.purchaseId+"-"+data.purchasePaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+        submitForm("sales/sales-payment-due/"+ 
+            data.salesId+"-"+data.salesPaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
     }
 
     return(
         <div>
             <Dialog open={open} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Purchase Payment Due</DialogTitle>
+                <DialogTitle id="form-dialog-title">Sales Payment Due</DialogTitle>
                 <DialogContent>
                    
                     <TextField
@@ -81,13 +81,13 @@ export default function PurchasePaymentDue(props) {
                         margin="dense"
                         id="name"
                         onChange={(event) => setFieldValue(event.target.value)}
-                        label="Pay Purchase Due Amount"
+                        label="Pay Sales Due Amount"
                         type="text"
                         fullWidth
                     />
 
                     <br/>
-                    <label>Next Purchase Payment Due Date</label>
+                    <label>Next Sales Payment Due Date</label>
                     <br/>
                     <MaterialUIPickers onChange={(date) => setNextPaymentDueDate(date)} />
 
@@ -102,18 +102,18 @@ export default function PurchasePaymentDue(props) {
                 </DialogActions>
             </Dialog>
             <MaterialTable
-                title="Manage Purchase Payment Due"
+                title="Manage Sales Payment Due"
                 columns={columns}
                 data={data}
                 actions={[
                     {
                     icon: 'edit',
-                    tooltip: 'Pay Purchase Payment Due ',
+                    tooltip: 'Pay Sales Payment Due ',
                     onClick: (event, rowData) => handleDialog(rowData)
                     },
                     rowData => ({
                     icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                    tooltip: 'Mark Purchase payment due paid',
+                    tooltip: 'Mark Sales payment due paid',
                     onClick: (event, rowData) => markDOne(rowData),
                     disabled: rowData.birthYear < 2000
                     })
