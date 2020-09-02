@@ -46,6 +46,11 @@ namespace inventory_rest_api.Controllers
         public ActionResult<int> GetTotalDueSalesProduct(){
             return _context.SalesDueProducts.Count();
         }
+
+        [HttpGet("total-sales-payment-due")]
+        public ActionResult<int> GetTotalDuePayment(){
+            return _context.Sales.Where( s => s.SalesPaidStatus == false).Count();
+        }
         
         [HttpGet("sales/product-dues")]
         public async Task<ActionResult<IEnumerable>> GetSalesProductDues(long id){
@@ -78,6 +83,37 @@ namespace inventory_rest_api.Controllers
 
             return await query.ToListAsync();
         }
+
+        [HttpGet("sales-payment-due")]
+        public async Task<ActionResult<IEnumerable>> GetSalesPaymentDue(long id){
+
+            var query = from sales in _context.Sales where sales.SalesPaidStatus == false
+                        join product in _context.Products
+                            on sales.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        select new {
+                            sales.SalesId,
+                            sales.ProductId,
+                            customer.CustomerId,
+                            sales.ProductQuantity,
+                            sales.SalesDate,
+                            sales.SalesDiscount,
+                            sales.SalesDuePaymentDate,
+                            sales.SalesPaidStatus,
+
+                            SalesPaymentDue = sales.SalesPrice - sales.SalesPaymentAmount,
+                           
+                            sales.SalesPrice,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        }; 
+            return await query.ToListAsync();
+            
+        }
+
 
         [HttpGet("sales-product-customer")]
         public async Task<ActionResult<IEnumerable>> GetSalesProductCustomers(){
@@ -147,6 +183,25 @@ namespace inventory_rest_api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPut("sales-payment-due/{id}-{amount}-{date}")]
+        public async Task<ActionResult<string>> PutSalesPaymentDue(long id,long amount,string date){
+            Sales sales = await _context.Sales.Where( s => s.SalesId == id).FirstAsync();
+
+            if (amount == (sales.SalesPrice - sales.SalesPaymentAmount)){
+                sales.SalesPaidStatus = true;
+               
+            }
+            sales.SalesPaymentAmount += amount;
+            sales.SalesDuePaymentDate = date;
+
+            _context.Sales.Update(sales);
+
+            await _context.SaveChangesAsync(); 
+            return "Successfully update";
+
+
         }
 
         [HttpPost("sales/update-sales-due/{id}")]
