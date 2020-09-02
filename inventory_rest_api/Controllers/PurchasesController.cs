@@ -231,6 +231,12 @@ namespace inventory_rest_api.Controllers
             return purchase;
         }
 
+        [HttpDelete("delete-multiple")] 
+        public async Task<ActionResult<string>> DeleteMultiplePurchases(List<Purchase> purchases) {
+            _context.Purchases.RemoveRange(purchases);
+            await _context.SaveChangesAsync();
+            return "successfully deleted " + purchases.Count() + " purchases";
+        }
         private bool PurchasesExists(long id)
         {
             return _context.Purchases.Any(e => e.PurchaseId == id);
