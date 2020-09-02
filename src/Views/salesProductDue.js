@@ -72,10 +72,12 @@ export default function SalesProductDue(props) {
 
     const markDOne = (data) => {
       var salesDue = {
-        saleseDueProductId : data.salesDueProductId,
+        salesDueProductId : data.salesDueProductId,
         salesId : data.salesId,
         productQuantity : data.salesDueProductsQuantity
       }
+      console.log(data);
+      console.log(salesDue);
       submitForm("sales/sales/update-sales-due/"+data.salesDueProductId,"POST",salesDue,() => FetchData());
     }
 
