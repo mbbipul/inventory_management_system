@@ -261,10 +261,9 @@ function Purchase () {
                                 uniqueKey="companyId" 
                                 uniqueName="companyName" 
                                 apiUrl="Purchases/" 
-                                ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
-                                
-                            />
+                                ondataChange={() => console.log("chaange")} 
+                                columns={columns} 
+                                data={data} />
                         </div>
                     </Route>
                 </Switch>
