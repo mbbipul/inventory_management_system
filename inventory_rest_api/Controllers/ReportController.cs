@@ -20,10 +20,32 @@ namespace inventory_rest_api.Controllers
         [HttpGet("purchase-report")]
         public  ActionResult<Object> GetPurchaseReport(){
 
+            var purchaseRateQuery = from purchase in _context.Purchases
+                                select new {
+                                    purchase.PurchaseId,
+                                    purchase.ProductId,
+                                    purchase.ProductQuantity,
+                                    AppUtils.DateTime(purchase.PurchaseDate).Day,
+                                    AppUtils.DateTime(purchase.PurchaseDate).Month,
+                                    AppUtils.DateTime(purchase.PurchaseDate).Year,
+                                    Date = AppUtils.DateTime(purchase.PurchaseDate).ToShortDateString(),
+                                };
+            var purRateReport = purchaseRateQuery.AsEnumerable()
+                        .GroupBy( 
+                            p => p.Date,
+                            (key,g) => new { 
+                                Date = key , 
+                                Count = g.Count(),
+                                Data = g.ToList(),
+                            }
+                        ).ToList();      
+
             var report = new {
                 TotalProductPurchase  = _context.Purchases.Select( p => p.ProductId).Distinct().Count(),
                 TotalPurchasePrice = _context.Purchases.Sum( p => p.PurchasePrice),
-                TotalPurchaseProductDue = _context.PurchaseDueProducts.Select( pd => pd.Purchase.ProductId).Distinct().Count()
+                TotalPurchaseProductDue = _context.PurchaseDueProducts.Select( pd => pd.Purchase.ProductId).Distinct().Count(),
+                TotalPurchasePaymentDue = _context.Purchases.Where( p => p.PurchasePaidStatus == false).Count(),
+                PurchaseRate = purRateReport,
             };
 
             return report;

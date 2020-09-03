@@ -16,6 +16,7 @@ import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
 import MaterialUIPickers from "../components/datePicker";
 import { Grid } from "@material-ui/core";
+import submitForm from "../utils/fetchApi";
 
 function Purchase () {
     const [reportTabs,setReportTabs] = useState(0);
@@ -26,6 +27,10 @@ function Purchase () {
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
+
+    const [purchaseReport,setPurchaseReport] = useState({});
+    const [reportItems,setReportItems] = useState([]);
+    const [reportOptions,setReportOptions] = useState({});
 
     function CustomPaidStatus (props) {
         return (
@@ -184,16 +189,84 @@ function Purchase () {
     
     useEffect(() => {
         FetchData();
+        submitForm("Report/purchase-report","GET","",(res) => setPurchaseReport(JSON.parse(res)));
     },[]);
+
+    useEffect(() => {
+        setReportItems([
+            {
+                name : "Total Product Purchase",
+                count : purchaseReport.totalProductPurchase,
+                icon : "supervisor_account"
+            },
+            {
+                name : "Total Purchase Price",
+                count : purchaseReport.totalPurchasePrice,
+                icon : "storefront"
+            },
+            {
+                name : "Total Purchase Product Due",
+                count : purchaseReport.totalPurchaseProductDue,
+                icon : "shop_two"
+            },{
+                name : "Total Purchase Payment Due",
+                count : purchaseReport.totalPurchasePaymentDue,
+                icon : "account_balance_wallet"
+            },
+            // {
+            //     name : "Total Sales Product Due",
+            //     count : 12,
+            //     icon : "shopping_basket"
+            // },{
+            //     name : "Total Sales Payment Due",
+            //     count : 189,
+            //     icon : "credit_card"
+            // }
+        ]);
+        let dataPoints = [];
+
+        if(purchaseReport.purchaseRate){
+            purchaseReport.purchaseRate.map( p => {
+                dataPoints.push({ label: p.date,  y: p.count  });
+            })
+        }
+        
+        setReportOptions({
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "dark2", //"light1", "dark1", "dark2"
+            title:{
+                text: "Product Purchasing Rate"
+            },
+            data: [
+                {
+                    type: "column", //change type to bar, line, area, pie, etc
+                    //indexLabel: "{y}", //Shows y value on all Data Points
+                    indexLabelFontColor: "#5A5757",
+                    indexLabelPlacement: "outside",
+                    dataPoints: dataPoints
+                },
+                {
+                    type: "line",
+                    name: "Purchase Rate",
+                    showInLegend: true,
+                    yValueFormatString: "$#,##0",
+                    dataPoints: dataPoints 
+    
+                },
+            ]
+        });
+
+    },[purchaseReport]);
 
     let tabs = [
         {
             tab : "All",
-            tabPanel : <TodaysReport />
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "Todays Report",
-            tabPanel : <TodaysReport />
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "Yesterdays Report",
