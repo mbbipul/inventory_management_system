@@ -51,6 +51,45 @@ namespace inventory_rest_api.Controllers
             return report;
         }
 
+        [HttpGet("purchase-report/{date}")]
+        public  ActionResult<Object> GetPurchaseReport(string date){
+
+            var purchaseRateQuery = from purchase in _context.Purchases
+                                    select new {
+                                        purchase.PurchaseId,
+                                        purchase.ProductId,
+                                        purchase.ProductQuantity,
+                                        purchase.PurchasePrice,
+                                        purchase.PurchasePaidStatus,
+                                        AppUtils.DateTime(purchase.PurchaseDate).Day,
+                                        AppUtils.DateTime(purchase.PurchaseDate).Month,
+                                        AppUtils.DateTime(purchase.PurchaseDate).Year,
+                                        Date = AppUtils.DateTime(purchase.PurchaseDate).ToShortDateString(),
+                                    };
+            var purQuery = purchaseRateQuery.AsEnumerable().Where(p => p.Date == AppUtils.DateTime(date).ToShortDateString() )
+                        .ToList();  
+
+            var purRateReport = purchaseRateQuery.AsEnumerable()
+                        .GroupBy( 
+                            p => p.Date,
+                            (key,g) => new { 
+                                Date = key , 
+                                Count = g.Count(),
+                                Data = g.ToList(),
+                            }
+                        ).ToList();  
+            var report = new {
+                TotalProductPurchase  = purQuery.Select(p => p.ProductId).Distinct().Count(),
+                TotalPurchasePrice = purQuery.Sum( p => p.PurchasePrice),
+                TotalPurchaseProductDue = purQuery.Select( pd => pd.ProductId).Distinct().Count(),
+                TotalPurchasePaymentDue = purQuery.Where( p => p.PurchasePaidStatus == false).Count(),
+                PurchaseRate = purRateReport,
+            };
+
+            return report;
+        }
+
+
 
 
     }
