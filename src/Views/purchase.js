@@ -57,6 +57,7 @@ function Purchase () {
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
 
                 );
+                FetchReportByDate(new Date().getTime());
                 break;
             case 2 :
                 filterValue = unchangeData.filter(purchase => 
@@ -64,6 +65,7 @@ function Purchase () {
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReportByDate(new Date().getTime()-86400000);
                 break;
 
             case 3:
@@ -72,13 +74,7 @@ function Purchase () {
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
-                break;
-            case 3:
-                filterValue = unchangeData.filter(purchase => 
-                    new Date(parseInt(purchase.purchaseDate)).getDate() >= new Date().getDate()-2 &&
-                    new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
-                    new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
-                );
+                FetchReport(2);
                 break;
             case 4:
                 filterValue = unchangeData.filter(purchase => 
@@ -86,6 +82,7 @@ function Purchase () {
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReport(6);
                 break;
                 
             case 5:
@@ -94,6 +91,7 @@ function Purchase () {
                     new Date(parseInt(purchase.purchaseDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(purchase.purchaseDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReport(29);
                 break;
             case 6:
                 if(fromDate > toDate){
@@ -127,6 +125,14 @@ function Purchase () {
 
         }
     }, [location]); 
+
+    useEffect(() => {
+        if(fromDate > toDate){
+            alert("Starting date cannot larger than Last Date");
+        }else{
+
+        }
+    },[fromDate,toDate]);
 
     const [columns,] =  useState([
                             { title: 'Purchase ID', field: 'purchaseId' },
@@ -187,10 +193,49 @@ function Purchase () {
         ]
     }
     
+    const FetchReport = (days) => {
+        let valDays = [];
+        for (let i = 1; i <= days;i++ ){
+            valDays.push(new Date(new Date().getTime() - 86400000*i ).toLocaleDateString());
+        }
+        submitForm("Report/purchase-report-all/"+new Date(),"GET","",(res) =>{
+            let allRes = JSON.parse(data);
+            let data = allRes.purchaseRate.filter(p => valDays.includes(p.date));
+            let purDueData = allRes.totalPurchaseProductDue.filter(p => valDays.includes(p.purchase.purchaseDate));
+
+            let totalPurchaseProduct ;
+            let totalPurchasePrice ;
+            let totalPurchasePaymentDue ;
+            data.purchaseRate.map(d => {
+                const unique = [...new Set(d.data.map(item => item.productId))]; // [ 'A', 'B']
+                totalPurchaseProduct += unique.length;
+                totalPurchasePrice += d.purchasePrice;
+
+                if(!d.purchasePaidStatus){
+                    totalPurchasePaymentDue += 1;               
+                }
+            });
+
+            let report = {
+                "totalProductPurchase": totalPurchaseProduct,
+                "totalPurchasePrice": totalPurchasePrice,
+                "totalPurchaseProductDue": purDueData,
+                "totalPurchasePaymentDue": totalPurchasePaymentDue,
+                purchaseRate : data.purchaseRate
+            }
+            setPurchaseReport(report);
+        });
+    }
+
+    const FetchReportByDate = (date) => {
+        submitForm("Report/purchase-report/"+date,"GET","",(res) => setPurchaseReport(JSON.parse(res)));
+    }
     useEffect(() => {
         FetchData();
-        submitForm("Report/purchase-report","GET","",(res) => setPurchaseReport(JSON.parse(res)));
+        FetchReportByDate("");
     },[]);
+
+
 
     useEffect(() => {
         setReportItems([
@@ -274,44 +319,38 @@ function Purchase () {
         },
         {
             tab : "Yesterdays Report",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "Last 3 Days",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "This week",
-            tabPanel : "gffg" 
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  /> 
         },
         {
             tab : "This Month",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
-        {
-            tab : "Jump To",    
-            tabPanel :  <Grid
-                            container
-                            direction="row"
-                            justify="center"
-                            alignItems="center">
+        // {
+        //     tab : "Jump To",    
+        //     tabPanel :  <Grid
+        //                     container
+        //                     direction="row"
+        //                     justify="center"
+        //                     alignItems="center">
 
-                            <Grid item xs >
-                                <strong>From</strong>
-                                <MaterialUIPickers onChange={(date) => setFromDate(date)} />
-                            </Grid>
-                            <Grid style={{marginLeft:100}} item xs >
-                                <strong>To</strong>
-                                <MaterialUIPickers onChange={(date) => setToDate(date)} />
-                            </Grid>
-                        </Grid>
-        },
+        //                     <Grid item xs >
+        //                         <strong>From</strong>
+        //                         <MaterialUIPickers onChange={(date) => setFromDate(date)} />
+        //                     </Grid>
+        //                     <Grid style={{marginLeft:100}} item xs >
+        //                         <strong>To</strong>
+        //                         <MaterialUIPickers onChange={(date) => setToDate(date)} />
+        //                     </Grid>
+        //                 </Grid>
+        // },
 
     ];
 
