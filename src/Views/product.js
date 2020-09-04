@@ -77,6 +77,22 @@ function Product() {
     },[]);
 
     const detailsPane = rowData => {
+        let totalPurchasePrice = rowData.purchases.map(s=>s.salesPrice).reduce((a,c)=>a+c);
+        let totalSalesPrice = 0;
+        if( rowData.saleses.length > 0){
+            totalSalesPrice = rowData.saleses.map(s=>s.salesPrice).reduce((a,c)=>a+c)
+        }
+
+        let profit = 0;
+
+        if (totalSalesPrice == 0) {
+            profit = "Not sale yet";
+        }else{
+            profit = totalSalesPrice - totalPurchasePrice;
+            if(profit<0){
+                profit = "Loss Amount : " + Math.abs(profit) + " tk";
+            }
+        }
         let  overViewItems  = [{
             name : "Total Products",
             count : rowData.totalProducts,
@@ -84,17 +100,17 @@ function Product() {
         }
         ,{
           name : "Total Purchase Price",
-          count : rowData.purchases.map(p=>p.purchasePrice).reduce((a,c)=>a+c) +" tk" ,
+          count : totalPurchasePrice +" tk" ,
           icon : "shop_two"
         },
         {
             name : "Total Sales Price",
-            count : rowData.purchases.map(p=>p.salesPrice).reduce((a,c)=>a+c) +" tk",
+            count : totalSalesPrice,
             icon : "shopping_basket"
         },
         {
             name : "Total Profit",
-            count : "1200.00 tk",
+            count : profit,
             icon : "money"
         }];
         return overViewItems;

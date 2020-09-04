@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Collections;
 
 namespace inventory_rest_api.Models
 {
@@ -16,6 +19,8 @@ namespace inventory_rest_api.Models
         public long SalestPrice { get ; set;  } //per
         public String ProductDetails { get ; set ; }
         public ICollection<Purchase> Purchases { get; set; }
+        public ICollection<Sales> Saleses { get; set; }
+
         public ProductsWithCategory(Product product, ProductCategory productCategory){
             ProductCategoryId = product.ProductCategoryId;
             ProductId = product.ProductId;
@@ -28,7 +33,7 @@ namespace inventory_rest_api.Models
             SalestPrice = product.SalestPrice;
             ProductDetails = product.ProductDetails;
             Purchases = product.Purchases;
-
+            Saleses = product.Saleses;
         }
     }
 }

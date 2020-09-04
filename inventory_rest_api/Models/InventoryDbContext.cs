@@ -44,7 +44,7 @@ namespace inventory_rest_api.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Product>()
-                .HasMany(sales => sales.Sales)
+                .HasMany(sales => sales.Saleses)
                 .WithOne(product => product.Product)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);

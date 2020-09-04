@@ -53,7 +53,9 @@ namespace inventory_rest_api.Controllers
 
         [HttpGet("productWithCategories")]
         public async Task<ActionResult<IEnumerable>> GetJoin(){
-            var query = from products in _context.Products.Include(product => product.Purchases)
+            var query = from products in _context.Products
+                            .Include(p => p.Purchases)
+                            .Include(product => product.Saleses )
                         join categories in _context.ProductCategories
                             on products.ProductCategoryId equals categories.ProductCategoryId
                         select new ProductsWithCategory(products,categories);

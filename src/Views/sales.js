@@ -284,7 +284,7 @@ function Sales () {
         if(salesReport.salesRate){
             salesReport.salesRate.map( p => {
                 let label = "";
-                if (new Date().toLocaleDateString() == p.date){
+                if (new Date().toLocaleDateString() === p.date){
                     label = "Today's Sales"
                 }
                 dataPoints.push({ label: p.date,  y: p.count  ,indexLabel : label});
