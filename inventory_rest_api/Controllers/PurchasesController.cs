@@ -65,7 +65,7 @@ namespace inventory_rest_api.Controllers
                             purchase.PurchasePaymentAmount,
                             purchase.PurchasePrice,
                             purchase.SalesPrice,
-
+                            ProductDueStatus = purchase.PurchaseDueProduct.PurchaseId,
                             product.ProductName,
                             supplier.SupplierName
 

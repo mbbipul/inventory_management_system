@@ -135,6 +135,9 @@ namespace inventory_rest_api.Controllers
                                 sales.SalesPaidStatus,
                                 sales.SalesDuePaymentDate,
                                 sales.SalesDiscount,
+
+                                ProductDueStatus = sales.SalesDueProduct.SalesId,
+
                                 product.ProductId,
                                 product.ProductName,
                                 product.ProductCode,
@@ -145,11 +148,11 @@ namespace inventory_rest_api.Controllers
                                 product.SalestPrice,
                                 product.ProductDetails,
                                 customer.CustomerName,
-                                customer.CustomerEmail,
-                                customer.CustomerContact,
-                                customer.CustomerAddress,
-                                customer.CustomerJoinDate,
-                                customer.CustomerNID,
+                                // customer.CustomerEmail,
+                                // customer.CustomerContact,
+                                // customer.CustomerAddress,
+                                // customer.CustomerJoinDate,
+                                // customer.CustomerNID,
                                 pph.PerProductPurchasePrice,
                                 pph.PerProductSalesPrice
                             };
