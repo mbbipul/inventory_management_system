@@ -10098,19 +10098,19 @@
     ]
   },
   "packageFolders": {
-    "/home/bb/.nuget/packages/": {}
+    "C:\\Users\\Talking Glass\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
+      "projectUniqueName": "g:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
       "projectName": "inventory_rest_api",
-      "projectPath": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/inventory_rest_api.csproj",
-      "packagesPath": "/home/bb/.nuget/packages/",
-      "outputPath": "/home/bb/development/projects/inventory_management_system/inventory_rest_api/obj/",
+      "projectPath": "g:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
+      "packagesPath": "C:\\Users\\Talking Glass\\.nuget\\packages\\",
+      "outputPath": "g:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/bb/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Talking Glass\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -10181,7 +10181,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.401/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
       }
     }
   }
