@@ -14,8 +14,6 @@ import TodaysReport from "../components/todaysReport";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
-import MaterialUIPickers from "../components/datePicker";
-import { Grid } from "@material-ui/core";
 import submitForm from "../utils/fetchApi";
 
 function Purchase () {
@@ -109,7 +107,7 @@ function Purchase () {
         dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
         
         dateFormatData.map((d) => {
-            d.purchasePaymentAmount = <CustomPaidStatus status={d.purchasePaidStatus}/>
+            d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
             d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
             return d;
         });
@@ -142,7 +140,7 @@ function Purchase () {
                             { title: 'Purchase Price', field: 'purchasePrice' },
                             { title: 'Purchase Date', field: 'purchaseDate' },
                             // { title: 'Sales Price', field: 'salesPrice' },
-                            { title: 'Purchase Due Product', field: 'purchasePaymentAmount' },
+                            { title: 'Purchase Product Due Status', field: 'productDueStatus' },
                             { title: 'Purchase Paid Status', field: 'purchasePaidStatus' },
                             // { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
 
@@ -166,9 +164,9 @@ function Purchase () {
             dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
             dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
             dateFormatData.map((d) => {
-                    d.purchasePaymentAmount = <CustomPaidStatus status={d.purchasePaidStatus}/>
-                    d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
-                    return d;
+                d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
+                d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
+                return d;
             });
 
             setData(dateFormatData);
