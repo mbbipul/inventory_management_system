@@ -11,6 +11,10 @@ import NewSales from "./newSales";
 import TodaysReport from "../components/todaysReport";
 import HistoryVisual from "../components/historyWithVisualization";
 import DetailsTable from "../components/collapseTable";
+import submitForm from "../utils/fetchApi";
+import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
+import { green } from '@material-ui/core/colors';
+import CloseIcon from '@material-ui/icons/Close';
 
 function Sales () {
 
@@ -21,6 +25,21 @@ function Sales () {
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
+    const [salesReport,setSalesReport] = useState({});
+    const [reportItems,setReportItems] = useState([]);
+    const [reportOptions,setReportOptions] = useState({});
+
+    function CustomPaidStatus (props) {
+        return (
+            <div>
+                {
+                    props.status ? 
+                        <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                        <CloseIcon color='error' />
+                }
+            </div>
+        )
+    }
     useEffect(() => {
         let filterValue = [];
         switch (reportTabs) {
@@ -34,6 +53,7 @@ function Sales () {
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
 
                 );
+                FetchReportByDate(new Date().getTime());
                 break;
             case 2 :
                 filterValue = unchangeData.filter(sales => 
@@ -41,14 +61,15 @@ function Sales () {
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReportByDate(new Date().getTime()-86400000);
                 break;
-
             case 3:
                 filterValue = unchangeData.filter(sales => 
                     new Date(parseInt(sales.salesDate)).getDate() >= new Date().getDate()-2 &&
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReport(2);
                 break;
             case 4:
                 filterValue = unchangeData.filter(sales => 
@@ -56,6 +77,7 @@ function Sales () {
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReport(6);
                 break;
                 
             case 5:
@@ -64,6 +86,7 @@ function Sales () {
                     new Date(parseInt(sales.salesDate)).getMonth() === new Date().getMonth() && 
                     new Date(parseInt(sales.salesDate)).getFullYear() === new Date().getFullYear() 
                 );
+                FetchReport(29);
                 break;
             default:
                 break;
@@ -71,6 +94,13 @@ function Sales () {
         var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
         dateFormatData.map(sales => sales.salesDate = new Date(parseInt(sales.salesDate)).toDateString());
         dateFormatData.map(sales => sales.salesDuePaymentDate = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
+        
+        dateFormatData.map((d) => {
+            d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
+            d.salesPaidStatus = <CustomPaidStatus status={d.salesPaidStatus}/>
+            return d;
+        });
+
         setData(dateFormatData);
         console.log(dateFormatData);
     },[reportTabs])
@@ -90,9 +120,9 @@ function Sales () {
                         { title: 'Product Quantity', field: 'productQuantity' },
                         { title: 'Sales Price', field: 'salesPrice' ,type : 'numeric'},
                         { title: 'Sales Date', field: 'salesDate' },
-                        { title: 'Sales Payment Amount', field: 'salesPaymentAmount' },
+                        // { title: 'Sales Payment Amount', field: 'salesPaymentAmount' },
+                        { title: 'Sales Product Due Status', field: 'productDueStatus' },
                         { title: 'Sales Paid Status', field: 'salesPaidStatus' },
-                        { title: 'Sales Due Payment Date', field: 'salesDuePaymentDate' },
                     ]);
     
     const FetchData = async () => {
@@ -112,6 +142,13 @@ function Sales () {
           var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
           dateFormatData.map(sales => sales.salesDate = new Date(parseInt(sales.salesDate)).toDateString());
           dateFormatData.map(sales => sales.salesDuePaymentDate = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
+          
+          dateFormatData.map((d) => {
+            d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
+            d.salesPaidStatus = <CustomPaidStatus status={d.salesPaidStatus}/>
+            return d;
+        });
+          
           setData(dateFormatData);
         } catch (error) {
           console.log("error - ", error);
@@ -138,46 +175,149 @@ function Sales () {
         FetchData();
     },[]);
 
+
+    const FetchReport = (days) => {
+        let valDays = [];
+        for (let i = 1; i <= days;i++ ){
+            valDays.push(new Date(new Date().getTime() - 86400000*i ).toLocaleDateString());
+        }
+        submitForm("Report/sales-report-all/"+new Date().getTime(),"GET","",(res) =>{
+            let allRes = JSON.parse(data);
+            let data = allRes.salesRate.filter(p => valDays.includes(p.date));
+            let salesDueData = allRes.totalSalesProductDue.filter(p => valDays.includes(p.sales.salesDate));
+
+            let totalSalesProduct ;
+            let totalSalesPrice ;
+            let totalSalesPaymentDue ;
+            data.salesRate.map(d => {
+                const unique = [...new Set(d.data.map(item => item.productId))]; // [ 'A', 'B']
+                totalSalesProduct += unique.length;
+                totalSalesPrice += d.salesPrice;
+
+                if(!d.salesPaidStatus){
+                    totalSalesPaymentDue += 1;               
+                }
+            });
+
+            let report = {
+                "totalProductSales": totalSalesProduct,
+                "totalSalesPrice": totalSalesPrice,
+                "totalSalesProductDue": salesDueData,
+                "totalSalesPaymentDue": totalSalesPaymentDue,
+                salesRate : data.salesRate
+            }
+            setSalesReport(report);
+        });
+    }
+
+    const FetchReportByDate = (date) => {
+        submitForm("Report/sales-report/"+date,"GET","",(res) => setSalesReport(JSON.parse(res)));
+    }
+    useEffect(() => {
+        FetchData();
+        FetchReportByDate("");
+    },[]);
+
     let tabs = [
         {
             tab : "All",
-            tabPanel : <TodaysReport />
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "Todays Report",
-            tabPanel : <TodaysReport />
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "Yesterdays Report",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "Last 3 Days",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
         {
             tab : "This week",
-            tabPanel : "gffg" 
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  /> 
         },
         {
             tab : "This Month",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
+            tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
-        {
-            tab : "Jump To",
-            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                fddffd
-            </div>
-        }
+
     ];
 
 
+
+    useEffect(() => {
+        setReportItems([
+            {
+                name : "Total Product Sales",
+                count : salesReport.totalProductSales,
+                icon : "supervisor_account"
+            },
+            {
+                name : "Total Sales Price",
+                count : salesReport.totalSalesPrice,
+                icon : "storefront"
+            },
+            {
+                name : "Total Sales Product Due",
+                count : salesReport.totalSalesProductDue,
+                icon : "shop_two"
+            },{
+                name : "Total Sales Payment Due",
+                count : salesReport.totalSalesPaymentDue,
+                icon : "account_balance_wallet"
+            },
+            // {
+            //     name : "Total Sales Product Due",
+            //     count : 12,
+            //     icon : "shopping_basket"
+            // },{
+            //     name : "Total Sales Payment Due",
+            //     count : 189,
+            //     icon : "credit_card"
+            // }
+        ]);
+        let dataPoints = [];
+
+        if(salesReport.salesRate){
+            salesReport.salesRate.map( p => {
+                let label = "";
+                if (new Date().toLocaleDateString() == p.date){
+                    label = "Today's Sales"
+                }
+                dataPoints.push({ label: p.date,  y: p.count  ,indexLabel : label});
+            })
+        }
+        
+        setReportOptions({
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "dark2", //"light1", "dark1", "dark2"
+            title:{
+                text: "Product Sales Rate"
+            },
+            data: [
+                {
+                    type: "column", //change type to bar, line, area, pie, etc
+                    //indexLabel: "{y}", //Shows y value on all Data Points
+                    indexLabelFontColor: "#5A5757",
+                    indexLabelPlacement: "outside",
+                    dataPoints: dataPoints
+                },
+                {
+                    type: "line",
+                    name: "Sales Rate",
+                    showInLegend: true,
+                    yValueFormatString: "$#,##0",
+                    dataPoints: dataPoints 
+    
+                },
+            ]
+        });
+
+    },[salesReport]);
     const detailsPane = rowData => {
         let  overViewItems  = [
             ,{
