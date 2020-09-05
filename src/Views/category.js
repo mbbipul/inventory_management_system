@@ -13,33 +13,10 @@ import Draggable from 'react-draggable';
 import submitForm from "../utils/fetchApi";
 import Alert from '@material-ui/lab/Alert';
 
-import apiUrl from "../utils/apiInfo";
 import ManageTable from "../components/manageTable";
 import DetailsTable from "../components/collapseTable";
+import MaterialTable from "material-table";
 
-const FetchData = async (url,setState) => {
-
-    try {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var requestOptions = {
-          method: "GET",
-          headers: myHeaders,
-          redirect: 'follow'
-      };
-      const res = await fetch(url+"ProductCategory", requestOptions);
-      const json = await res.json();
-
-      setState((prevState) => {
-          const data = json;
-          return { ...prevState, data };
-        });
-      // console.log("json - ", json);
-    } catch (error) {
-      console.log("error - ", error);
-    }
-  };
 
 function PaperComponent(props) {
     return (
@@ -53,7 +30,6 @@ function PaperComponent(props) {
 function Category(){
 
     const [open, setOpen] = useState(false);
-    let [url,] = useState(apiUrl);
 
     let [category,setCategory] = useState(" ");
     let [showError,setShowError] = useState(false);
@@ -61,16 +37,18 @@ function Category(){
     let [showSnackbar, setShowSnackbar] = useState(false);
     let [snackbarText, setSnackbarText] = useState("");
   
-    const [categories, setCategories] = React.useState({
-        columns: [
-          { title: 'Category Name', field: 'productCategoryName' },
-        ],
-        data: [],
-    });
 
+    const [data,setData] = useState([]);
+    const [columns,] = useState([
+        { title: 'Category Name', field: 'productCategoryName' },
+    ]);
+    
+    const FetchData = async () => {
+        submitForm("ProductCategory","GET","",(res) => setData(JSON.parse(res)));
+    }
     useEffect(() => {  
-        FetchData(url,setCategories);
-    },[url]);
+        FetchData();
+    },[]);
     
     
     useEffect(() => {
@@ -99,11 +77,7 @@ function Category(){
         let resObj = JSON.parse(result);
         setSnackbarText("Successfully new Category \""+resObj.productCategoryName + "\" added.");
 
-        setCategories((prevState) => {
-            const data = [...prevState.data];
-            data.push(resObj);
-            return { ...prevState, data };
-        });
+        setData(data.concat(resObj));
         setShowSnackbar(true);
     }
 
@@ -127,17 +101,24 @@ function Category(){
         setOpen(false);
     };
 
-    const ondataChange = (data) => setCategories(data);
+    const ondataChange = (data) => setData(data);
 
     let tabs = [
-        {
-            tab : "All Categories",
-            tabPanel : <DetailsTable  data={categories.data} columns={categories.columns} />
-        },
+      
         {
             tab : "Manage Category",
             tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
-                <ManageTable title="Category" uniqueKey="productCategoryId" uniqueName="productCategoryName" apiUrl="ProductCategory/" ondataChange={ondataChange} data={categories} />
+               <ManageTable
+                    title="Manage Product Category" 
+                    hasUnique={true}
+                    apiInfo="Product Category"
+                    dataObjectKey = {["productCategoryId","productCategoryName"]}
+                    uniqueKey="productCategoryId" 
+                    uniqueName="productCategoryName" 
+                    apiUrl={"ProductCategory/"}
+                    ondataChange={() => {}} 
+                    columns={columns} 
+                    data={data} />
             </div>
         }
     ];

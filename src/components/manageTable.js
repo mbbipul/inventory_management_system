@@ -66,7 +66,7 @@ function ManageTable(props){
                     datas[datas.indexOf(oldData)] = newData;
 
                     setData(datas);
-                    setAlertText("Successfully Update Category !")
+                    setAlertText("Successfully Update !")
                     setAlert(true);
                 });
 
@@ -78,56 +78,23 @@ function ManageTable(props){
             submitForm(props.apiUrl+newData[props.uniqueKey],"PUT",newData,() => {
                 datas[datas.indexOf(oldData)] = newData;
                 setData(datas);
-                setAlertText("Successfully Update Category !")
+                setAlertText("Successfully Update "+props.apiInfo+ " !")
                 setAlert(true);
             });
         }
 
     }
 
-    const deleteData = (data) => {
-        console.log(data);
-        let purchase = {
-            purchaseId : data.purchaseId,
-            "supplierId" : data.supplierId,
-            "productId" : data.productId,
-            "productQuantity" : data.ProductQuantity,
-            "purchaseDate" : data.purchaseDate,
-            "purchasePrice" : data.purchasePrice,
-            "salesPrice" : data.SalesPrice,
-            "purchasePaymentAmount" : data.PurchasePaymentAmount,
-            "purchasePaidStatus" : data.purchasePaidStatus,
-            "purchaseDuePaymentDate" : data.purchaseDuePaymentDate,
-            "purchaseDiscount" : data.PurchaseDiscount
-
-        }
-        submitForm(props.apiUrl+data.purchaseId,"DELETE",purchase,() => {
-            setAlertText("Successfully deleted \""+purchase.purchaseId+"\" Category!")
+    const deleteData = (rowData) => {
+        
+       
+        submitForm(props.apiUrl+rowData[props.uniqueKey],"DELETE",rowData,(res) => {
+            setAlertText("Successfully deleted \""+JSON.parse(res)[props.uniqueKey]+"\" "+props.apiInfo)
             setAlert(true);
         });
-
-
-
     }
 
     const deleteSelectedData = (datas) => {
-        datas.map(data => {
-            let purchase = {
-                purchaseId : data.purchaseId,
-                "supplierId" : data.supplierId,
-                "productId" : data.productId,
-                "productQuantity" : data.ProductQuantity,
-                "purchaseDate" : data.purchaseDate,
-                "purchasePrice" : data.purchasePrice,
-                "salesPrice" : data.SalesPrice,
-                "purchasePaymentAmount" : data.PurchasePaymentAmount,
-                "purchasePaidStatus" : data.purchasePaidStatus,
-                "purchaseDuePaymentDate" : data.purchaseDuePaymentDate,
-                "purchaseDiscount" : data.PurchaseDiscount
-    
-            };
-            return data;
-        })
         submitForm(props.apiUrl+"delete-multiple","DELETE",datas,(result) => {
             setAlertText(result);
             setAlert(true);
@@ -154,7 +121,7 @@ function ManageTable(props){
                         }
                     }
             ]}
-            editable={{
+            editable={props.editable ? {
                 onRowUpdate: (newData, oldData) =>
                 new Promise((resolve) => {
                     setTimeout(() => {
@@ -177,7 +144,25 @@ function ManageTable(props){
 
                     }, 600);
                 }),
-            }}
+            } : 
+            
+            {
+                onRowDelete: (oldData) =>
+                new Promise((resolve) => {
+                    setTimeout(() => {
+                        const dataDelete = [...datas];
+                        const index = oldData.tableData.id;
+                        dataDelete.splice(index, 1);
+                        deleteData(oldData);
+                        setData([...dataDelete]);
+
+                        resolve();
+
+                    }, 600);
+                }),
+            }
+                
+            }
             />
         </div>
     );

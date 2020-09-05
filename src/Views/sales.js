@@ -92,12 +92,12 @@ function Sales () {
                 break;
         }
         var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
-        dateFormatData.map(sales => sales.salesDate = new Date(parseInt(sales.salesDate)).toDateString());
-        dateFormatData.map(sales => sales.salesDuePaymentDate = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
+        dateFormatData.map(sales => sales.salesDateCustom = new Date(parseInt(sales.salesDate)).toDateString());
+        dateFormatData.map(sales => sales.salesDuePaymentDateCustom = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
         
         dateFormatData.map((d) => {
             d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-            d.salesPaidStatus = <CustomPaidStatus status={d.salesPaidStatus}/>
+            d.salesPaidStatusCustom = <CustomPaidStatus status={d.salesPaidStatusCustom}/>
             return d;
         });
 
@@ -122,7 +122,7 @@ function Sales () {
                         { title: 'Sales Date', field: 'salesDate' },
                         // { title: 'Sales Payment Amount', field: 'salesPaymentAmount' },
                         { title: 'Sales Product Due Status', field: 'productDueStatus' },
-                        { title: 'Sales Paid Status', field: 'salesPaidStatus' },
+                        { title: 'Sales Paid Status', field: 'salesPaidStatusCustom' },
                     ]);
     
     const FetchData = async () => {
@@ -140,12 +140,12 @@ function Sales () {
           const json = await res.json();
           setUnchangeData(json);
           var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
-          dateFormatData.map(sales => sales.salesDate = new Date(parseInt(sales.salesDate)).toDateString());
-          dateFormatData.map(sales => sales.salesDuePaymentDate = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
+          dateFormatData.map(sales => sales.salesDateCustom = new Date(parseInt(sales.salesDate)).toDateString());
+          dateFormatData.map(sales => sales.salesDuePaymentDateCustom = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
           
           dateFormatData.map((d) => {
             d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-            d.salesPaidStatus = <CustomPaidStatus status={d.salesPaidStatus}/>
+            d.salesPaidStatusCustom = <CustomPaidStatus status={d.salesPaidStatusCustom}/>
             return d;
         });
           
@@ -379,12 +379,15 @@ function Sales () {
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Sales" 
-                                hasUnique={false}
+                                hasUnique={true}
+                                apiInfo="Sales"
                                 uniqueKey="salesId" 
-                                uniqueName="salesName" 
+                                uniqueName="salesId" 
                                 apiUrl="Sales/" 
+                                editable={false}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                data={data}
+                                columns={columns}
                                 
                             />
                         </div>

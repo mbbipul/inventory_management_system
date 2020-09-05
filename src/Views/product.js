@@ -45,7 +45,7 @@ function Product() {
               headers: myHeaders,
               redirect: 'follow'
           };
-          const res = await fetch(apiUrl+"Products/productWithCategories", requestOptions);
+          const res = await fetch(apiUrl+"Products", requestOptions);
           const json = await res.json();
           setData(json);
 
@@ -131,13 +131,16 @@ function Product() {
                 <Route exact path="/product/manage-product">
                 <div style={{margin:20}}>
                             <ManageTable 
-                                title="Manage Company" 
+                                title="Manage Product" 
                                 hasUnique={true}
-                                uniqueKey="companyId" 
-                                uniqueName="companyName" 
-                                apiUrl="Products/productWithCategories" 
+                                apiInfo="Product"
+                                uniqueKey="productId" 
+                                uniqueName="productName" 
+                                apiUrl="Products/" 
+                                editable={false}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                data={data}
+                                columns={columns}
                                 
                             />
                         </div>

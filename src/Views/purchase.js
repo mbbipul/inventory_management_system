@@ -103,12 +103,12 @@ function Purchase () {
         }
         // console.log(filterValue);
         var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
-        dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
-        dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
+        dateFormatData.map(purchase => purchase.purchaseDateCustom = new Date(parseInt(purchase.purchaseDate)).toDateString());
+        dateFormatData.map(purchase => purchase.purchaseDuePaymentDateCustom = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
         
         dateFormatData.map((d) => {
             d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-            d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
+            d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatusCustom}/>
             return d;
         });
 
@@ -138,10 +138,10 @@ function Purchase () {
                             { title: 'Product Name', field: 'productName' },
                             { title: 'Product Quantity', field: 'productQuantity' },
                             { title: 'Purchase Price', field: 'purchasePrice' },
-                            { title: 'Purchase Date', field: 'purchaseDate' },
+                            { title: 'Purchase Date', field: 'purchaseDateCustom' },
                             // { title: 'Sales Price', field: 'salesPrice' },
                             { title: 'Purchase Product Due Status', field: 'productDueStatus' },
-                            { title: 'Purchase Paid Status', field: 'purchasePaidStatus' },
+                            { title: 'Purchase Paid Status', field: 'purchasePaidStatusCustom' },
                             // { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
 
                         ]);
@@ -157,15 +157,15 @@ function Purchase () {
                 headers: myHeaders,
                 redirect: 'follow'
             };
-            const res = await fetch(apiUrl+"Purchases/purchase-product", requestOptions);
+            const res = await fetch(apiUrl+"Purchases", requestOptions);
             const json = await res.json();
             setUnchangeData(json);
             var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
-            dateFormatData.map(purchase => purchase.purchaseDate = new Date(parseInt(purchase.purchaseDate)).toDateString());
-            dateFormatData.map(purchase => purchase.purchaseDuePaymentDate = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
+            dateFormatData.map(purchase => purchase.purchaseDateCustom = new Date(parseInt(purchase.purchaseDate)).toDateString());
+            dateFormatData.map(purchase => purchase.purchaseDuePaymentDateCustom = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
             dateFormatData.map((d) => {
                 d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-                d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatus}/>
+                d.purchasePaidStatusCustom = <CustomPaidStatus status={d.purchasePaidStatusCustom}/>
                 return d;
             });
 
@@ -196,7 +196,7 @@ function Purchase () {
         for (let i = 1; i <= days;i++ ){
             valDays.push(new Date(new Date().getTime() - 86400000*i ).toLocaleDateString());
         }
-        submitForm("Report/purchase-report-all/"+new Date(),"GET","",(res) =>{
+        submitForm("Report/purchase-report-all/","GET","",(res) =>{
             let allRes = JSON.parse(data);
             let data = allRes.purchaseRate.filter(p => valDays.includes(p.date));
             let purDueData = allRes.totalPurchaseProductDue.filter(p => valDays.includes(p.purchase.purchaseDate));
@@ -393,11 +393,13 @@ function Purchase () {
                     <Route exact path="/purchase/manage-purchase">
                         <div style={{margin:20}}>
                             <ManageTable 
-                                title="Manage Company" 
+                                title="Manage Purchases" 
                                 hasUnique={true}
-                                uniqueKey="companyId" 
-                                uniqueName="companyName" 
-                                apiUrl={"Purchases/purchase-product"}
+                                apiInfo="Purchase"
+                                uniqueKey="purchaseId" 
+                                uniqueName="purchaseId" 
+                                apiUrl={"Purchases/"}
+                                editable={false}
                                 ondataChange={() => console.log("chaange")} 
                                 columns={columns} 
                                 data={data} />
