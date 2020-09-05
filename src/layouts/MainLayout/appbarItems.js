@@ -113,7 +113,7 @@ const sideBarItems = [
                 ref : "supplier/add-supplier"
             },
             {
-                name : "Manage Customer",
+                name : "Manage Supplier",
                 ref : "supplier/manage-supplier"
             }
         ]

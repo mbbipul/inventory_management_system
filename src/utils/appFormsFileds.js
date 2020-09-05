@@ -4,6 +4,8 @@ import AddSupplier from "../Views/addSupplier";
 import AddCompany from '../Views/addCompany';
 import { Link } from 'react-router-dom';
 import AddCustomer from '../Views/addCustomer';
+import Category from '../Views/category';
+import AddEmployee from '../Views/addEmployee';
 
 const addCompanyFormFields = [
     {
@@ -107,7 +109,7 @@ const addProductFormFileds = [
         label : "Product Type",
         placeholder : "Please Select product Type",
         type : 3,
-        dialogFormContent : <AddSupplier />,
+        dialogFormContent : <Category />,
         fetchUrl : apiUrl+"ProductCategory",
         selectName : "productCategoryName",
         selectKey : "productCategoryId",
@@ -518,6 +520,7 @@ const addSalaryFormFields = [
         label : "Employee Name",
         placeholder : "BB Roy",
         type : 3,
+        dialogFormContent : <AddEmployee />,
         fetchUrl : apiUrl+"Employees",
         selectName : "employeeName",
         selectKey : "employeeId",

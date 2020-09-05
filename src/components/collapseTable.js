@@ -1,7 +1,8 @@
-import React, {  } from 'react';
+import React, { useEffect, useState } from 'react';
 import MaterialTable from 'material-table';
 import { Grid } from '@material-ui/core';
 import IconCard from './iconCard';
+import submitForm from '../utils/fetchApi';
 
 function DetailsTable(props) {
 
@@ -20,11 +21,24 @@ function DetailsTable(props) {
 //     </tr>
 //   ))}
 // </table>;
+const [data,setData] = useState(props.data);
+
+useEffect(() => {
+  if(props.data.length == 0){
+    submitForm(props.apiUrl,"GET","", (res) => setData(JSON.parse(res)));
+  }else{
+    setData(props.data);
+  }
+},[props.data]);
+
+useEffect(() => {
+  submitForm(props.apiUrl,"GET","", (res) => setData(JSON.parse(res)));
+},[]);
   return (
     <MaterialTable
       title={props.title}
       columns={props.columns}
-      data={props.data}
+      data={data}
       detailPanel={rowData => {
         let overViewItems = props.detailsPane(rowData);
         

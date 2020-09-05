@@ -8,9 +8,8 @@ import RouteHeader from '../components/routeHeader';
 import ProductTable from '../components/productTable';
 import AddCompany from "./addCompany";
 import ManageTable from "../components/manageTable";
-import apiUrl from "../utils/apiInfo";
 import AddCost from "./addCost";
-import MaterialTable from "material-table";
+import submitForm from "../utils/fetchApi";
 
 function Cost () {
 
@@ -35,25 +34,8 @@ function Cost () {
                     ]);
     const [data,setData] = useState([]);
     
-    const FetchData = async () => {
-
-        try {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-    
-          var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          const res = await fetch(apiUrl+"Costs", requestOptions);
-          const json = await res.json();
-          setData(json);
-
-          // console.log("json - ", json);
-        } catch (error) {
-          console.log("error - ", error);
-        }
+    const FetchData =  () => {
+        submitForm("Costs/","GET","",(res) => setData(JSON.parse(res)));
     };
     
     let routeHeader = {
@@ -81,16 +63,10 @@ function Cost () {
                 <Switch>
                     <Route exact path="/cost">
                         <div style={{margin:20}}>
-                            <MaterialTable
-                                title="Cost Sheet"
-                                columns={columns.slice(0,-1)}
-                                data={data}
-                                detailPanel={rowData => {
-                                    return (
-                                        <p>{rowData.costDescription}</p>
-                                    )
-                                }}
-                            />
+                            <ProductTable 
+                                title="Costs Sheet"
+                                apiUrl="Costs/" 
+                                data={{ columns : columns , data : data}}/>
                         </div>
                     </Route>
                     <Route exact path="/cost/add-cost">
@@ -101,11 +77,14 @@ function Cost () {
                             <ManageTable 
                                 title="Manage Cost" 
                                 hasUnique={true}
+                                apiInfo="Costs" 
                                 uniqueKey="costId" 
-                                uniqueName="companyName" 
+                                uniqueName="costId" 
                                 apiUrl="Costs/" 
+                                editable={true}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                data={data} 
+                                columns={columns}
                                 
                             />
                         </div>

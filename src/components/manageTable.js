@@ -1,48 +1,27 @@
 import React from 'react';
 import { useState , useEffect } from "react";
-import apiUrl from "../utils/apiInfo";
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
 import MaterialTable from 'material-table';
-import { data } from 'jquery';
 
 
 function ManageTable(props){
 
-    let [url,] = useState(apiUrl);
     let [showALert,setAlert] = useState(false);
     let [errorAlert,setErrorALert] = useState(false);
 
     let [alertText,setAlertText] = useState("");
     
-    const [datas, setData] = React.useState([]);
+    const [datas, setData] = React.useState();
 
    
-    const FetchData = async (url,setData) => {
-
-        try {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-    
-          var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          const res = await fetch(url+props.apiUrl, requestOptions);
-          const json = await res.json();
-    
-          setData(json);
-          // console.log("json - ", json);
-        } catch (error) {
-          console.log("error - ", error);
-        }
-      };
-      
+    const FetchData =  () => {
+        submitForm(props.apiUrl,"GET","",(res) => setData(JSON.parse(res)));
+    };
+   
     useEffect(() => {
-        setData(props.data);
-    },[props.data]);
-
+        FetchData();
+    },[]);
     useEffect(() => {
         const timer = setTimeout(() => {
             setAlert(false);
@@ -51,9 +30,6 @@ function ManageTable(props){
         return () => clearTimeout(timer);
     }, [showALert]);
     
-    useEffect(() => {
-        props.ondataChange(datas);
-    },[datas]);
 
     const updateData = (oldData,newData) => {
         let isCategoryExists = (result ) => {   
@@ -63,11 +39,9 @@ function ManageTable(props){
                 setErrorALert(true);
             }else{
                 submitForm(props.apiUrl+newData[props.uniqueKey],"PUT",newData,() => {
-                    datas[datas.indexOf(oldData)] = newData;
-
-                    setData(datas);
                     setAlertText("Successfully Update !")
                     setAlert(true);
+                    FetchData();
                 });
 
             }
@@ -76,10 +50,9 @@ function ManageTable(props){
             submitForm(props.apiUrl+"find/"+newData[props.uniqueName],"GET","",isCategoryExists);
         }else{
             submitForm(props.apiUrl+newData[props.uniqueKey],"PUT",newData,() => {
-                datas[datas.indexOf(oldData)] = newData;
-                setData(datas);
                 setAlertText("Successfully Update "+props.apiInfo+ " !")
                 setAlert(true);
+                FetchData();
             });
         }
 
@@ -91,6 +64,8 @@ function ManageTable(props){
         submitForm(props.apiUrl+rowData[props.uniqueKey],"DELETE",rowData,(res) => {
             setAlertText("Successfully deleted \""+JSON.parse(res)[props.uniqueKey]+"\" "+props.apiInfo)
             setAlert(true);
+            FetchData();
+
         });
     }
 
@@ -98,7 +73,7 @@ function ManageTable(props){
         submitForm(props.apiUrl+"delete-multiple","DELETE",datas,(result) => {
             setAlertText(result);
             setAlert(true);
-            FetchData(url,setData);
+            FetchData();
         });
         
     }
@@ -118,6 +93,7 @@ function ManageTable(props){
                         icon: 'delete',
                         onClick: (evt, data) => {
                             deleteSelectedData(data);
+
                         }
                     }
             ]}
@@ -125,23 +101,18 @@ function ManageTable(props){
                 onRowUpdate: (newData, oldData) =>
                 new Promise((resolve) => {
                     setTimeout(() => {
-                    resolve();
-                    if (oldData) {
-                        updateData(oldData,newData);
-                    }
+                        if (oldData) {
+                            updateData(oldData,newData);
+                        }
+                       
+                        resolve();
                     }, 600);
                 }),
                 onRowDelete: (oldData) =>
                 new Promise((resolve) => {
                     setTimeout(() => {
-                        const dataDelete = [...datas];
-                        const index = oldData.tableData.id;
-                        dataDelete.splice(index, 1);
                         deleteData(oldData);
-                        setData([...dataDelete]);
-
                         resolve();
-
                     }, 600);
                 }),
             } : 
@@ -150,12 +121,7 @@ function ManageTable(props){
                 onRowDelete: (oldData) =>
                 new Promise((resolve) => {
                     setTimeout(() => {
-                        const dataDelete = [...datas];
-                        const index = oldData.tableData.id;
-                        dataDelete.splice(index, 1);
                         deleteData(oldData);
-                        setData([...dataDelete]);
-
                         resolve();
 
                     }, 600);

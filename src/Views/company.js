@@ -9,6 +9,7 @@ import ProductTable from '../components/productTable';
 import AddCompany from "./addCompany";
 import ManageTable from "../components/manageTable";
 import apiUrl from "../utils/apiInfo";
+import submitForm from "../utils/fetchApi";
 
 function Company () {
 
@@ -30,25 +31,8 @@ function Company () {
                                     ]);
     const [data,setData] = useState([]);
     
-    const FetchData = async () => {
-
-        try {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-    
-          var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          const res = await fetch(apiUrl+"Companies", requestOptions);
-          const json = await res.json();
-          setData(json);
-
-          // console.log("json - ", json);
-        } catch (error) {
-          console.log("error - ", error);
-        }
+    const FetchData =  () => {
+        submitForm("Companies/","GET","",(res) => setData(JSON.parse(res)));
     };
     
     let routeHeader = {
@@ -76,7 +60,10 @@ function Company () {
                 <Switch>
                     <Route exact path="/company">
                         <div style={{margin:20}}>
-                            <ProductTable data={{ columns : columns , data : data}}/>
+                        <ProductTable 
+                            title="All Companies"
+                            apiUrl="Companies/" 
+                            data={{ columns : columns , data : data}}/>
                         </div>
                     </Route>
                     <Route exact path="/company/add-company">
@@ -87,11 +74,13 @@ function Company () {
                             <ManageTable 
                                 title="Manage Company" 
                                 hasUnique={true}
+                                apiInfo="Company"
                                 uniqueKey="companyId" 
                                 uniqueName="companyName" 
                                 apiUrl="Companies/" 
+                                editable={true}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                columns={columns}
                                 
                             />
                         </div>

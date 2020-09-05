@@ -136,7 +136,7 @@ function Sales () {
               headers: myHeaders,
               redirect: 'follow'
           };
-          const res = await fetch(apiUrl+"Sales/sales-product-customer", requestOptions);
+          const res = await fetch(apiUrl+"Sales", requestOptions);
           const json = await res.json();
           setUnchangeData(json);
           var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
@@ -367,6 +367,7 @@ function Sales () {
                     <Route exact path="/sales">
                         <div style={{margin:20}}>
                             <DetailsTable 
+                                apiUrl="Sales/"  
                                 detailsPane={detailsPane}
                                 columns={columns} 
                                 data={data} />

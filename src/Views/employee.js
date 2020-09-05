@@ -12,6 +12,7 @@ import apiUrl from "../utils/apiInfo";
 import AddCost from "./addCost";
 import MaterialTable from "material-table";
 import AddEmployee from "./addEmployee";
+import submitForm from "../utils/fetchApi";
 
 function Employee () {
 
@@ -38,25 +39,8 @@ function Employee () {
 
     const [data,setData] = useState([]);
     
-    const FetchData = async () => {
-
-        try {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-    
-          var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          const res = await fetch(apiUrl+"Employees", requestOptions);
-          const json = await res.json();
-          setData(json);
-
-          // console.log("json - ", json);
-        } catch (error) {
-          console.log("error - ", error);
-        }
+    const FetchData =  () => {
+        submitForm("Employees/","GET","",(res) => setData(JSON.parse(res)));
     };
     
     let routeHeader = {
@@ -84,11 +68,10 @@ function Employee () {
                 <Switch>
                     <Route exact path="/employee">
                         <div style={{margin:20}}>
-                            <MaterialTable
-                                title="Cost Sheet"
-                                columns={columns.slice(0,-1)}
-                                data={data}
-                            />
+                        <ProductTable 
+                            title="All Employees"
+                            apiUrl="Employees/" 
+                            data={{ columns : columns , data : data}}/>
                         </div>
                     </Route>
                     <Route exact path="/employee/add-employee">
@@ -98,12 +81,15 @@ function Employee () {
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Employee" 
-                                hasUnique={false}
+                                hasUnique={true}
+                                apiInfo="Employee"
                                 uniqueKey="employeeId" 
                                 uniqueName="employeeName" 
                                 apiUrl="Employees/" 
-                                ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                editable={true}
+                                ondataChange={() => console.log()}
+                                data={data} 
+                                columns={columns}
                                 
                             />
                         </div>

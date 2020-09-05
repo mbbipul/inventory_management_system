@@ -123,6 +123,7 @@ function Product() {
                 <Route exact path="/product">
                         <div style={{margin:20}}>
                             <DetailsTable 
+                                apiUrl="Products/"  
                                 detailsPane={detailsPane}
                                 data={data} 
                                 columns={columns}/>

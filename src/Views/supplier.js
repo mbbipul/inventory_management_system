@@ -54,7 +54,10 @@ function Supplier() {
             <Switch>
                 <Route exact path="/supplier">
                     <div style={{margin:20}}>
-                        <ProductTable data={{ columns : columns , data : data}}/>
+                        <ProductTable 
+                            title="All Suppliers"
+                            apiUrl="Suppliers/"
+                            data={{ columns : columns , data : data}}/>
                     </div>
                 </Route>
                 <Route exact path="/supplier/add-supplier">
@@ -65,11 +68,14 @@ function Supplier() {
                             <ManageTable 
                                 title="Manage Supplier" 
                                 hasUnique={false}
+                                apiInfo="Suppliers"
                                 uniqueKey="supplierId" 
                                 uniqueName="supplierName" 
                                 apiUrl="Suppliers/" 
+                                editable={true}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                data={data}
+                                columns={columns}
                                 
                             />
                         </div>

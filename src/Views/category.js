@@ -116,6 +116,7 @@ function Category(){
                     uniqueKey="productCategoryId" 
                     uniqueName="productCategoryName" 
                     apiUrl={"ProductCategory/"}
+                    editable={true}
                     ondataChange={() => {}} 
                     columns={columns} 
                     data={data} />

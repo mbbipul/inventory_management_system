@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
 import ProductTable from '../components/productTable';
-import AddSupplier from "./addSupplier";
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddCustomer from "./addCustomer";
@@ -53,13 +52,19 @@ function Customer() {
         submitForm("Customers","GET","",(result) => setData(JSON.parse(result)));
     },[]);
 
+    const onDataChange = (data) => {
+        setData(data);
+    }
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
             <Switch>
                 <Route exact path="/customer">
                     <div style={{margin:20}}>
-                        <ProductTable data={{ columns : columns , data : data}}/>
+                        <ProductTable 
+                            title="All Customers"
+                            apiUrl="Customers/" 
+                            data={{ columns : columns , data : data}}/>
                     </div>
                 </Route>
                 <Route exact path="/customer/add-customer">
@@ -69,12 +74,15 @@ function Customer() {
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Customer" 
-                                hasUnique={false}
+                                hasUnique={true}
+                                apiInfo="Customer"
                                 uniqueKey="customerId" 
                                 uniqueName="customerName" 
                                 apiUrl="Customers/" 
+                                editable={true}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
+                                data={data}
+                                columns={columns}
                                 
                             />
                         </div>

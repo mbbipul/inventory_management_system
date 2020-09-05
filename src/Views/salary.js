@@ -6,9 +6,10 @@ import {
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
 import ManageTable from "../components/manageTable";
-import apiUrl from "../utils/apiInfo";
-import MaterialTable from "material-table";
+import ProductTable from '../components/productTable';
+
 import AddSalary from "./addSalary";
+import submitForm from "../utils/fetchApi";
 
 function Salary () {
 
@@ -25,7 +26,7 @@ function Salary () {
 
     const [columns,] = useState([
         { title: 'Salary Id', field: 'salaryId' },
-        { title: 'Employee Name', field: 'employeeId' },
+        { title: 'Employee Name', field: 'employeeName' },
         { title: 'Salary Amount', field: 'salaryAmount' },
         { title: 'Payment Date', field: 'salaryPaymentDate' }
 
@@ -33,25 +34,8 @@ function Salary () {
 
     const [data,setData] = useState([]);
     
-    const FetchData = async () => {
-
-        try {
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-    
-          var requestOptions = {
-              method: "GET",
-              headers: myHeaders,
-              redirect: 'follow'
-          };
-          const res = await fetch(apiUrl+"Salaries", requestOptions);
-          const json = await res.json();
-          setData(json);
-
-          // console.log("json - ", json);
-        } catch (error) {
-          console.log("error - ", error);
-        }
+    const FetchData =  () => {
+        submitForm("Salaries/","GET","",(res) => setData(JSON.parse(res)));
     };
     
     let routeHeader = {
@@ -79,11 +63,10 @@ function Salary () {
                 <Switch>
                     <Route exact path="/salary">
                         <div style={{margin:20}}>
-                            <MaterialTable
-                                title="Salary"
-                                columns={columns}
-                                data={data}
-                            />
+                            <ProductTable 
+                                title="Salary Sheet"
+                                apiUrl="Salaries/" 
+                                data={{ columns : columns , data : data}}/>
                         </div>
                     </Route>
                     <Route exact path="/salary/add-salary">
@@ -93,13 +76,15 @@ function Salary () {
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Salary" 
-                                hasUnique={false}
+                                hasUnique={true}
+                                apiInfo="Salary" 
                                 uniqueKey="salaryId" 
-                                uniqueName="employeeName" 
+                                uniqueName="salaryId" 
                                 apiUrl="Salaries/" 
+                                editable={true}
                                 ondataChange={() => console.log()} 
-                                data={{ columns : columns , data : data}}
-                                
+                                data={data} 
+                                columns={columns}
                             />
                         </div>
                     </Route>
