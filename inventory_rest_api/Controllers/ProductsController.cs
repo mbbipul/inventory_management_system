@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,13 +19,6 @@ namespace inventory_rest_api.Controllers
         
         public ProductsController(InventoryDbContext context) => _context = context;
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable>> GetProducts(){
-            return await _context.Products
-                                .Include(product => product.Purchases)
-                                .OrderBy( product => product.ProductId)
-                                .ToListAsync();
-        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProducts(long id)
@@ -51,7 +45,7 @@ namespace inventory_rest_api.Controllers
 
         }
 
-        [HttpGet("productWithCategories")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetJoin(){
             var query = from products in _context.Products
                             .Include(p => p.Purchases)
@@ -148,6 +142,14 @@ namespace inventory_rest_api.Controllers
             return products;
         }
  
+        [HttpDelete("delete-multiple")] 
+        public async Task<ActionResult<string>> DeleteMultiplePurchases(List<Product> product) {
+            _context.Products.RemoveRange(product);
+            await _context.SaveChangesAsync();
+            return "successfully deleted " + product.Count() + " Product";
+        }
+
+
         private bool ProductsExists(long id)
         {
             return _context.Products.Any(e => e.ProductId == id);

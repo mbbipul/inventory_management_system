@@ -22,13 +22,13 @@ namespace inventory_rest_api.Controllers
         }
 
         // GET: api/Purchase
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
-        {
-            return await _context.Purchases
-                            .OrderBy( purchase => purchase.PurchaseDate)
-                            .ToListAsync();
-        }
+        // [HttpGet]
+        // public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
+        // {
+        //     return await _context.Purchases
+        //                     .OrderBy( purchase => purchase.PurchaseDate)
+        //                     .ToListAsync();
+        // }
 
         // GET: api/Purchase/5
         [HttpGet("{id}")]
@@ -44,7 +44,7 @@ namespace inventory_rest_api.Controllers
             return purchases;
         }
 
-        [HttpGet("purchase-product")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetPurchaseWithProduct(long id)
         {
             var query = from purchase in _context.Purchases
