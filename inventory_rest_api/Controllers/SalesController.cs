@@ -22,10 +22,49 @@ namespace inventory_rest_api.Controllers
         }
 
         // GET: api/Sales
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable>> GetSales()
-        {
-            return await _context.Sales.ToListAsync();
+         [HttpGet]
+        public async Task<ActionResult<IEnumerable>> GetSalesProductCustomers(){
+            var query = from sales in _context.Sales
+                        join product in _context.Products
+                            on sales.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        join pph in _context.ProductPurchaseHistories
+                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                        select new {
+                                sales.SalesId,
+                                sales.CustomerId,
+                                sales.ProductQuantity,
+                                sales.SalesDate,
+                                sales.SalesPrice,
+                                sales.SalesPaymentAmount,
+                                sales.SalesDueAmount,
+                                sales.SalesPaidStatus,
+                                sales.SalesDuePaymentDate,
+                                sales.SalesDiscount,
+
+                                ProductDueStatus = sales.SalesDueProduct.SalesId,
+
+                                product.ProductId,
+                                product.ProductName,
+                                product.ProductCode,
+                                product.ProductCategoryId,
+                                product.TotalProducts,
+                                product.TotalProductInStock,
+                                product.ProductPrice,
+                                product.SalestPrice,
+                                product.ProductDetails,
+                                customer.CustomerName,
+                                // customer.CustomerEmail,
+                                // customer.CustomerContact,
+                                // customer.CustomerAddress,
+                                // customer.CustomerJoinDate,
+                                // customer.CustomerNID,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice
+                            };
+            return await query.ToListAsync();
+
         }
 
         // GET: api/Sales/5
@@ -115,50 +154,7 @@ namespace inventory_rest_api.Controllers
         }
 
 
-        [HttpGet("sales-product-customer")]
-        public async Task<ActionResult<IEnumerable>> GetSalesProductCustomers(){
-            var query = from sales in _context.Sales
-                        join product in _context.Products
-                            on sales.ProductId equals product.ProductId
-                        join customer in _context.Customers
-                            on sales.CustomerId equals customer.CustomerId
-                        join pph in _context.ProductPurchaseHistories
-                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
-                        select new {
-                                sales.SalesId,
-                                sales.CustomerId,
-                                sales.ProductQuantity,
-                                sales.SalesDate,
-                                sales.SalesPrice,
-                                sales.SalesPaymentAmount,
-                                sales.SalesDueAmount,
-                                sales.SalesPaidStatus,
-                                sales.SalesDuePaymentDate,
-                                sales.SalesDiscount,
-
-                                ProductDueStatus = sales.SalesDueProduct.SalesId,
-
-                                product.ProductId,
-                                product.ProductName,
-                                product.ProductCode,
-                                product.ProductCategoryId,
-                                product.TotalProducts,
-                                product.TotalProductInStock,
-                                product.ProductPrice,
-                                product.SalestPrice,
-                                product.ProductDetails,
-                                customer.CustomerName,
-                                // customer.CustomerEmail,
-                                // customer.CustomerContact,
-                                // customer.CustomerAddress,
-                                // customer.CustomerJoinDate,
-                                // customer.CustomerNID,
-                                pph.PerProductPurchasePrice,
-                                pph.PerProductSalesPrice
-                            };
-            return await query.ToListAsync();
-
-        }
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSales(long id, Sales sales)
         {

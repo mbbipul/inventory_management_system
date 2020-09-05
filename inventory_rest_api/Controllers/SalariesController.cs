@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using inventory_rest_api.Models;
+using System.Collections;
 
 namespace inventory_rest_api.Controllers
 {
@@ -22,9 +23,19 @@ namespace inventory_rest_api.Controllers
 
         // GET: api/Salaries
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Salary>>> GetSalaries()
+        public async Task<ActionResult<IEnumerable>> GetSalaries()
         {
-            return await _context.Salaries.ToListAsync();
+            var query = from salaries in _context.Salaries
+                        join employees in _context.Employees
+                            on salaries.EmployeeId equals employees.EmployeeId 
+                        select new {
+                            salaries.SalaryId,
+                            salaries.EmployeeId,
+                            salaries.SalaryAmount,
+                            salaries.SalaryPaymentDate,
+                            employees.EmployeeName
+                        };
+            return await query.ToListAsync();
         }
 
         // GET: api/Salaries/5
@@ -99,6 +110,13 @@ namespace inventory_rest_api.Controllers
             await _context.SaveChangesAsync();
 
             return salary;
+        }
+        
+        [HttpDelete("delete-multiple")] 
+        public async Task<ActionResult<string>> DeleteMultiplePurchases(List<Salary> salaries) {
+            _context.Salaries.RemoveRange(salaries);
+            await _context.SaveChangesAsync();
+            return "successfully deleted " + salaries.Count() + " Salary";
         }
 
         private bool SalaryExists(long id)

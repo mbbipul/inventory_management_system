@@ -101,6 +101,13 @@ namespace inventory_rest_api.Controllers
             return employee;
         }
 
+        [HttpDelete("delete-multiple")] 
+        public async Task<ActionResult<string>> DeleteMultiplePurchases(List<Employee> employees) {
+            _context.Employees.RemoveRange(employees);
+            await _context.SaveChangesAsync();
+            return "successfully deleted " + employees.Count() + " Employee";
+        }
+
         private bool EmployeeExists(long id)
         {
             return _context.Employees.Any(e => e.EmployeeId == id);
