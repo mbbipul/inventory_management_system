@@ -116,8 +116,12 @@ export default function NestedList(props) {
         }}
       >
         <List style={{backgroundColor: "#0c0c4b",color:"#fff"}}>
-          { props.item.subItems.map( item => (
-            <ListItem key={item}>{item.name}</ListItem>
+          { props.item.subItems.map( (sub,index) => (
+            <Link style={{textDecoration: "none",color:"#fff"}} to={url+sub.ref} >
+              <ListItem key={index} button className={classes.nested}>
+                    <ListItemText primary={sub.name} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Popover>
