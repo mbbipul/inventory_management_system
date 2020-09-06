@@ -196,8 +196,9 @@ function Purchase () {
         for (let i = 1; i <= days;i++ ){
             valDays.push(new Date(new Date().getTime() - 86400000*i ).toLocaleDateString());
         }
+        console.log(valDays);
         submitForm("Report/purchase-report-all/","GET","",(res) =>{
-            let allRes = JSON.parse(data);
+            let allRes = JSON.parse(res);
             let data = allRes.purchaseRate.filter(p => valDays.includes(p.date));
             let purDueData = allRes.totalPurchaseProductDue.filter(p => valDays.includes(p.purchase.purchaseDate));
 
@@ -381,6 +382,7 @@ function Purchase () {
                     <Route exact path="/purchase">
                         <div style={{margin:20}}>
                             <DetailsTable 
+                                apiUrl="Purchases/"  
                                 detailsPane={detailsPane}
                                 title="Purchase"
                                 columns={columns} 
