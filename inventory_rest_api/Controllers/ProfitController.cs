@@ -43,6 +43,44 @@ namespace inventory_rest_api.Controllers
             return query;
         }
 
+        [HttpGet("profit-report-details-all")]
+        public ActionResult<Object> GetProfitReportDetailsALl(){
+
+            var purchaseQuery = from purchase in _context.Purchases
+                            select new {
+                                Date = AppUtils.DateTime(purchase.PurchaseDate).ToShortDateString(),
+                                purchase.PurchasePrice
+                            };
+            var salesPurchaseQuery =   from sales in _context.Sales 
+                                        join pph in _context.ProductPurchaseHistories
+                                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                                        select new {
+                                            sales.SalesPrice,
+                                            Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
+                                            PurchasePrice = pph.PerProductPurchasePrice * sales.ProductQuantity,
+                                            // pph.PerProductSalesPrice
+                                        };
+
+            var query = new {
+                Customer = GetCustomerNumber(),
+                TotalProduct = GetTotalProductNumber(),
+                TotalSupplier = _context.Suppliers.Count(),
+                TotalSalesPurchase =   salesPurchaseQuery.AsEnumerable().GroupBy( 
+                                    s => s.Date,
+                                    (key,g) => new { 
+                                        Date = key , 
+                                        TotalSalesAmount = g.Sum(s => s.SalesPrice),
+                                        TotalPurchaseAmount = g.Sum(p => p.PurchasePrice),
+                                        TotalPurchaseAmountAll = purchaseQuery.AsEnumerable().Where(p => p.Date == key).Sum(p => p.PurchasePrice),
+
+                                }),
+                Categories = GetCategoriesReport(),
+            };
+
+            return query;
+        }
+
+
         [HttpGet("report-details_range/{date1}-{date2}")]
         public ActionResult<Object> GetReportDetailsRange(string date1,string date2){
              var query = new {
@@ -85,16 +123,22 @@ namespace inventory_rest_api.Controllers
         
         [HttpGet("profit-details_range/{date1}-{date2}")]
         public ActionResult<IEnumerable> GetProfitByDateRange(string date1,string date2){
-             var query = from sales in _context.Sales 
-                        join pph in _context.ProductPurchaseHistories
-                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
-                        select new {
-                            sales.SalesPrice,
-                            SalesDate = double.Parse(sales.SalesDate) ,
-                            Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
-                            PurchasePrice = pph.PerProductPurchasePrice * sales.ProductQuantity,
-                            // pph.PerProductSalesPrice
-                        };
+            var purchaseQuery = from purchase in _context.Purchases
+                            select new {
+                                Date = AppUtils.DateTime(purchase.PurchaseDate).ToShortDateString(),
+                                purchase.PurchasePrice
+                            };
+
+            var query  =    from sales in _context.Sales 
+                            join pph in _context.ProductPurchaseHistories
+                                on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                            select new {
+                                sales.SalesPrice,
+                                SalesDate = double.Parse(sales.SalesDate) ,
+                                Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
+                                PurchasePrice = pph.PerProductPurchasePrice * sales.ProductQuantity,
+                                // pph.PerProductSalesPrice
+                            };
 
             double d1 = double.Parse(date1);
             double d2 = double.Parse(date2);
@@ -103,11 +147,11 @@ namespace inventory_rest_api.Controllers
                     .Where(s => 
                         s.SalesDate > d1 && s.SalesDate < d2
                     )
-                   
                     .GroupBy( 
                         s => s.Date,
                         (key,g) => new { 
                             Date = key , 
+                            TotalPurchaseAmountAll = purchaseQuery.AsEnumerable().Where(p => p.Date == key).Sum(p => p.PurchasePrice),
                             TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
                             TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
                         }
@@ -118,6 +162,12 @@ namespace inventory_rest_api.Controllers
         [HttpGet("profit-details/{filter}-{date}")]
         public ActionResult<IEnumerable> GetAllProfitData(int filter,string date){
             
+            var purchaseQuery = from purchase in _context.Purchases
+                                select new {
+                                    Date = AppUtils.DateTime(purchase.PurchaseDate).ToShortDateString(),
+                                    purchase.PurchasePrice
+                                };
+
             var query = from sales in _context.Sales 
                         join pph in _context.ProductPurchaseHistories
                             on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
@@ -138,6 +188,7 @@ namespace inventory_rest_api.Controllers
                             s => s.Date,
                             (key,g) => new { 
                                 Date = key , 
+                                TotalPurchaseAmountAll = purchaseQuery.AsEnumerable().Where(p => p.Date == key).Sum(p => p.PurchasePrice),
                                 TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
                                 TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
                             }
@@ -151,6 +202,7 @@ namespace inventory_rest_api.Controllers
                             s => s.Date,
                             (key,g) => new { 
                                 Date = key , 
+                                TotalPurchaseAmountAll = purchaseQuery.AsEnumerable().Where(p => p.Date == key).Sum(p => p.PurchasePrice),
                                 TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
                                 TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
                             }
@@ -164,7 +216,8 @@ namespace inventory_rest_api.Controllers
                         .GroupBy( 
                             s => s.Date,
                             (key,g) => new { 
-                                Date = key , 
+                                Date = key ,
+                                TotalPurchaseAmountAll = purchaseQuery.AsEnumerable().Where(p => p.Date == key).Sum(p => p.PurchasePrice),
                                 TotalSalesAmount = g.Sum(s => s.SalesPrice)  ,
                                 TotalPurchaseAmount = g.Sum( s => s.PurchasePrice),
                             }
@@ -247,7 +300,6 @@ namespace inventory_rest_api.Controllers
             var query = from purchase in _context.Purchases 
                         select new {
                             purchase.PurchasePrice,
-                            purchase.ProductQuantity,
                             AppUtils.DateTime(purchase.PurchaseDate).Day,
                             AppUtils.DateTime(purchase.PurchaseDate).Month,
                             AppUtils.DateTime(purchase.PurchaseDate).Year,
