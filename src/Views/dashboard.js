@@ -35,19 +35,19 @@ const DashBoard = () =>{
                 setreportCardTitle("Today's");
                 break;
             case 2 :
-                FetchData(2,Date.now()-8640000);
+                FetchData(2,Date.now()-86400000 );
                 setreportCardTitle("Yesterday's");
                 break;
             case 3 :
-                FetchData(1,Date.now()-(8640000*2));
+                FetchData(1,Date.now()-(86400000*2));
                 setreportCardTitle("Last 3 Day's");
                 break;
             case 4 :
-                FetchData(1,Date.now()-(8640000*6));
+                FetchData(1,Date.now()-(86400000*6));
                 setreportCardTitle("This week's");
                 break;
             case 5:
-                FetchData(1,Date.now()-(8640000*29));
+                FetchData(1,Date.now()-(86400000*29));
                 setreportCardTitle("This Month's");
                 break;
             case 6:
@@ -63,23 +63,25 @@ const DashBoard = () =>{
     },[reportTabs]);
 
     useEffect(() => {
-        if(fromDate > toDate){
-            alert("Starting date cannot larger than Last Date");
-        }else{
-            submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
-            submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+        if (reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
+                submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+            }    
         }
-     
     },[fromDate]);
 
     useEffect(() => {
-        if(fromDate > toDate){
-            alert("Starting date cannot larger than Last Date");
-        }else{
-            submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
-            submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+        if( reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
+                submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+            }    
         }
-      
     },[toDate]);
 
     const FetchData = (filter,date) => {
@@ -99,6 +101,9 @@ const DashBoard = () =>{
 
     },[reportDetails]);
 
+    useEffect(() => {
+        FetchData(0,"all");
+    },[])
     const overViewItems = [
         {
             name : "Total Customer",
