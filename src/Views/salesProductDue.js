@@ -22,11 +22,11 @@ export default function SalesProductDue(props) {
     const [salesDueProduct,setSalesDueProduct] = useState("");
 
     const [columns,] =  useState([
-        { title: 'Sales Due Product Id   ', field: 'saleseId' },
+        { title: 'Sales Due Product Id   ', field: 'salesDueProductId' },
         { title: 'Customer Name', field: 'customerName' },
         { title: 'Product Name', field: 'productName' },
         { title: 'Sales Due Product Quantity', field: 'salesDueProductsQuantity' },
-        { title: 'Sales Date', field: 'saleseDate' },
+        { title: 'Sales Date', field: 'salesDate' },
 
     ]);
 

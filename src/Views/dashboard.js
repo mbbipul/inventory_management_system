@@ -39,15 +39,15 @@ const DashBoard = () =>{
                 setreportCardTitle("Yesterday's");
                 break;
             case 3 :
-                FetchData(1,Date.now()-(86400000*2));
+                FetchProfitsBydays(3);
                 setreportCardTitle("Last 3 Day's");
                 break;
             case 4 :
-                FetchData(1,Date.now()-(86400000*6));
+                FetchProfitsBydays(7);
                 setreportCardTitle("This week's");
                 break;
             case 5:
-                FetchData(1,Date.now()-(86400000*29));
+                FetchProfitsBydays(30);
                 setreportCardTitle("This Month's");
                 break;
             case 6:
@@ -89,6 +89,39 @@ const DashBoard = () =>{
         submitForm("profit/report-details/"+filter+"-"+date,"GET","",(res) => setReportDetails(JSON.parse(res)));
 
     }
+    const FetchProfitsBydays = (days) => {
+        let valDays = [];
+        for (let i = 0; i < days;i++ ){
+            valDays.push(new Date(new Date().getTime() - 86400000*i ).toLocaleDateString());
+        }
+
+        submitForm("Profit/profit-report-details-all","GET","",(res) =>{
+            let allRes = JSON.parse(res);
+            const profitDetails = [];
+
+            let totalSalesPurchase = allRes.totalSalesPurchase.filter(p => valDays.includes(p.date));
+            let actualPurchasePrice = 0;
+
+            totalSalesPurchase.map(pur => {
+                profitDetails.push({
+                    date : pur.date,
+                    totalPurchaseAmount : pur.totalPurchaseAmountAll,
+                    totalSalesAmount : pur.totalSalesAmount
+                });
+                actualPurchasePrice += pur.totalPurchaseAmountAll; 
+            });
+            console.log(profitDetails);
+            setData(profitDetails);
+            setReportDetails({
+                "customer": allRes.customer,
+                "totalProduct": allRes.totalProduct,
+                "totalSupplier": allRes.totalSupplier,
+                "todaysSales": profitDetails.reduce((a, b) => +a + +b.totalSalesAmount, 0),
+                "todaysPurchase": actualPurchasePrice,
+                "categories": allRes.categories
+            });
+        });
+    }
 
     useEffect(() => {
         let cates = [];
@@ -103,7 +136,12 @@ const DashBoard = () =>{
 
     useEffect(() => {
         FetchData(0,"all");
-    },[])
+    },[]);
+
+    useEffect(() => {
+        console.log(data);
+    },[data])
+
     const overViewItems = [
         {
             name : "Total Customer",
@@ -175,11 +213,11 @@ const DashBoard = () =>{
                 dataPoints: getDataPoints(data,"totalSalesAmount") 
             },
             {
-                type: "line",
+                type: "column",
                 name: "Purchase Price",
                 showInLegend: true,
                 yValueFormatString: "$#,##0",
-                dataPoints: getDataPoints(data,"totalPurchaseAmount") 
+                dataPoints: getDataPoints(data,"totalPurchaseAmountAll") 
 
             },
             {
