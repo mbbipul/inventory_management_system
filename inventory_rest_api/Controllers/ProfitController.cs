@@ -253,7 +253,7 @@ namespace inventory_rest_api.Controllers
                             AppUtils.DateTime(purchase.PurchaseDate).Year,
                         };
             if(filter==0){
-                return query.Sum(p => p.PurchasePrice*p.ProductQuantity);
+                return query.Sum(p => p.PurchasePrice);
             }else if(filter==1){
                   DateTime dt = AppUtils.DateTime(d);
 
@@ -261,7 +261,7 @@ namespace inventory_rest_api.Controllers
                             p.Day  >= dt.Day &&
                             p.Month  == dt.Month &&
                             p.Year  == dt.Year
-                    ).Sum(p => p.PurchasePrice*p.ProductQuantity);
+                    ).Sum(p => p.PurchasePrice);
             }
 
             DateTime date = AppUtils.DateTime(d);
@@ -270,7 +270,7 @@ namespace inventory_rest_api.Controllers
                             p.Day  == date.Day &&
                             p.Month  == date.Month &&
                             p.Year  == date.Year
-                    ).Sum(p => p.PurchasePrice*p.ProductQuantity);
+                    ).Sum(p => p.PurchasePrice);
         }
 
         public IEnumerable GetCategoriesReport(){
