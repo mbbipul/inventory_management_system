@@ -34,6 +34,7 @@ namespace inventory_rest_api.Models
 
         public DbSet<ProductPurchaseHistory> ProductPurchaseHistories { get; set; }
 
+        public DbSet<Damage> Damages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +92,33 @@ namespace inventory_rest_api.Models
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Damage>()
+                .HasOne(d => d.Product)
+                .WithOne(p => p.Damage)
+                .HasForeignKey<Product>(p => p.ProductId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Damage>()
+                .HasOne(d => d.Customer)
+                .WithOne(c => c.Damage)
+                .HasForeignKey<Customer>(p => p.CustomerId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Damage>()
+                .HasOne(d => d.Employee)
+                .WithOne(e => e.Damage)
+                .HasForeignKey<Employee>(p => p.EmployeeId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Damage>()
+                .HasOne(d => d.Supplier)
+                .WithOne(s => s.Damage)
+                .HasForeignKey<Supplier>(p => p.SupplierId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
 

@@ -581,6 +581,132 @@ const addEmployeeFormFields = [
     },
 ];
 
+const addDamageFormFields = [
+    {
+        label : "Customer Name",
+        placeholder : "BB Roy",
+        type : 3,
+        dialogFormContent : <AddCustomer />,
+        fetchUrl : apiUrl+"Customers",
+        selectName : "customerName",
+        selectKey : "customerId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+
+    },
+    {
+        label : "Product Name",
+        placeholder : "Ice Cream",
+        type : 3,
+        dependOnThis : "Product purchase Details",
+        dialogFormContent : <Link style={{marginLeft:"30%"}} to="/product/add-product"  target="_blank">Please Click Here to Add new Product</Link>,
+        fetchUrl : apiUrl+"Products",
+        selectName : "productName",
+        selectKey : "productId",
+        required : false,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Supplier Name",
+        placeholder : "Please Select Supplier Name",
+        type : 3,
+        dialogFormContent : <AddSupplier />,
+        fetchUrl : apiUrl+"Suppliers",
+        selectName : "supplierName",
+        selectKey : "supplierId",
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Employee Name",
+        placeholder : "BB Roy",
+        type : 3,
+        dialogFormContent : <AddEmployee />,
+        fetchUrl : apiUrl+"Employees",
+        selectName : "employeeName",
+        selectKey : "employeeId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Product Quantity",
+        placeholder : "1",
+        type : 0,
+        // dependsOn : {
+        //     field : ["Product Name","totalProductInStock"],
+        //     operation : 2
+        // },
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Damage Product Amount",
+        placeholder : "500.00 tk",
+        type : 0,
+        // dependsOn : {
+        //     field : ["Purchase Price","Purchase Discount"],
+        //     operation : 4 //substruct operation with check this value is not larger
+        // },
+        required : true,
+        disabled : false,
+        validation : [999]
+    },
+    {
+        label : "",
+        disabled : false,
+        type : 999,
+    },
+    {
+        label : "Damage Sent to Company Date",
+        placeholder : "12-12-2021",
+        type : 6,
+        required : true,
+        disabled : false,
+        validation : [999]
+    },
+    {
+        label : "",
+        disabled : false,
+        type : 999,
+    },
+    {
+        label : "Damage Return From Company Date",
+        placeholder : "12-12-2021",
+        type : 6,
+        required : false,
+        disabled : false,
+        validation : [999]
+    },
+    {
+        label : "Damage Return From Company Amount",
+        placeholder : "500.00 tk",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [999]
+    },
+    {
+        label : "Damage Return From Company Product Quantity",
+        placeholder : "1",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Damage Return From Company Due Date",
+        placeholder : "12-12-2021",
+        type : 6,
+        required : false,
+        disabled : false,
+        validation : [999]
+    },
+];
 
 export { 
     addProductFormFileds , 
@@ -591,5 +717,6 @@ export {
     addCustomerFormFields,
     addCostFormFields,
     addEmployeeFormFields,
-    addSalaryFormFields
+    addSalaryFormFields,
+    addDamageFormFields
 };

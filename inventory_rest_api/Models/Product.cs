@@ -41,5 +41,7 @@ namespace inventory_rest_api.Models
         public ICollection<ProductPurchaseHistory> ProductPurchaseHistories { get; set;}
 
 
+        public long DamageId { get; set; }
+        public Damage Damage { get; set; }
     }
 }

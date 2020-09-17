@@ -182,6 +182,22 @@ const sideBarItems = [
             }
         ]
     },
+    {
+        name : "Damage",
+        icon : "remove_shopping_cart",
+        ref : "/damage",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Damage",
+                ref : "damage/add-damage"
+            },
+            {
+                name : "Manage Damages",
+                ref : "damage/manage-damage"
+            }
+        ]
+    }
 ]
 
 export {appBarActionItems,sideBarItems};

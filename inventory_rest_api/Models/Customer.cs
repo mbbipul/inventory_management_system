@@ -23,5 +23,9 @@ namespace inventory_rest_api.Models
 
         [Required]
         public String CustomerNID { get; set; }
+
+
+        public long DamageId { get; set; }
+        public Damage Damage { get; set; }
     }
 }

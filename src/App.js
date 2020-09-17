@@ -23,6 +23,7 @@ import submitForm from './utils/fetchApi';
 import SalesProductDue from './Views/salesProductDue';
 import PurchasePaymentDue from './Views/purchasePaymentDue';
 import SalesPaymentDue from './Views/salesPaymentDue';
+import Damage from './Views/damage';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -148,7 +149,9 @@ function App() {
             <Route path="/salary">
               <Salary />
             </Route>
-
+            <Route path="/damage">
+              <Damage />
+            </Route>
           </Switch>
           </main>
       </Router>

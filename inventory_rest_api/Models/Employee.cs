@@ -28,5 +28,7 @@ namespace inventory_rest_api.Models
         
         public ICollection<Salary> Salaries { get; set;}
 
+        public long DamageId { get; set; }
+        public Damage Damage { get; set; }
     }
 }; 
