@@ -2,7 +2,7 @@
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialM : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -157,6 +157,54 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Damages",
+                columns: table => new
+                {
+                    DamageId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<long>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
+                    EmployeeId = table.Column<long>(nullable: false),
+                    SupplierId = table.Column<long>(nullable: false),
+                    DamageRetDate = table.Column<string>(nullable: true),
+                    ProductQuantity = table.Column<int>(nullable: false),
+                    DamageProductAmount = table.Column<long>(nullable: false),
+                    DamageSentToCompanyStatus = table.Column<string>(nullable: true),
+                    DamageSentToCompanyDate = table.Column<string>(nullable: true),
+                    DamageRetFromCompanyDate = table.Column<string>(nullable: true),
+                    DamageRetFromComAmount = table.Column<string>(nullable: true),
+                    DamageRetComProQuantity = table.Column<long>(nullable: false),
+                    DamageRetComProQuantityDueStatus = table.Column<bool>(nullable: false),
+                    DamgeReturnCompanyDueAmount = table.Column<long>(nullable: false),
+                    DamgeReturnCompanyDuePaymentStatus = table.Column<bool>(nullable: false),
+                    DamgeReturnCompanyDueDate = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Damages", x => x.DamageId);
+                    table.ForeignKey(
+                        name: "FK_Damages_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId");
+                    table.ForeignKey(
+                        name: "FK_Damages_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId");
+                    table.ForeignKey(
+                        name: "FK_Damages_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
+                    table.ForeignKey(
+                        name: "FK_Damages_Suppliers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Suppliers",
+                        principalColumn: "SupplierId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductPurchaseHistories",
                 columns: table => new
                 {
@@ -282,6 +330,26 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Damages_CustomerId",
+                table: "Damages",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Damages_EmployeeId",
+                table: "Damages",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Damages_ProductId",
+                table: "Damages",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Damages_SupplierId",
+                table: "Damages",
+                column: "SupplierId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductPurchaseHistories_ProductId",
                 table: "ProductPurchaseHistories",
                 column: "ProductId");
@@ -335,7 +403,7 @@ namespace inventory_rest_api.Migrations
                 name: "Costs");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Damages");
 
             migrationBuilder.DropTable(
                 name: "PurchaseDueProducts");
@@ -345,6 +413,9 @@ namespace inventory_rest_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "SalesDueProducts");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Suppliers");

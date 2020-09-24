@@ -110,7 +110,7 @@ export default function PurchaseProductDue(props) {
                 title="Manage Purchase Due Products"
                 columns={columns}
                 data={data}
-                actions={[
+                actkzions={[
                     {
                     icon: 'edit',
                     tooltip: 'Update Product Due Information',

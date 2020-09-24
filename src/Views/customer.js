@@ -48,13 +48,18 @@ function Customer() {
         ]
     }
 
-    useEffect(() => {
+    const FetchData = () => {
         submitForm("Customers","GET","",(result) => setData(JSON.parse(result)));
+    }
+
+    useEffect(() => {
+        FetchData();
     },[]);
 
-    const onDataChange = (data) => {
-        setData(data);
-    }
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle]);
+    
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
@@ -80,7 +85,7 @@ function Customer() {
                                 uniqueName="customerName" 
                                 apiUrl="Customers/" 
                                 editable={true}
-                                ondataChange={() => console.log()} 
+                                onChangeData={FetchData} 
                                 data={data}
                                 columns={columns}
                                 

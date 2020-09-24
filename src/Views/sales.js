@@ -171,10 +171,6 @@ function Sales () {
         ]
     }
     
-    useEffect(() => {
-        FetchData();
-    },[]);
-
 
     const FetchReport = (days) => {
         let valDays = [];
@@ -213,10 +209,19 @@ function Sales () {
     const FetchReportByDate = (date) => {
         submitForm("Report/sales-report/"+date,"GET","",(res) => setSalesReport(JSON.parse(res)));
     }
-    useEffect(() => {
+
+    const FetchAlls = () => {
         FetchData();
         FetchReportByDate("");
+    }
+
+    useEffect(() => {
+        FetchAlls();
     },[]);
+
+    useEffect(() => {
+        FetchAlls();
+    },[headersubtitle])
 
     let tabs = [
         {
@@ -386,7 +391,7 @@ function Sales () {
                                 uniqueName="salesId" 
                                 apiUrl="Sales/" 
                                 editable={false}
-                                ondataChange={() => console.log()} 
+                                onChangeData={FetchAlls} 
                                 data={data}
                                 columns={columns}
                                 

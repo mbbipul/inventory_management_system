@@ -22,7 +22,6 @@ namespace inventory_rest_api.Models
 
         public string DamgeReturnCompanyDueDate { get; set; }
 
-
         //relation 
         public Product Product { get; set; }
         public Customer Customer { get; set; }

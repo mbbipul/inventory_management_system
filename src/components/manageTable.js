@@ -11,17 +11,11 @@ function ManageTable(props){
     let [errorAlert,setErrorALert] = useState(false);
 
     let [alertText,setAlertText] = useState("");
-    
-    const [datas, setData] = React.useState();
-
    
     const FetchData =  () => {
-        submitForm(props.apiUrl,"GET","",(res) => setData(JSON.parse(res)));
+        props.onChangeData();
     };
-   
-    useEffect(() => {
-        FetchData();
-    },[]);
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setAlert(false);
@@ -83,7 +77,7 @@ function ManageTable(props){
             <MaterialTable
                 title={props.title}
                 columns={props.columns}
-                data={datas}
+                data={props.data}
                 options={{
                     selection: true
                 }}

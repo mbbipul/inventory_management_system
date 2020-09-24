@@ -94,29 +94,25 @@ namespace inventory_rest_api.Models
 
             modelBuilder.Entity<Damage>()
                 .HasOne(d => d.Product)
-                .WithOne(p => p.Damage)
-                .HasForeignKey<Product>(p => p.ProductId)
+                .WithMany(p => p.Damages)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
             
             modelBuilder.Entity<Damage>()
                 .HasOne(d => d.Customer)
-                .WithOne(c => c.Damage)
-                .HasForeignKey<Customer>(p => p.CustomerId)
+                .WithMany(p => p.Damages)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
             
             modelBuilder.Entity<Damage>()
                 .HasOne(d => d.Employee)
-                .WithOne(e => e.Damage)
-                .HasForeignKey<Employee>(p => p.EmployeeId)
+                .WithMany(p => p.Damages)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Damage>()
                 .HasOne(d => d.Supplier)
-                .WithOne(s => s.Damage)
-                .HasForeignKey<Supplier>(p => p.SupplierId)
+                .WithMany(p => p.Damages)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 

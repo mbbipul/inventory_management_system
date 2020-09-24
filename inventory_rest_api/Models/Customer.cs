@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace inventory_rest_api.Models
 {
     public class Customer
     {
 
+        [Key]
         public long CustomerId { get; set; }
 
         [Required]
@@ -24,8 +27,8 @@ namespace inventory_rest_api.Models
         [Required]
         public String CustomerNID { get; set; }
 
-
-        public long DamageId { get; set; }
-        public Damage Damage { get; set; }
+        
+        [JsonIgnore]
+        public List<Damage> Damages { get; set; }
     }
 }

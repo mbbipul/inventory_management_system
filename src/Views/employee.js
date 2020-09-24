@@ -62,41 +62,46 @@ function Employee () {
     useEffect(() => {
         FetchData();
     },[]);
-        return(
-            <div>
-                <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <Switch>
-                    <Route exact path="/employee">
-                        <div style={{margin:20}}>
-                        <ProductTable 
-                            title="All Employees"
+
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle]);
+
+    return(
+        <div>
+            <RouteHeader subTitle={headersubtitle} details={routeHeader} />
+            <Switch>
+                <Route exact path="/employee">
+                    <div style={{margin:20}}>
+                    <ProductTable 
+                        title="All Employees"
+                        apiUrl="Employees/" 
+                        data={{ columns : columns , data : data}}/>
+                    </div>
+                </Route>
+                <Route exact path="/employee/add-employee">
+                    <AddEmployee />
+                </Route>
+                <Route exact path="/employee/manage-employee">
+                    <div style={{margin:20}}>
+                        <ManageTable 
+                            title="Manage Employee" 
+                            hasUnique={true}
+                            apiInfo="Employee"
+                            uniqueKey="employeeId" 
+                            uniqueName="employeeName" 
                             apiUrl="Employees/" 
-                            data={{ columns : columns , data : data}}/>
-                        </div>
-                    </Route>
-                    <Route exact path="/employee/add-employee">
-                        <AddEmployee />
-                    </Route>
-                    <Route exact path="/employee/manage-employee">
-                        <div style={{margin:20}}>
-                            <ManageTable 
-                                title="Manage Employee" 
-                                hasUnique={true}
-                                apiInfo="Employee"
-                                uniqueKey="employeeId" 
-                                uniqueName="employeeName" 
-                                apiUrl="Employees/" 
-                                editable={true}
-                                ondataChange={() => console.log()}
-                                data={data} 
-                                columns={columns}
-                                
-                            />
-                        </div>
-                    </Route>
-                </Switch>
-            </div>                        
-        )
+                            editable={true}
+                            onChangeData={FetchData}
+                            data={data} 
+                            columns={columns}
+                            
+                        />
+                    </div>
+                </Route>
+            </Switch>
+        </div>                        
+    )
     
 }
 

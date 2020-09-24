@@ -14,7 +14,7 @@ namespace inventory_rest_api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -71,7 +71,9 @@ namespace inventory_rest_api.Migrations
             modelBuilder.Entity("inventory_rest_api.Models.Customer", b =>
                 {
                     b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CustomerAddress")
                         .IsRequired()
@@ -95,9 +97,6 @@ namespace inventory_rest_api.Migrations
                     b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("DamageId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("CustomerId");
 
@@ -161,16 +160,23 @@ namespace inventory_rest_api.Migrations
 
                     b.HasKey("DamageId");
 
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SupplierId");
+
                     b.ToTable("Damages");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Employee", b =>
                 {
                     b.Property<long>("EmployeeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DamageId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Date")
                         .IsRequired()
@@ -203,10 +209,9 @@ namespace inventory_rest_api.Migrations
             modelBuilder.Entity("inventory_rest_api.Models.Product", b =>
                 {
                     b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DamageId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("ProductCategoryId")
                         .HasColumnType("bigint");
@@ -450,12 +455,11 @@ namespace inventory_rest_api.Migrations
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
                 {
                     b.Property<long>("SupplierId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DamageId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("SupplierAddress")
@@ -480,20 +484,29 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("inventory_rest_api.Models.Customer", b =>
+            modelBuilder.Entity("inventory_rest_api.Models.Damage", b =>
                 {
-                    b.HasOne("inventory_rest_api.Models.Damage", "Damage")
-                        .WithOne("Customer")
-                        .HasForeignKey("inventory_rest_api.Models.Customer", "CustomerId")
+                    b.HasOne("inventory_rest_api.Models.Customer", "Customer")
+                        .WithMany("Damages")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("inventory_rest_api.Models.Employee", b =>
-                {
-                    b.HasOne("inventory_rest_api.Models.Damage", "Damage")
-                        .WithOne("Employee")
-                        .HasForeignKey("inventory_rest_api.Models.Employee", "EmployeeId")
+                    b.HasOne("inventory_rest_api.Models.Employee", "Employee")
+                        .WithMany("Damages")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Product", "Product")
+                        .WithMany("Damages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Supplier", "Supplier")
+                        .WithMany("Damages")
+                        .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
@@ -504,12 +517,6 @@ namespace inventory_rest_api.Migrations
                         .WithMany("Products")
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("inventory_rest_api.Models.Damage", "Damage")
-                        .WithOne("Product")
-                        .HasForeignKey("inventory_rest_api.Models.Product", "ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -579,12 +586,6 @@ namespace inventory_rest_api.Migrations
                         .WithMany("Suppliers")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("inventory_rest_api.Models.Damage", "Damage")
-                        .WithOne("Supplier")
-                        .HasForeignKey("inventory_rest_api.Models.Supplier", "SupplierId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

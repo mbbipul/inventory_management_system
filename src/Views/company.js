@@ -54,40 +54,45 @@ function Company () {
     useEffect(() => {
         FetchData();
     },[]);
-        return(
-            <div>
-                <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <Switch>
-                    <Route exact path="/company">
-                        <div style={{margin:20}}>
-                        <ProductTable 
-                            title="All Companies"
+
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle]);
+
+    return(
+        <div>
+            <RouteHeader subTitle={headersubtitle} details={routeHeader} />
+            <Switch>
+                <Route exact path="/company">
+                    <div style={{margin:20}}>
+                    <ProductTable 
+                        title="All Companies"
+                        apiUrl="Companies/" 
+                        data={{ columns : columns , data : data}}/>
+                    </div>
+                </Route>
+                <Route exact path="/company/add-company">
+                    <AddCompany />
+                </Route>
+                <Route exact path="/company/manage-company">
+                    <div style={{margin:20}}>
+                        <ManageTable 
+                            title="Manage Company" 
+                            hasUnique={true}
+                            apiInfo="Company"
+                            uniqueKey="companyId" 
+                            uniqueName="companyName" 
                             apiUrl="Companies/" 
-                            data={{ columns : columns , data : data}}/>
-                        </div>
-                    </Route>
-                    <Route exact path="/company/add-company">
-                        <AddCompany />
-                    </Route>
-                    <Route exact path="/company/manage-company">
-                        <div style={{margin:20}}>
-                            <ManageTable 
-                                title="Manage Company" 
-                                hasUnique={true}
-                                apiInfo="Company"
-                                uniqueKey="companyId" 
-                                uniqueName="companyName" 
-                                apiUrl="Companies/" 
-                                editable={true}
-                                ondataChange={() => console.log()} 
-                                columns={columns}
-                                
-                            />
-                        </div>
-                    </Route>
-                </Switch>
-            </div>                        
-        )
+                            editable={true}
+                            onChangeData={FetchData} 
+                            data={data}
+                            columns={columns}
+                        />
+                    </div>
+                </Route>
+            </Switch>
+        </div>                        
+    )
     
 }
 

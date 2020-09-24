@@ -57,41 +57,46 @@ function Cost () {
     useEffect(() => {
         FetchData();
     },[]);
-        return(
-            <div>
-                <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <Switch>
-                    <Route exact path="/cost">
-                        <div style={{margin:20}}>
-                            <ProductTable 
-                                title="Costs Sheet"
-                                apiUrl="Costs/" 
-                                data={{ columns : columns , data : data}}/>
-                        </div>
-                    </Route>
-                    <Route exact path="/cost/add-cost">
-                        <AddCost />
-                    </Route>
-                    <Route exact path="/cost/manage-cost">
-                        <div style={{margin:20}}>
-                            <ManageTable 
-                                title="Manage Cost" 
-                                hasUnique={true}
-                                apiInfo="Costs" 
-                                uniqueKey="costId" 
-                                uniqueName="costId" 
-                                apiUrl="Costs/" 
-                                editable={true}
-                                ondataChange={() => console.log()} 
-                                data={data} 
-                                columns={columns}
-                                
-                            />
-                        </div>
-                    </Route>
-                </Switch>
-            </div>                        
-        )
+
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle]);
+    
+    return(
+        <div>
+            <RouteHeader subTitle={headersubtitle} details={routeHeader} />
+            <Switch>
+                <Route exact path="/cost">
+                    <div style={{margin:20}}>
+                        <ProductTable 
+                            title="Costs Sheet"
+                            apiUrl="Costs/" 
+                            data={{ columns : columns , data : data}}/>
+                    </div>
+                </Route>
+                <Route exact path="/cost/add-cost">
+                    <AddCost />
+                </Route>
+                <Route exact path="/cost/manage-cost">
+                    <div style={{margin:20}}>
+                        <ManageTable 
+                            title="Manage Cost" 
+                            hasUnique={true}
+                            apiInfo="Costs" 
+                            uniqueKey="costId" 
+                            uniqueName="costId" 
+                            apiUrl="Costs/" 
+                            editable={true}
+                            onChangeData={FetchData} 
+                            data={data} 
+                            columns={columns}
+                            
+                        />
+                    </div>
+                </Route>
+            </Switch>
+        </div>                        
+    )
     
 }
 

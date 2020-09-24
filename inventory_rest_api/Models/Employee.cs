@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace inventory_rest_api.Models
 {
@@ -28,7 +29,7 @@ namespace inventory_rest_api.Models
         
         public ICollection<Salary> Salaries { get; set;}
 
-        public long DamageId { get; set; }
-        public Damage Damage { get; set; }
+        [JsonIgnore]
+        public List<Damage> Damages { get; set; }
     }
 }; 

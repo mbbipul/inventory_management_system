@@ -57,40 +57,45 @@ function Salary () {
     useEffect(() => {
         FetchData();
     },[]);
-        return(
-            <div>
-                <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <Switch>
-                    <Route exact path="/salary">
-                        <div style={{margin:20}}>
-                            <ProductTable 
-                                title="Salary Sheet"
-                                apiUrl="Salaries/" 
-                                data={{ columns : columns , data : data}}/>
-                        </div>
-                    </Route>
-                    <Route exact path="/salary/add-salary">
-                        <AddSalary />
-                    </Route>
-                    <Route exact path="/salary/manage-salary">
-                        <div style={{margin:20}}>
-                            <ManageTable 
-                                title="Manage Salary" 
-                                hasUnique={true}
-                                apiInfo="Salary" 
-                                uniqueKey="salaryId" 
-                                uniqueName="salaryId" 
-                                apiUrl="Salaries/" 
-                                editable={true}
-                                ondataChange={() => console.log()} 
-                                data={data} 
-                                columns={columns}
-                            />
-                        </div>
-                    </Route>
-                </Switch>
-            </div>                        
-        )
+
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle]);
+    
+    return(
+        <div>
+            <RouteHeader subTitle={headersubtitle} details={routeHeader} />
+            <Switch>
+                <Route exact path="/salary">
+                    <div style={{margin:20}}>
+                        <ProductTable 
+                            title="Salary Sheet"
+                            apiUrl="Salaries/" 
+                            data={{ columns : columns , data : data}}/>
+                    </div>
+                </Route>
+                <Route exact path="/salary/add-salary">
+                    <AddSalary />
+                </Route>
+                <Route exact path="/salary/manage-salary">
+                    <div style={{margin:20}}>
+                        <ManageTable 
+                            title="Manage Salary" 
+                            hasUnique={true}
+                            apiInfo="Salary" 
+                            uniqueKey="salaryId" 
+                            uniqueName="salaryId" 
+                            apiUrl="Salaries/" 
+                            editable={true}
+                            onChangeData={FetchData} 
+                            data={data} 
+                            columns={columns}
+                        />
+                    </div>
+                </Route>
+            </Switch>
+        </div>                        
+    )
     
 }
 

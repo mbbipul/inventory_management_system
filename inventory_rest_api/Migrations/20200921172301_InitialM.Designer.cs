@@ -9,14 +9,14 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200814091132_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200921172301_InitialM")]
+    partial class InitialM
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -103,6 +103,74 @@ namespace inventory_rest_api.Migrations
                     b.HasKey("CustomerId");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Damage", b =>
+                {
+                    b.Property<long>("DamageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DamageProductAmount")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DamageRetComProQuantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("DamageRetComProQuantityDueStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("DamageRetDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DamageRetFromComAmount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DamageRetFromCompanyDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DamageSentToCompanyDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DamageSentToCompanyStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("DamgeReturnCompanyDueAmount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DamgeReturnCompanyDueDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("DamgeReturnCompanyDuePaymentStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ProductQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<long>("SupplierId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("DamageId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Damages");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Employee", b =>
@@ -418,6 +486,33 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("Suppliers");
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.Damage", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Customer", "Customer")
+                        .WithMany("Damages")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Employee", "Employee")
+                        .WithMany("Damages")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Product", "Product")
+                        .WithMany("Damages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Supplier", "Supplier")
+                        .WithMany("Damages")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Product", b =>
                 {
                     b.HasOne("inventory_rest_api.Models.ProductCategory", "ProductCategories")
@@ -466,7 +561,7 @@ namespace inventory_rest_api.Migrations
             modelBuilder.Entity("inventory_rest_api.Models.Sales", b =>
                 {
                     b.HasOne("inventory_rest_api.Models.Product", "Product")
-                        .WithMany("Sales")
+                        .WithMany("Saleses")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

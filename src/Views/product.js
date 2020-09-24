@@ -75,6 +75,10 @@ function Product() {
     useEffect(() => {
         FetchData();
     },[]);
+    
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle])
 
     const detailsPane = rowData => {
         let totalPurchasePrice = rowData.purchases.map(s=>s.salesPrice).reduce((a,c)=>a+c);
@@ -139,7 +143,7 @@ function Product() {
                                 uniqueName="productName" 
                                 apiUrl="Products/" 
                                 editable={false}
-                                ondataChange={() => console.log()} 
+                                onChangeData={FetchData} 
                                 data={data}
                                 columns={columns}
                                 

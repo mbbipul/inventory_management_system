@@ -77,7 +77,7 @@ class AddPurchase extends React.Component {
             <Card style={{margin:40}}>
 
                 <CardHeader
-                    title="Add New Product"
+                    title="Add New Purchase"
                 />
                 <Divider />
                 <Form onSubmit={this.submitPurchaseForm} submitButton="Add Product" fields={addPurchaseFormFields}/>

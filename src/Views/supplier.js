@@ -44,10 +44,19 @@ function Supplier() {
         ]
     }
 
-    useEffect(() => {
+
+    const FetchData = () => {
         submitForm("Suppliers","GET","",(result) => setData(JSON.parse(result)));
+    }
+
+    useEffect(() => {
+        FetchData();
     },[]);
 
+    useEffect(() => {
+        FetchData();
+    },[headersubtitle]);
+    
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
@@ -73,7 +82,7 @@ function Supplier() {
                                 uniqueName="supplierName" 
                                 apiUrl="Suppliers/" 
                                 editable={true}
-                                ondataChange={() => console.log()} 
+                                onChangeData={FetchData} 
                                 data={data}
                                 columns={columns}
                                 

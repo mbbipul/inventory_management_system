@@ -10,13 +10,14 @@ class AddDamage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            product : {},
+            damage : {},
             openSnackbar : false,
         }
     }
 
-    onProductAddSucces = (result) => {
+    onDamageAddSucces = (result) => {
         this.setState({
+            damage : JSON.parse(result),
             openSnackbar : true,
         });
 
@@ -27,48 +28,21 @@ class AddDamage extends React.Component {
         })
     }
 
-    submitAddProductForm = (state) => {
+    submitDamageForm = (state) => {
      
-        let exactPurchasePrice = parseFloat(state.PurchasePrice)-parseFloat(state.PurchaseDiscount);
-
-        let product = {
-            "productName" : state.ProductName,
-            "productCode" : state.ProductCode,
-            "productCategoryId" : state.ProductType.productCategoryId,
-            "totalProducts" : parseInt(state.ProductQuantity),
-            "totalProductInStock" : parseInt(state.ProductQuantity),
-            "productPrice" : exactPurchasePrice,
-            "salestPrice" : parseFloat(state.SalesPrice),
-            "productDetails" : state.Details,
-        }
-
-
-        let paid = exactPurchasePrice - parseFloat(state.PurchasePaymentAmount) ;
-        let paidStatus = paid > 0 ? false : true ;
-
-      
-        submitForm("Products","POST",product,(result) => {
-            let product = JSON.parse(result);
-            this.setState({product : product});
-            let purchase = {
-                "supplierId" : state.SupplierName.supplierId,
-                "productQuantity" : parseInt(state.ProductQuantity),
-                "purchaseDate" : Date.now().toString(),
-                "purchasePrice" : exactPurchasePrice,
-                "salesPrice" : parseFloat(state.SalesPrice),
-                "purchasePaymentAmount" : parseFloat(state.PurchasePaymentAmount),
-                "purchasePaidStatus" : paidStatus,
-                "purchaseDuePaymentDate" : state.PurchaseDuePaymentDate.toString(),
-                "purchaseDiscount" : parseFloat(state.PurchaseDiscount),
-                "productId" : product.productId
+       let damage = {
+           productId : state.ProductName.productId,
+           customerId : state.CustomerName.customerId,
+           employeeId : state.EmployeeName.employeeId,
+           supplierId : state.SupplierName.supplierId,
+           productQuantity : parseInt(state.ProductQuantity),
+           damageProductAmount : parseFloat(state.DamageProductAmount) ,
+           damageRetDate : new Date().getTime().toString(),
+           damageSentToCompanyStatus : 'added'
+       };
     
-            }
-            console.log(product);
-            console.log(purchase)
-            submitForm("Purchases","POST",purchase,this.onProductAddSucces);
+       submitForm("Damages","POST",damage,this.onDamageAddSucces);
 
-        });
-        
     }
 
     render(){
@@ -78,7 +52,7 @@ class AddDamage extends React.Component {
                     title="Add New Damage"
                 />
                 <Divider />
-                <Form onSubmit={this.submitAddProductForm} submitButton="Add Damage" fields={addDamageFormFields}/>
+                <Form onSubmit={this.submitDamageForm} submitButton="Add Damage" fields={addDamageFormFields}/>
             
                 <Snackbar 
                     open={this.state.openSnackbar} 
@@ -86,7 +60,7 @@ class AddDamage extends React.Component {
                     onClose={this.handleSnackbar}
                 >
                     <Alert onClose={this.handleSnackbar} variant="filled" severity="success">
-                        Succesfully new Damage of "{this.state.damage.productName}" added !
+                        Succesfully new Damage of "{this.state.damage.productId}" added !
                     </Alert>
                 </Snackbar>
             </Card>

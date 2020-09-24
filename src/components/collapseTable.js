@@ -21,24 +21,13 @@ function DetailsTable(props) {
 //     </tr>
 //   ))}
 // </table>;
-const [data,setData] = useState(props.data);
 
-useEffect(() => {
-  if(props.data.length == 0){
-    submitForm(props.apiUrl,"GET","", (res) => setData(JSON.parse(res)));
-  }else{
-    setData(props.data);
-  }
-},[props.data]);
 
-useEffect(() => {
-  submitForm(props.apiUrl,"GET","", (res) => setData(JSON.parse(res)));
-},[]);
   return (
     <MaterialTable
       title={props.title}
       columns={props.columns}
-      data={data}
+      data={props.data}
       detailPanel={rowData => {
         let overViewItems = props.detailsPane(rowData);
         

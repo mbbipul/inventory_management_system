@@ -120,8 +120,8 @@ function Purchase () {
         setHeaderSubtitile(location[2]);
         if(location.length <= 2){
             setHeaderSubtitile(location[1]);
-
         }
+       
     }, [location]); 
 
     useEffect(() => {
@@ -229,12 +229,18 @@ function Purchase () {
     const FetchReportByDate = (date) => {
         submitForm("Report/purchase-report/"+date,"GET","",(res) => setPurchaseReport(JSON.parse(res)));
     }
-    useEffect(() => {
+
+    const FetchAlls = () => {
         FetchData();
         FetchReportByDate("");
+    }
+    useEffect(() => {
+        FetchAlls();
     },[]);
 
-
+    useEffect(() => {
+        FetchAlls();
+    },[headersubtitle])
 
     useEffect(() => {
         setReportItems([
@@ -382,7 +388,6 @@ function Purchase () {
                     <Route exact path="/purchase">
                         <div style={{margin:20}}>
                             <DetailsTable 
-                                apiUrl="Purchases/"  
                                 detailsPane={detailsPane}
                                 title="Purchase"
                                 columns={columns} 
@@ -402,7 +407,7 @@ function Purchase () {
                                 uniqueName="purchaseId" 
                                 apiUrl={"Purchases/"}
                                 editable={false}
-                                ondataChange={() => console.log("chaange")} 
+                                onChangeData={FetchAlls} 
                                 columns={columns} 
                                 data={data} />
                         </div>
