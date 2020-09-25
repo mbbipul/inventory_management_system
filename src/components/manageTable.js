@@ -71,6 +71,24 @@ function ManageTable(props){
         });
         
     }
+    
+    let deleteAction = (oldData) => {
+        return {
+            onRowDelete: (oldData) =>
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    deleteData(oldData);
+                    resolve();
+
+                }, 600);
+            }),
+        }
+    }
+
+    if(props.hideDelete){
+        deleteAction = () => {};
+    }
+
     return (
         <div>
             { showALert && <Alert elevation={3} variant="filled" severity={ errorAlert ? "error" : "success"}>{alertText}</Alert>}
@@ -82,47 +100,36 @@ function ManageTable(props){
                     selection: true
                 }}
                 actions={[
-                    {
-                        tooltip: 'Remove All Selected Users',
-                        icon: 'delete',
-                        onClick: (evt, data) => {
-                            deleteSelectedData(data);
+                        {
+                            tooltip: 'Remove All Selected Users',
+                            icon: 'delete',
+                            onClick: (evt, data) => {
+                                deleteSelectedData(data);
 
+                            }
                         }
-                    }
-            ]}
-            editable={props.editable ? {
-                onRowUpdate: (newData, oldData) =>
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                        if (oldData) {
-                            updateData(oldData,newData);
-                        }
-                       
-                        resolve();
-                    }, 600);
-                }),
-                onRowDelete: (oldData) =>
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                        deleteData(oldData);
-                        resolve();
-                    }, 600);
-                }),
-            } : 
-            
-            {
-                onRowDelete: (oldData) =>
-                new Promise((resolve) => {
-                    setTimeout(() => {
-                        deleteData(oldData);
-                        resolve();
-
-                    }, 600);
-                }),
-            }
-                
-            }
+                ]}
+                editable={props.editable ? {
+                    onRowUpdate: (newData, oldData) =>
+                    new Promise((resolve) => {
+                        setTimeout(() => {
+                            if (oldData) {
+                                updateData(oldData,newData);
+                            }
+                        
+                            resolve();
+                        }, 600);
+                    }),
+                    onRowDelete: (oldData) =>
+                    new Promise((resolve) => {
+                        setTimeout(() => {
+                            deleteData(oldData);
+                            resolve();
+                        }, 600);
+                    }),
+                } : 
+                    deleteAction()
+                }
             />
         </div>
     );

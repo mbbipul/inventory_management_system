@@ -63,7 +63,7 @@ export default function CustomizedDialogs(props) {
     <div>
       <Dialog fullWidth={true} maxWidth={"xl"} onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
+          {props.title && props.title}
         </DialogTitle>
         <DialogContent dividers>
             {props.dialogContent}

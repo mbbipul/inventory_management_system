@@ -21,6 +21,45 @@ namespace inventory_rest_api.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable>> GetAllDamages()
+        {
+            return await _context.Damages
+                                .Include(d => d.Product)
+                                .Include(d => d.Customer)
+                                .Include(d => d.Supplier)
+                                .Include(d => d.Employee)
+                                .Select( d => new {
+                                    d.DamageId,
+
+                                    d.ProductId,
+                                    d.Product.ProductName,
+
+                                    d.CustomerId,
+                                    d.Customer.CustomerName,
+
+                                    d.EmployeeId,
+                                    d.Employee.EmployeeName,
+
+                                    d.SupplierId,
+                                    d.Supplier.SupplierName,
+                                    
+                                    d.DamageRetDate,
+                                    d.ProductQuantity,
+                                    d.DamageProductAmount,
+                                    d.DamageSentToCompanyStatus,
+                                    d.DamageSentToCompanyDate,
+                                    d.DamageRetFromCompanyDate,
+                                    d.DamageRetFromComAmount,
+                                    d.DamageRetComProQuantity,
+                                    d.DamageRetComProQuantityDueStatus,
+                                    d.DamgeReturnCompanyDueAmount,
+                                    d.DamgeReturnCompanyDuePaymentStatus,
+                                    d.DamgeReturnCompanyDueDate
+                                })
+                                .ToListAsync();
+        }
+
         // GET: api/Damages
         [HttpGet("filter/{status}")]
         public async Task<ActionResult<IEnumerable>> GetDamages(string status)
@@ -129,11 +168,21 @@ namespace inventory_rest_api.Controllers
             {
                 return NotFound();
             }
-    
+
             _context.Damages.Remove(damage);
             await _context.SaveChangesAsync();
 
             return damage;
+        }
+
+        [HttpDelete("filter/{status}/delete-multiple")]
+        public async Task<ActionResult<String>> DeleteCustomers(string status,IEnumerable<Damage> damages)
+        {
+
+            _context.Damages.RemoveRange(damages);
+            await _context.SaveChangesAsync();
+
+            return "Successfully remove datas";
         }
 
         private bool DamageExists(long id)

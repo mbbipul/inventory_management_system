@@ -13,13 +13,24 @@ import FullWidthTabs from "../components/tab";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
-import { Button } from "@material-ui/core";
+import { Button, Chip, Snackbar } from "@material-ui/core";
+import { addReturnDamageFormFileds } from "../utils/appFormsFileds";
+import CustomizedDialogs from "../components/formDialog";
+import Form from "../components/form";
+import Alert from "@material-ui/lab/Alert";
 
 function Damage () {
 
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     const [damageManageTab,setTab] = useState(0);
+    const [openDialog,setOpenDialog] = useState(false);
+    const [damage,setDamage] = useState({});
+    const [openSnackbar,setOpenSnackbar] = useState(false);
+    const [snackText,setSnackText] = useState('');
+    const [snackSeverity,setSnackSeverity] = useState('success');
+    const [openUpdateProductQuantity,setUpdateQuanDialog] = useState(false);
+    const [openUpdateProductAmount,setUpdateAmoDialog] = useState(false);
 
     useEffect(() => {
         setHeaderSubtitile(location[2]);
@@ -31,9 +42,27 @@ function Damage () {
 
     const markAsSentToCom = (rowData) => {
         rowData['damageSentToCompanyStatus'] = 'sentToCompany';
+        rowData['damageSentToCompanyDate'] = new Date().getTime().toString();
         submitForm('Damages/'+rowData.damageId,"PUT",rowData,() => FetchData('added'));
     }
 
+    const markAsRetrunFromCom = (rowData) => {
+        rowData['damageSentToCompanyStatus'] = 'returnFromCompany';
+        setDamage(rowData);
+        setOpenDialog(true);
+        // submitForm('Damages/'+rowData.damageId,"PUT",rowData,() => FetchData('returnFromCompany'));
+    }
+
+    const updateDamageReturnFromProDue = (rowData) => {
+        setDamage(rowData);
+        setUpdateQuanDialog(true);
+    }
+
+    const updateDamageReturnFromProAmountDue = (rowData) => {
+        setDamage(rowData);
+        setUpdateAmoDialog(true);
+    }
+    
     const columns = [
                         { title: 'Damage Id', field: 'damageId' },
                         { title: 'Customer Name', field: 'customerName' },
@@ -42,15 +71,134 @@ function Damage () {
                         { title: 'Employee Name' , field: 'employeeName'},
                         { title: 'Damage Product Quantity' , field: 'productQuantity'},
                         { title: 'Damage Product Amount' , field: 'damageProductAmount'},
-                        { 
-                            title: 'Mark As Damage Product Sent To Company' , 
-                            field: 'markAsDamage',
-                            render: rowData => <Button onClick={() => markAsSentToCom(rowData)}>
-                                {rowData.markAsDamage}
-                            </Button>
-
-                        }
+                       
                     ];
+
+    const renderDSentComStatus = (status) => {
+        switch (status) {
+            case 'added':
+                return 'New Damage ';
+                break;
+            case 'sentToCompany':
+                return 'Damage Sent To company';
+                break;
+            case 'returnFromCompany':
+                return 'Damage Return From company';
+                break;
+            default:
+                return ;
+                break;
+        }
+    }
+    const damagesCol = [...columns];
+    damagesCol.push(
+      
+        {
+            title: 'Damage Return Date' , 
+            field: 'damageRetDate',
+            render: rowData =>  new Date(parseInt(rowData.damageRetDate)).toDateString()
+        },
+        { 
+            title: 'Damage Status' , 
+            field: 'damageSentToCompanyStatus',
+            render: rowData =>  <Chip 
+                                    color="primary"
+                                    label={renderDSentComStatus(rowData.damageSentToCompanyStatus)}
+                                    clickable />
+        },
+        {
+            title: 'Damage Sent To Company Date' , 
+            field: 'damageSentToCompanyDate',
+            render: rowData =>rowData.damageSentToCompanyDate !== null &&  new Date(parseInt(rowData.damageSentToCompanyDate)).toDateString()
+        },
+        {
+            title: 'Damage Return From Company Date' , 
+            field: 'damageRetFromCompanyDate',
+            render: rowData => rowData.damageRetFromCompanyDate !== null && new Date(parseInt(rowData.damageRetFromCompanyDate)).toDateString()
+        },
+        {
+            title: 'Damage Return From Company Product Quantity ' , 
+            field: 'damageRetComProQuantity',
+            render: rowData =>  <Chip 
+                                    color="primary"
+                                    label={rowData.damageRetComProQuantity}
+                                    clickable />
+        },
+        {
+            title: 'Damage Return From Company Amount ' , 
+            field: 'damageRetFromComAmount',
+            render: rowData =>  <Chip 
+                                    color="primary"
+                                    label={rowData.damageRetFromComAmount}
+                                    clickable />
+        },
+        {
+            title: ' Damage Return From Company Due Date' , 
+            field: 'damgeReturnCompanyDueDate',
+            render: rowData => rowData.damgeReturnCompanyDueDate !== null &&  new Date(parseInt(rowData.damgeReturnCompanyDueDate)).toDateString()
+           
+
+        }
+
+
+    )
+    const newDamages = [...columns];
+    newDamages.push( { 
+        title: 'Mark As Damage Product Sent To Company' , 
+        field: 'markAsDamage',
+        render: rowData => <Button onClick={() => markAsSentToCom(rowData)}>
+            {rowData.markAsDamage}
+        </Button>
+
+    });
+
+    const damagesSentToCom = [...columns];
+    damagesSentToCom.push( { 
+        title: 'Mark As Damage Product Return From Company' , 
+        field: 'markAsReturn',
+        render: rowData => <Button onClick={() => markAsRetrunFromCom(rowData)}>
+            {rowData.markAsReturn}
+        </Button>
+
+    })
+
+    const damageReturnFromComCol = [...columns];
+    damageReturnFromComCol.push(
+        {
+            title: 'Damage Return From Company Product Due Quantity' , 
+            field: 'damageRetComProQuantity',
+            render: rowData => rowData.damageRetComProQuantityDueStatus ? 
+                                    0 : rowData.productQuantity - rowData.damageRetComProQuantity
+                                    
+        },
+        {
+            title: 'Damage Return From Company Product Payment Due Amount' , 
+            field: 'damgeReturnCompanyDuePaymentStatus',
+            render: rowData => rowData.damgeReturnCompanyDuePaymentStatus ? 
+                                    0 : rowData.damageProductAmount - parseFloat(rowData.damageRetFromComAmount)
+           
+        },
+        {
+            title: 'Damage Return From Company Product Due Status' , 
+            field: 'damageRetComProQuantityDueStatus',
+            render: rowData => rowData.damageRetComProQuantityDueStatus ? 
+                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                                    <Button onClick={() => updateDamageReturnFromProDue(rowData)} >
+                                        <CloseIcon color='error' />
+                                    </Button>
+        },
+        {
+            title: 'Damage Return From Company Product Payment Due Status' , 
+            field: 'damgeReturnCompanyDuePaymentStatus',
+            render: rowData => rowData.damgeReturnCompanyDuePaymentStatus ? 
+                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                                    <Button onClick={() => updateDamageReturnFromProAmountDue(rowData)} >
+                                        <CloseIcon color='error' />
+                                    </Button>
+           
+        }
+    );
+
     const [data,setData] = useState([]);
     
     const FetchData =  (path) => {
@@ -86,6 +234,9 @@ function Damage () {
             case 1:
                 FetchData('sentToCompany');
                 break;
+            case 2:
+                FetchData('returnFromCompany');
+                break;
             default:
                 break;
         }
@@ -97,7 +248,7 @@ function Damage () {
   
 
 
-    const CustomTableColoumn = (props) => {
+    const CustomTableColoumn = () => {
 
         return (
             <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> 
@@ -107,6 +258,7 @@ function Damage () {
     useEffect(() => {
         data.map((d) => {
             d.markAsDamage = <CustomTableColoumn/>
+            d.markAsReturn = <CustomTableColoumn/>
             return d;
         });
     },[data]);
@@ -122,10 +274,11 @@ function Damage () {
                                 uniqueKey="damageId" 
                                 uniqueName="damageId" 
                                 apiUrl="Damages/filter/added/" 
-                                editable={true}
+                                editable={false}
+                                hideDelete={true}
                                 onChangeData={() => FetchData('added')} 
                                 data={data} 
-                                columns={columns}
+                                columns={newDamages}
                                 
                             />
                         </div>
@@ -140,31 +293,203 @@ function Damage () {
                                 uniqueKey="damageId" 
                                 uniqueName="damageId" 
                                 apiUrl="Damages/filter/sentToCompany/" 
-                                editable={true}
+                                editable={false}
+                                hideDelete={true}
                                 onChangeData={() => FetchData('sentToCompany')} 
                                 data={data} 
-                                columns={columns}
+                                columns={damagesSentToCom}
                                 
                             />
                         </div>
         },
         {
             tab : "Damages Return From Company",
-            tabPanel : "tab1"
+            tabPanel : <div style={{margin:20}}>
+                            <ManageTable 
+                                title="Manage damage" 
+                                hasUnique={true}
+                                apiInfo="Damages" 
+                                uniqueKey="damageId" 
+                                uniqueName="damageId" 
+                                apiUrl="Damages/filter/returnFromCompany/" 
+                                editable={true}
+                                onChangeData={() => FetchData('returnFromCompany')} 
+                                data={data} 
+                                columns={damageReturnFromComCol}
+                                
+                            />
+                        </div>
         },
     
     ];
 
+    const updateDamageProQuantity = (state) => {
+
+        if(parseInt(state.DamageReturnFromCompanyProductQuantity) > damage.productQuantity-damage.damageRetComProQuantity  ){
+            setSnackText("Damage Return From Company Product Due Quantity cannot larger than Actual Damage Product Quantity");
+            setSnackSeverity('error');
+            setOpenSnackbar(true);
+            return ;
+        }
+
+        
+
+        let damageRetComProQuantityDueStatus = false;
+
+
+        if (parseInt(state.DamageReturnFromCompanyProductQuantity) === damage.productQuantity-damage.damageRetComProQuantity){
+            damageRetComProQuantityDueStatus = true;
+        }
+
+        damage['damageRetComProQuantity'] = damage.damageRetComProQuantity + parseInt(state.DamageReturnFromCompanyProductQuantity);
+        damage.damageRetComProQuantityDueStatus = damageRetComProQuantityDueStatus;
+
+        submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
+            setSnackText('Successfully Update Return Damage Product Quantity');
+            setSnackSeverity('success');
+            setOpenSnackbar(true);
+            FetchData('returnFromCompany');
+        });
+    }
+
+    const updateDamageProAmount = (state) => {
+        if(parseInt(state.DamageReturnFromCompanyAmount) > damage.damageProductAmount - parseInt(damage.damageRetFromComAmount)  ){
+            setSnackText("Damage Return From Company Product Due Amount cannot larger than Actual Damage Product Amount");
+            setSnackSeverity('error');
+            setOpenSnackbar(true);
+            return ;
+        }
+
+        let damgeReturnCompanyDuePaymentStatus = false;
+        let amount = parseInt(damage.damageRetFromComAmount) + parseInt(state.DamageReturnFromCompanyAmount);
+
+        if(damage.damageProductAmount === amount ){
+            damgeReturnCompanyDuePaymentStatus = true;
+        }
+
+
+        damage.damgeReturnCompanyDuePaymentStatus = damgeReturnCompanyDuePaymentStatus;
+        damage['damageRetFromComAmount'] = amount.toString();
+
+        submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
+            setSnackText('Successfully Update Return Damage Product Amount');
+            setSnackSeverity('success');
+            setOpenSnackbar(true);
+            FetchData('returnFromCompany');
+        });
+    }
+
+    const markAsDamageReturnFromCompany = (state) => {
+        if(parseInt(state.DamageReturnFromCompanyProductQuantity) > damage.productQuantity  ){
+            setSnackText("Damage Return From Company Product Quantity cannot larger than Actual Damage Product Quantity");
+            setSnackSeverity('error');
+            setOpenSnackbar(true);
+            return ;
+        }
+        
+        if(parseInt(state.DamageReturnFromCompanyAmount) > damage.damageProductAmount  ){
+            setSnackText("Damage Return From Company Product Amount cannot larger than Actual Damage Product Amount");
+            setSnackSeverity('error');
+            setOpenSnackbar(true);
+            return ;
+        }
+
+        let damageRetComProQuantityDueStatus = false;
+        let damgeReturnCompanyDuePaymentStatus = false;
+
+        if (parseInt(state.DamageReturnFromCompanyProductQuantity) === damage.productQuantity){
+            damageRetComProQuantityDueStatus = true;
+        }
+
+        if(parseInt(state.DamageReturnFromCompanyAmount) === damage.damageProductAmount  ){
+            damgeReturnCompanyDuePaymentStatus = true;
+        }
+
+        damage['damageRetFromCompanyDate'] = state.DamageReturnFromCompanyDate.toString();
+        damage['damageRetFromComAmount'] = state.DamageReturnFromCompanyAmount;
+        damage['damageRetComProQuantity'] = parseInt(state.DamageReturnFromCompanyProductQuantity);
+        damage['damgeReturnCompanyDueDate'] = state.DamageReturnFromCompanyDueDate.toString();
+        damage.damageRetComProQuantityDueStatus = damageRetComProQuantityDueStatus;
+        damage.damgeReturnCompanyDuePaymentStatus = damgeReturnCompanyDuePaymentStatus;
+
+        submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
+            setSnackText('Successfully Damage Mark As Damage Return From Company');
+            setSnackSeverity('success');
+            setOpenSnackbar(true);
+            FetchData('sentToCompany');
+        });
+
+    };
+
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
+            <CustomizedDialogs 
+                title="Recieve Damage Return From Company"
+                dialogContent={
+                    <Form 
+                        onSubmit={markAsDamageReturnFromCompany} 
+                        submitButton="Mark Damage Retrun From Company" 
+                        fields={addReturnDamageFormFileds}/>
+                }
+                changOpenProps={()=> setOpenDialog(false)}
+                open={openDialog} 
+            />
+
+            <CustomizedDialogs 
+                title="Update Return Damage Product Quantity"
+                dialogContent={
+                    <Form 
+                        onSubmit={updateDamageProQuantity} 
+                        submitButton="Update Product Quantity" 
+                        fields={[{
+                        label : "Damage Return From Company Product Quantity",
+                        placeholder : "1",
+                        type : 0,
+                        required : true,
+                        disabled : false,
+                        validation : [0]
+                    }]}/>
+                }
+                changOpenProps={()=> setUpdateQuanDialog(false)}
+                open={openUpdateProductQuantity} 
+            />
+
+            <CustomizedDialogs 
+                            title="Update Return Damage Product Amount"
+                            dialogContent={
+                                <Form 
+                                    onSubmit={updateDamageProAmount} 
+                                    submitButton="Update Product Amount" 
+                                    fields={[ {
+                                    label : "Damage Return From Company Amount",
+                                    placeholder : "500.00 tk",
+                                    type : 0,
+                                    required : true,
+                                    disabled : false,
+                                    validation : [999]
+                                }]}/>
+                            }
+                            changOpenProps={()=> setUpdateAmoDialog(false)}
+                            open={openUpdateProductAmount} 
+                        />
+
+            <Snackbar 
+                    open={openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={() => setOpenSnackbar(false)}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} variant="filled" severity={snackSeverity}>
+                        {snackText}
+                    </Alert>
+            </Snackbar>
             <Switch>
                 <Route exact path="/damage">
                     <div style={{margin:20}}>
                         <ProductTable 
                             title="All Damages"
-                            apiUrl="Damages/filter/added" 
-                            data={{ columns : columns , data : data}}/>
+                            apiUrl="Damages" 
+                            data={{ columns : damagesCol , data : []}}/>
                     </div>
                 </Route>
                 <Route exact path="/damage/add-damage">
@@ -175,6 +500,8 @@ function Damage () {
                    
                 </Route>
             </Switch>
+
+          
         </div>                        
     )
     
