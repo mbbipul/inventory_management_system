@@ -9,8 +9,8 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200921172301_InitialM")]
-    partial class InitialM
+    [Migration("20200926081725_FinalVersion")]
+    partial class FinalVersion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -206,6 +206,43 @@ namespace inventory_rest_api.Migrations
                     b.HasKey("EmployeeId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Order", b =>
+                {
+                    b.Property<long>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("MiscellaneousCost")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OrderDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderProductQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderStaus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SalesId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Product", b =>
@@ -509,6 +546,21 @@ namespace inventory_rest_api.Migrations
                     b.HasOne("inventory_rest_api.Models.Supplier", "Supplier")
                         .WithMany("Damages")
                         .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.Order", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Product", "Product")
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });

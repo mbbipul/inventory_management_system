@@ -2,7 +2,7 @@
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class InitialM : Migration
+    public partial class FinalVersion : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -205,6 +205,35 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
+                    SalesId = table.Column<long>(nullable: false),
+                    OrderDate = table.Column<string>(nullable: true),
+                    OrderStaus = table.Column<string>(nullable: true),
+                    OrderProductQuantity = table.Column<int>(nullable: false),
+                    MiscellaneousCost = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId");
+                    table.ForeignKey(
+                        name: "FK_Orders_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductPurchaseHistories",
                 columns: table => new
                 {
@@ -350,6 +379,16 @@ namespace inventory_rest_api.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerId",
+                table: "Orders",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ProductId",
+                table: "Orders",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductPurchaseHistories_ProductId",
                 table: "ProductPurchaseHistories",
                 column: "ProductId");
@@ -406,6 +445,9 @@ namespace inventory_rest_api.Migrations
                 name: "Damages");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "PurchaseDueProducts");
 
             migrationBuilder.DropTable(
@@ -415,10 +457,10 @@ namespace inventory_rest_api.Migrations
                 name: "SalesDueProducts");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Suppliers");
 
             migrationBuilder.DropTable(
-                name: "Suppliers");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Purchases");

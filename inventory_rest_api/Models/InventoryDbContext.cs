@@ -36,6 +36,8 @@ namespace inventory_rest_api.Models
 
         public DbSet<Damage> Damages { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -116,6 +118,17 @@ namespace inventory_rest_api.Models
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Product)
+                .WithMany(p => p.Orders)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Customer)
+                .WithMany(c => c.Orders)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
     }

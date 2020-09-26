@@ -181,7 +181,8 @@ namespace inventory_rest_api.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetSales",  sales);
+;
         }
 
         [HttpPut("sales-payment-due/{id}-{amount}-{date}")]

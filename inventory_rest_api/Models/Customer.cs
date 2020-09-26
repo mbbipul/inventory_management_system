@@ -30,5 +30,8 @@ namespace inventory_rest_api.Models
         
         [JsonIgnore]
         public List<Damage> Damages { get; set; }
+
+        public List<Order> Orders { get; set; }
+
     }
 }
