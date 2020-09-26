@@ -30,13 +30,17 @@ import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
 
 const drawerWidth = 200;
 
+const appComfigs = {
+  appName : "Matrivandar Store",
+  appBarBackground : "#060620",
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: "#060620",
+    backgroundColor: appComfigs.appBarBackground,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -135,7 +139,7 @@ export default function AppDrawer() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.flexGrow }>
-                        Inventory Mangement System
+                      {appComfigs.appName}
                     </Typography>
 
                     <section className={classes.rightToolbar}>
@@ -187,10 +191,9 @@ export default function AppDrawer() {
                     </section>
 
                 </Toolbar>
-            </AppBar>
+      </AppBar>
       <Drawer
         variant="permanent"
-        style={{backgroundColor: "#000!important"}}
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,

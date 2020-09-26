@@ -593,7 +593,6 @@ const addDamageFormFields = [
         required : true,
         disabled : false,
         validation : [9999]
-
     },
     {
         label : "Product Name",
@@ -661,51 +660,7 @@ const addDamageFormFields = [
         disabled : false,
         type : 999,
     },
-    // {
-    //     label : "Damage Sent to Company Date",
-    //     placeholder : "12-12-2021",
-    //     type : 6,
-    //     required : true,
-    //     disabled : false,
-    //     validation : [999]
-    // },
-    // {
-    //     label : "",
-    //     disabled : false,
-    //     type : 999,
-    // },
-    // {
-    //     label : "Damage Return From Company Date",
-    //     placeholder : "12-12-2021",
-    //     type : 6,
-    //     required : false,
-    //     disabled : false,
-    //     validation : [999]
-    // },
-    // {
-    //     label : "Damage Return From Company Amount",
-    //     placeholder : "500.00 tk",
-    //     type : 0,
-    //     required : true,
-    //     disabled : false,
-    //     validation : [999]
-    // },
-    // {
-    //     label : "Damage Return From Company Product Quantity",
-    //     placeholder : "1",
-    //     type : 0,
-    //     required : true,
-    //     disabled : false,
-    //     validation : [0]
-    // },
-    // {
-    //     label : "Damage Return From Company Due Date",
-    //     placeholder : "12-12-2021",
-    //     type : 6,
-    //     required : false,
-    //     disabled : false,
-    //     validation : [999]
-    // },
+    
 ];
 
 const addReturnDamageFormFileds = [
@@ -744,6 +699,42 @@ const addReturnDamageFormFileds = [
     },
 ];
 
+const addOrderFormFields = [
+    {
+        label : "Customer Name",
+        placeholder : "BB Roy",
+        type : 3,
+        dialogFormContent : <AddCustomer />,
+        fetchUrl : apiUrl+"Customers",
+        selectName : "customerName",
+        selectKey : "customerId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+
+    },
+    {
+        label : "Product Name",
+        placeholder : "Ice Cream",
+        type : 3,
+        dependOnThis : "Product purchase Details",
+        dialogFormContent : <Link style={{marginLeft:"30%"}} to="/product/add-product"  target="_blank">Please Click Here to Add new Product</Link>,
+        fetchUrl : apiUrl+"Products",
+        selectName : "productName",
+        selectKey : "productId",
+        required : false,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "Receive Order Product Quantity",
+        placeholder : "1",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+]
 export { 
     addProductFormFileds , 
     addCompanyFormFields , 
@@ -755,5 +746,6 @@ export {
     addEmployeeFormFields,
     addSalaryFormFields,
     addDamageFormFields,
-    addReturnDamageFormFileds
+    addReturnDamageFormFileds,
+    addOrderFormFields
 };

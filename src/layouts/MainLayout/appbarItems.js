@@ -197,6 +197,22 @@ const sideBarItems = [
                 ref : "damage/manage-damage"
             }
         ]
+    },
+    {
+        name : "Order",
+        icon : "local_grocery_store",
+        ref : "/order",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Order",
+                ref : "order/add-order"
+            },
+            {
+                name : "Manage Orders",
+                ref : "order/manage-order"
+            }
+        ]
     }
 ]
 

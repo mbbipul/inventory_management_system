@@ -13,11 +13,13 @@ import FullWidthTabs from "../components/tab";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
-import { Button, Chip, Snackbar } from "@material-ui/core";
+import { Button, Chip, Grid, Snackbar } from "@material-ui/core";
 import { addReturnDamageFormFileds } from "../utils/appFormsFileds";
 import CustomizedDialogs from "../components/formDialog";
 import Form from "../components/form";
 import Alert from "@material-ui/lab/Alert";
+import HistoryVisual from "../components/historyWithVisualization";
+import MaterialUIPickers from "../components/datePicker";
 
 function Damage () {
 
@@ -31,6 +33,9 @@ function Damage () {
     const [snackSeverity,setSnackSeverity] = useState('success');
     const [openUpdateProductQuantity,setUpdateQuanDialog] = useState(false);
     const [openUpdateProductAmount,setUpdateAmoDialog] = useState(false);
+    const [reportTabs,setReportTabs] = useState(0);
+    const [fromDate,setFromDate] = useState("");
+    const [toDate,setToDate] = useState("");
 
     useEffect(() => {
         setHeaderSubtitile(location[2]);
@@ -421,9 +426,71 @@ function Damage () {
 
     };
 
+    const getFilterDataByDays = (days) => {
+
+    }
+
+    let hisTabs = [
+        {
+            tab : "All",
+            tabPanel : ""
+        },
+        {
+            tab : "Todays Report",
+            tabPanel : ""
+        },
+        {
+            tab : "Yesterdays Report",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        },
+        {
+            tab : "Last 3 Days",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        },
+        {
+            tab : "This week",
+            tabPanel : "gffg" 
+        },
+        {
+            tab : "This Month",
+            tabPanel :  <div style={{width:550,marginLeft:"25%"}}>
+                fddffd
+            </div>
+        },
+        {
+            tab : "Jump To",    
+            tabPanel :  <Grid
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center">
+
+                            <Grid item xs >
+                                <strong>From</strong>
+                                <MaterialUIPickers onChange={(date) => setFromDate(date)} />
+                            </Grid>
+                            <Grid style={{marginLeft:100}} item xs >
+                                <strong>To</strong>
+                                <MaterialUIPickers onChange={(date) => setToDate(date)} />
+                            </Grid>
+                        </Grid>
+        },
+
+    ];
+
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
+            
+            <HistoryVisual 
+                hasTabPanel={false}
+                handleTabs={setReportTabs} 
+                tabs={hisTabs}/>
+
             <CustomizedDialogs 
                 title="Recieve Damage Return From Company"
                 dialogContent={
