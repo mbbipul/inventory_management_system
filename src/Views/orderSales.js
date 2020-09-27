@@ -5,7 +5,8 @@ import {  newSalesFormFields } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
 
-newSalesFormFields.push({
+const salesOrderFormFileds = [...newSalesFormFields];
+salesOrderFormFileds.push({
     label : "Miscellaneous cost",
     placeholder : "200.00 tk",
     type : 0,
@@ -113,7 +114,7 @@ class OrderSales extends React.Component {
                     title="Add New Sales"
                 />
                 <Divider />
-                <Form onSubmit={this.submitPurchaseForm} submitButton="Add Sales" fields={newSalesFormFields}/>
+                <Form onSubmit={this.submitPurchaseForm} submitButton="Add Sales" fields={salesOrderFormFileds}/>
 
                 <Snackbar 
                     open={this.state.openSnackbar} 
