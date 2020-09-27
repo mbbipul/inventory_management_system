@@ -20,6 +20,7 @@ import Form from "../components/form";
 import Alert from "@material-ui/lab/Alert";
 import HistoryVisual from "../components/historyWithVisualization";
 import MaterialUIPickers from "../components/datePicker";
+import MaterialTable from "material-table";
 
 function Damage () {
 
@@ -36,6 +37,8 @@ function Damage () {
     const [reportTabs,setReportTabs] = useState(0);
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
+    const [data,setData] = useState([]);
+    const [showHisVis,setHisVis] = useState(true);
 
     useEffect(() => {
         setHeaderSubtitile(location[2]);
@@ -203,12 +206,12 @@ function Damage () {
            
         }
     );
-
-    const [data,setData] = useState([]);
     
     const FetchData =  (path) => {
         submitForm("Damages/filter/"+path+"/","GET","",(res) => setData(JSON.parse(res)));
     };
+
+
     
     let routeHeader = {
         title : "Damage",
@@ -247,11 +250,79 @@ function Damage () {
         }
     },[damageManageTab]);
 
+    const FetchDataByDate = (date) => {
+        submitForm("Damages/by-date/"+date,"GET","",(res) => setData(JSON.parse(res)));
+    }
+    const FetchDataByDays = (days) => {
+        submitForm("Damages/by-days/"+days,"GET","",(res) => setData(JSON.parse(res)));
+    }
+    const FetchDataAll = () => {
+        submitForm("Damages","GET","",(res) => setData(JSON.parse(res)));
+    }
+
     useEffect(() => {
-        FetchData('added');
+        if(headersubtitle==='manage-damage'){
+            FetchData('added');
+            setHisVis(false);
+        }else if(headersubtitle==='add-damage'){
+            setHisVis(false);
+        }
+        else{
+            FetchDataAll();
+            setHisVis(true);
+        }
     },[headersubtitle]);
   
+    useEffect(() => {
+        switch (reportTabs) {
+            case 0:
+                FetchDataAll();
+                break;
+            case 1 :
+                FetchDataByDate(Date.now());
+                break;
+            case 2 :
+                FetchDataByDate(Date.now()-86400000 );
+                break;
+            case 3 :
+                FetchDataByDays(3);
+                break;
+            case 4 :
+                FetchDataByDays(7);
+                break;
+            case 5:
+                FetchDataByDays(30);
+                break;
+            case 6:
+                if(fromDate > toDate){
+                    alert("Starting date cannot larger than Last Date");
+                }
 
+                break;
+            default:
+                break;
+        }
+    },[reportTabs]);
+
+    useEffect(() => {
+        if (reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                submitForm("Damages/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+            }    
+        }
+    },[fromDate]);
+
+    useEffect(() => {
+        if( reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                submitForm("Damages/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+            }    
+        }
+    },[toDate]);
 
     const CustomTableColoumn = () => {
 
@@ -486,10 +557,12 @@ function Damage () {
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
             
-            <HistoryVisual 
-                hasTabPanel={false}
-                handleTabs={setReportTabs} 
-                tabs={hisTabs}/>
+            {
+                showHisVis &&  <HistoryVisual 
+                                    hasTabPanel={false}
+                                    handleTabs={setReportTabs} 
+                                    tabs={hisTabs}/>
+            }
 
             <CustomizedDialogs 
                 title="Recieve Damage Return From Company"
@@ -553,10 +626,10 @@ function Damage () {
             <Switch>
                 <Route exact path="/damage">
                     <div style={{margin:20}}>
-                        <ProductTable 
+                        <MaterialTable
                             title="All Damages"
-                            apiUrl="Damages" 
-                            data={{ columns : damagesCol , data : []}}/>
+                            columns={damagesCol}
+                            data={data} />
                     </div>
                 </Route>
                 <Route exact path="/damage/add-damage">
