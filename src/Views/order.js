@@ -9,9 +9,12 @@ import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddOrder from "./addOrder";
-import { Grid } from "@material-ui/core";
+import { Button, Chip, Grid } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import HistoryVisual from "../components/historyWithVisualization";
+import MaterialTable from "material-table";
+import CustomizedDialogs from "../components/formDialog";
+import OrderSales from "./orderSales";
 
 function Order() {
     let location = useLocation().pathname.split("/");
@@ -20,6 +23,36 @@ function Order() {
     const [reportTabs,setReportTabs] = useState(0);
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
+    const [order,setOrder] = useState({});
+    const [openOrderDialog,setOrderDialog] = useState(false);
+
+    const completeOrder = (rowData) => {
+        setOrder(rowData);
+        setOrderDialog(true);
+    }
+
+    const onOrderSalesSuccess = (result) => {
+        let orderObj = {
+            "orderId": order.orderId,
+            "customerId": result.customerId,
+            "productId": result.productId,
+            "salesId": result.salesId,
+            "orderDate": order.orderDate,
+            "orderStaus": "orderComplete",
+            "orderProductQuantity": order.orderProductQuantity,
+            "miscellaneousCost": result.miscellaneousCost,
+        }
+        submitForm('Orders/'+orderObj.orderId,'PUT',orderObj,(res) => {
+            this.setState({
+                snackSeverity : 'success',
+                snackText : "Successfully  Order " + orderObj.orderId+" Updated !", 
+                openSnackbar : true,
+                toggleForm : 3
+            });
+            console.log(JSON.parse(result));
+        })
+        
+    }
 
     const columns = [
         { title: 'Order ID', field: 'orderId' },
@@ -30,14 +63,37 @@ function Order() {
             title: 'Order Date', 
             field: 'orderDate' ,
             render: rowData =>  new Date(parseInt(rowData.orderDate)).toDateString()
-
         },
+        {
+            title : 'Order Status',
+            field : 'orderStaus',
+            render : rowData =>  rowData.orderStaus === 'orderComplete' ?
+                                    <Chip 
+                                        color="primary"
+                                        label={'Order Completed'}
+                                        clickable /> :
 
-    ]
+                                    <Button 
+                                        variant='filled' 
+                                        style={{backgroundColor : '#000',color: '#fff',marginRight:10}}
+                                        onClick={() => completeOrder(rowData)}
+                                    >
+                                        Complete Order Now
+                                    </Button>
+                                    
+        }
+    ];
 
     const FetchOrders = () => {
-        submitForm('Orders','GET','',(res) => setData(JSON.parse(res)));
+        submitForm('Orders/all-orders','GET','',(res) => setData(JSON.parse(res)));
     }
+    const FetchDataByDate = (date) => {
+        submitForm("Orders/by-date/"+date,"GET","",(res) => setData(JSON.parse(res)));
+    }
+    const FetchDataByDays = (days) => {
+        submitForm("Orders/by-days/"+days,"GET","",(res) => setData(JSON.parse(res)));
+    }
+
     useEffect(() => {
         setHeaderSubtitile(location[2]);
         if(location.length <= 2){
@@ -49,9 +105,6 @@ function Order() {
         FetchOrders();
     },[]);
 
-    useEffect(() => {
-        FetchOrders();
-    },[headersubtitle]);
 
     let routeHeader = {
         title : "Order",
@@ -69,7 +122,57 @@ function Order() {
         ]
     }
 
-   
+    useEffect(() => {
+        switch (reportTabs) {
+            case 0:
+                FetchOrders();
+                break;
+            case 1 :
+                FetchDataByDate(Date.now());
+                break;
+            case 2 :
+                FetchDataByDate(Date.now()-86400000 );
+                break;
+            case 3 :
+                FetchDataByDays(3);
+                break;
+            case 4 :
+                FetchDataByDays(7);
+                break;
+            case 5:
+                FetchDataByDays(30);
+                break;
+            case 6:
+                if(fromDate > toDate){
+                    alert("Starting date cannot larger than Last Date");
+                }
+
+                break;
+            default:
+                break;
+        }
+    },[reportTabs]);
+
+    useEffect(() => {
+        if (reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                submitForm("Orders/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+            }    
+        }
+    },[fromDate]);
+
+    useEffect(() => {
+        if( reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                submitForm("Orders/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+            }    
+        }
+    },[toDate]);
+
     let hisTabs = [
         {
             tab : "All",
@@ -134,10 +237,10 @@ function Order() {
             <Switch>
                 <Route exact path="/order">
                     <div style={{margin:20}}>
-                        <ProductTable 
+                        <MaterialTable
                             title="All Orders"
-                            apiUrl="Orders/" 
-                            data={{ columns : columns , data : data}}/>
+                            columns={columns}
+                            data={data} />
                     </div>
                 </Route>
                 <Route exact path="/order/add-order">
@@ -159,8 +262,18 @@ function Order() {
                                 
                             />
                         </div>
-                    </Route>x
+                    </Route>
             </Switch>
+
+            <CustomizedDialogs 
+                title="Complete Order"
+                dialogContent={
+                    <OrderSales order={order} onSubmitSuccess={onOrderSalesSuccess}/>
+                }
+                
+                changOpenProps={()=> setOrderDialog(false)}
+                open={openOrderDialog} 
+            />
         </div>                        
     )
 }

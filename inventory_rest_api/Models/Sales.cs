@@ -49,5 +49,8 @@ namespace inventory_rest_api.Models
 
         [JsonIgnore]
         public SalesDueProduct SalesDueProduct { get ; set; }
+        
+        [JsonIgnore]
+        public Order Order { get; set; }
     }
 }

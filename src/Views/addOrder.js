@@ -42,6 +42,13 @@ class AddOrder extends React.Component {
             toggleForm : 2
         });
     }
+
+    completeOrderLater = ( ) => {
+        this.setState({
+            toggleForm : 0
+        });
+    }
+
     submitForms = (state) => {
         this.setState({toggleForm : 1})
         let order = {
@@ -102,6 +109,7 @@ class AddOrder extends React.Component {
                                 <Button 
                                     variant='filled' 
                                     style={{backgroundColor : '#000',color: '#fff',marginLeft:10}}
+                                    onClick={this.completeOrderLater}
                                 >
                                     Complete Order Later
                                 </Button>

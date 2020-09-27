@@ -21,9 +21,14 @@ namespace inventory_rest_api.Controllers
             _context = context;
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersLl(){
-            return await _context.Orders.ToListAsync();
+        [HttpGet("all-orders")]
+        public ActionResult<IEnumerable<Order>> GetOrdersLl(){
+            IEnumerable<Order> orders = _context.Orders.Where(o => o.OrderStaus == "orderPlace");
+            IEnumerable<Order> orders2 = _context.Orders.Include(o => o.Sales);
+           
+            IEnumerable<Order> res = orders.Concat(orders2);
+
+            return  res.ToList();
         }
 
         // GET: api/Orders
@@ -61,6 +66,134 @@ namespace inventory_rest_api.Controllers
                         };
 
             return await query.ToListAsync();
+        }
+
+        [HttpGet("by-date-range/{date1}-{date2}")]
+        public ActionResult<IEnumerable> GetOrdersByDateRange(string date1,string date2){
+            
+            double d1 = double.Parse(date1);
+            double d2 = double.Parse(date2);
+
+            var query = from order in _context.Orders
+                        join sales in _context.Sales
+                            on order.SalesId equals sales.SalesId
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            OrderDateLong = long.Parse(order.OrderDate),
+
+                            sales.ProductQuantity,
+                            sales.SalesDate,
+                            sales.SalesDiscount,
+                            sales.SalesDuePaymentDate,
+                            sales.SalesPaidStatus,
+                            sales.SalesPaymentAmount,
+                            sales.SalesPrice,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+                        
+            return  query.AsEnumerable()
+                        .Where( o => o.OrderDateLong >= d1 && o.OrderDateLong < d2 )
+                        .ToList();
+                                
+        }
+
+        [HttpGet("by-date/{date}")]
+        public ActionResult<IEnumerable> GetDamagesByDate(string date){
+    
+            var query = from order in _context.Orders
+                        join sales in _context.Sales
+                            on order.SalesId equals sales.SalesId
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            sales.ProductQuantity,
+                            sales.SalesDate,
+                            sales.SalesDiscount,
+                            sales.SalesDuePaymentDate,
+                            sales.SalesPaidStatus,
+                            sales.SalesPaymentAmount,
+                            sales.SalesPrice,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+
+            return query.AsEnumerable()
+                        .Where( o => AppUtils.DateTime(o.OrderDate).ToShortDateString() == AppUtils.DateTime(date).ToShortDateString())
+                        .ToList();
+        }
+
+        [HttpGet("by-days/{days}")]
+        public ActionResult<IEnumerable> GetDamagesByDays(int days){
+            
+            List<String> valDate = new List<string>();
+            for (int i = 0; i < days; i++)
+            {
+                long milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+                string dateTime =  AppUtils.DateTime(milliseconds-86400000*i ).ToShortDateString();
+                valDate.Add(dateTime);
+            }
+            var query = from order in _context.Orders
+                        join sales in _context.Sales
+                            on order.SalesId equals sales.SalesId
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            sales.ProductQuantity,
+                            sales.SalesDate,
+                            sales.SalesDiscount,
+                            sales.SalesDuePaymentDate,
+                            sales.SalesPaidStatus,
+                            sales.SalesPaymentAmount,
+                            sales.SalesPrice,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+
+            return query.AsEnumerable()
+                        .Where( o => valDate.Contains( AppUtils.DateTime(o.OrderDate).ToShortDateString()) )
+                        .ToList();
         }
 
         // GET: api/Orders/5

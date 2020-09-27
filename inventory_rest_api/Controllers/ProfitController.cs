@@ -145,7 +145,7 @@ namespace inventory_rest_api.Controllers
 
             return query.AsEnumerable()
                     .Where(s => 
-                        s.SalesDate > d1 && s.SalesDate < d2
+                        s.SalesDate >= d1 && s.SalesDate < d2
                     )
                     .GroupBy( 
                         s => s.Date,

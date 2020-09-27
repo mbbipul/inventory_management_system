@@ -13,6 +13,7 @@ namespace inventory_rest_api.Models
 
         public Product Product { get; set; }
         public Customer Customer { get; set; } 
+        public Sales Sales { get; set; }
 
     }
 }
