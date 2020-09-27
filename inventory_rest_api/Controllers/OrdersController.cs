@@ -22,20 +22,45 @@ namespace inventory_rest_api.Controllers
         }
 
         [HttpGet("all-orders")]
-        public ActionResult<IEnumerable<Order>> GetOrdersLl(){
-            IEnumerable<Order> orders = _context.Orders.Where(o => o.OrderStaus == "orderPlace");
-            IEnumerable<Order> orders2 = _context.Orders.Include(o => o.Sales);
-           
-            IEnumerable<Order> res = orders.Concat(orders2);
+        public ActionResult<IEnumerable> GetOrdersLl(){
 
-            return  res.ToList();
+            var query =from order in _context.Orders
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        where order.OrderStaus ==  "orderPlace"
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            ProductQuantity = 0,
+                            SalesDate = "",
+                            SalesDiscount = 0,
+                            SalesDuePaymentDate = "",
+                            SalesPaidStatus = "",
+                            SalesPaymentAmount = 0,
+                            SalesPrice = 0,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+          
+            return  query.AsEnumerable().ToList();
         }
 
         // GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetOrders()
         {
-             var query = from order in _context.Orders
+            var query =from order in _context.Orders
                         join sales in _context.Sales
                             on order.SalesId equals sales.SalesId
                         join product in _context.Products
@@ -112,8 +137,89 @@ namespace inventory_rest_api.Controllers
                                 
         }
 
+        [HttpGet("place-order-by-date-range/{date1}-{date2}")]
+        public ActionResult<IEnumerable> GetPlaceOrdersByDateRange(string date1,string date2){
+            
+            double d1 = double.Parse(date1);
+            double d2 = double.Parse(date2);
+
+            var query = from order in _context.Orders
+                       
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        where order.OrderStaus ==  "orderPlace"
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            OrderDateLong = long.Parse(order.OrderDate),
+
+                            ProductQuantity = 0,
+                            SalesDate = "",
+                            SalesDiscount = 0,
+                            SalesDuePaymentDate = "",
+                            SalesPaidStatus = "",
+                            SalesPaymentAmount = 0,
+                            SalesPrice = 0,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+                        
+            return  query.AsEnumerable()
+                        .Where( o => o.OrderDateLong >= d1 && o.OrderDateLong < d2 )
+                        .ToList();
+                                
+        }
+
+        [HttpGet("place-order-by-date/{date}")]
+        public ActionResult<IEnumerable> GetPlaceOrdersByDate(string date){
+    
+            var query = from order in _context.Orders
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        where order.OrderStaus ==  "orderPlace"
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            ProductQuantity = 0,
+                            SalesDate = "",
+                            SalesDiscount = 0,
+                            SalesDuePaymentDate = "",
+                            SalesPaidStatus = "",
+                            SalesPaymentAmount = 0,
+                            SalesPrice = 0,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+
+            return query.AsEnumerable()
+                        .Where( o => AppUtils.DateTime(o.OrderDate).ToShortDateString() == AppUtils.DateTime(date).ToShortDateString())
+                        .ToList();
+        }
+
         [HttpGet("by-date/{date}")]
-        public ActionResult<IEnumerable> GetDamagesByDate(string date){
+        public ActionResult<IEnumerable> GetOrdersByDate(string date){
     
             var query = from order in _context.Orders
                         join sales in _context.Sales
@@ -150,8 +256,53 @@ namespace inventory_rest_api.Controllers
                         .ToList();
         }
 
+        [HttpGet("place-orders-by-days/{days}")]
+        public ActionResult<IEnumerable> GetPlaceOrdersByDays(int days){
+            
+            List<String> valDate = new List<string>();
+            for (int i = 0; i < days; i++)
+            {
+                long milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+                string dateTime =  AppUtils.DateTime(milliseconds-86400000*i ).ToShortDateString();
+                valDate.Add(dateTime);
+            }
+            var query = from order in _context.Orders
+                        join product in _context.Products
+                            on order.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on order.CustomerId equals customer.CustomerId
+                        where order.OrderStaus ==  "orderPlace"
+                        select new {
+                            order.OrderId,
+                            order.SalesId,
+                            order.ProductId,
+                            order.CustomerId,
+                            order.OrderProductQuantity,
+                            order.OrderDate,
+                            order.OrderStaus,
+                            order.MiscellaneousCost,
+
+                            ProductQuantity = 0,
+                            SalesDate = "",
+                            SalesDiscount = 0,
+                            SalesDuePaymentDate = "",
+                            SalesPaidStatus = "",
+                            SalesPaymentAmount = 0,
+                            SalesPrice = 0,
+
+                            product.ProductName,
+                            customer.CustomerName,
+
+                        };
+
+            return query.AsEnumerable()
+                        .Where( o => valDate.Contains( AppUtils.DateTime(o.OrderDate).ToShortDateString()) )
+                        .ToList();
+        }
+
         [HttpGet("by-days/{days}")]
-        public ActionResult<IEnumerable> GetDamagesByDays(int days){
+        public ActionResult<IEnumerable> GetOrdersByDays(int days){
             
             List<String> valDate = new List<string>();
             for (int i = 0; i < days; i++)
