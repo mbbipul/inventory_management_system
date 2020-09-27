@@ -95,12 +95,6 @@ function Sales () {
         dateFormatData.map(sales => sales.salesDateCustom = new Date(parseInt(sales.salesDate)).toDateString());
         dateFormatData.map(sales => sales.salesDuePaymentDateCustom = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
         
-        dateFormatData.map((d) => {
-            d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-            d.salesPaidStatusCustom = <CustomPaidStatus status={d.salesPaidStatusCustom}/>
-            return d;
-        });
-
         setData(dateFormatData);
         console.log(dateFormatData);
     },[reportTabs])
@@ -121,8 +115,17 @@ function Sales () {
                         { title: 'Sales Price', field: 'salesPrice' ,type : 'numeric'},
                         { title: 'Sales Date', field: 'salesDate' },
                         // { title: 'Sales Payment Amount', field: 'salesPaymentAmount' },
-                        { title: 'Sales Product Due Status', field: 'productDueStatus' },
-                        { title: 'Sales Paid Status', field: 'salesPaidStatusCustom' },
+                        { 
+                            title: 'Sales Product Due Status', 
+                            field: 'productDueStatus' , 
+                            render : rowData =>  <CustomPaidStatus status={rowData.productDueStatus===0 ? true : false}/>
+                        },
+                        { 
+                            title: 'Sales Paid Status', 
+                            field: 'salesPaidStatusCustom' ,
+                            render : rowData => <CustomPaidStatus status={rowData.salesPaidStatus}/>
+                        },
+                        
                     ]);
     
     const FetchData = async () => {
@@ -142,12 +145,6 @@ function Sales () {
           var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
           dateFormatData.map(sales => sales.salesDateCustom = new Date(parseInt(sales.salesDate)).toDateString());
           dateFormatData.map(sales => sales.salesDuePaymentDateCustom = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
-          
-          dateFormatData.map((d) => {
-            d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-            d.salesPaidStatusCustom = <CustomPaidStatus status={d.salesPaidStatusCustom}/>
-            return d;
-        });
           
           setData(dateFormatData);
         } catch (error) {
@@ -214,10 +211,6 @@ function Sales () {
         FetchData();
         FetchReportByDate("");
     }
-
-    useEffect(() => {
-        FetchAlls();
-    },[]);
 
     useEffect(() => {
         FetchAlls();
