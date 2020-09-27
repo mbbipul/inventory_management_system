@@ -105,12 +105,7 @@ function Purchase () {
         var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
         dateFormatData.map(purchase => purchase.purchaseDateCustom = new Date(parseInt(purchase.purchaseDate)).toDateString());
         dateFormatData.map(purchase => purchase.purchaseDuePaymentDateCustom = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
-        
-        dateFormatData.map((d) => {
-            d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-            d.purchasePaidStatus = <CustomPaidStatus status={d.purchasePaidStatusCustom}/>
-            return d;
-        });
+      
 
         setData(dateFormatData);
        
@@ -140,8 +135,16 @@ function Purchase () {
                             { title: 'Purchase Price', field: 'purchasePrice' },
                             { title: 'Purchase Date', field: 'purchaseDateCustom' },
                             // { title: 'Sales Price', field: 'salesPrice' },
-                            { title: 'Purchase Product Due Status', field: 'productDueStatus' },
-                            { title: 'Purchase Paid Status', field: 'purchasePaidStatusCustom' },
+                            { 
+                                title: 'Purchase Product Due Status', 
+                                field: 'productDueStatus' ,
+                                render : rowData => <CustomPaidStatus status={rowData.productDueStatus===0 ? true : false}/>
+                            },
+                            { 
+                                title: 'Purchase Paid Status', 
+                                field: 'purchasePaidStatus',
+                                render : rowData => <CustomPaidStatus status={rowData.purchasePaidStatus}/>
+                            },
                             // { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
 
                         ]);
@@ -163,11 +166,7 @@ function Purchase () {
             var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
             dateFormatData.map(purchase => purchase.purchaseDateCustom = new Date(parseInt(purchase.purchaseDate)).toDateString());
             dateFormatData.map(purchase => purchase.purchaseDuePaymentDateCustom = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
-            dateFormatData.map((d) => {
-                d.productDueStatus = <CustomPaidStatus status={d.productDueStatus===0 ? true : false}/>
-                d.purchasePaidStatusCustom = <CustomPaidStatus status={d.purchasePaidStatusCustom}/>
-                return d;
-            });
+
 
             setData(dateFormatData);
         } catch (error) {
