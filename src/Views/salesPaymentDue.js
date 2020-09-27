@@ -12,6 +12,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
 import MaterialUIPickers from '../components/datePicker';
+import DeleteALert from '../components/deleteALert';
 
 
   
@@ -22,6 +23,8 @@ export default function SalesPaymentDue(props) {
 
     const [fieldValue,setFieldValue] = useState("");
     const [nextPaymentDueDate,setNextPaymentDueDate] = useState(new Date().getTime());
+    const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
+    const [tmpData,setTmpData] = useState({});
 
     const [columns,] =  useState([
         { title: 'Sales Id   ', field: 'salesId' },
@@ -66,12 +69,38 @@ export default function SalesPaymentDue(props) {
     }
 
     const markDOne = (data) => {
+        setOpenDeleteAlert(true);
+        setTmpData(data);
+        
+    }
+
+    const handleDeleteALertDisAgree = () => {
+        setOpenDeleteAlert(false);
+        setTmpData(null);
+    }
+
+    const handleDeleteALertAgree = () => {
+        if (tmpData === null) {
+            alert('Something Went wrong');
+            return ;
+        }
+
         submitForm("sales/sales-payment-due/"+ 
-            data.salesId+"-"+data.salesPaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+            tmpData.salesId+"-"+tmpData.salesPaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+
+        setOpenDeleteAlert(false);
+        setTmpData(null);
     }
 
     return(
         <div>
+            <DeleteALert 
+                message="Make sure that you Recieve all payment of this Sales . "
+                title=" Are you sure to Mark this Sales as Mark Sales payment Paid ?" 
+                open={openDeleteAlert}
+                handleDisagree={handleDeleteALertDisAgree}
+                handleAgree={handleDeleteALertAgree}/>
+
             <Dialog open={open} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Sales Payment Due</DialogTitle>
                 <DialogContent>

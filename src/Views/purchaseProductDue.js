@@ -11,6 +11,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
+import { Delete } from '@material-ui/icons';
+import DeleteALert from '../components/deleteALert';
 
   
 export default function PurchaseProductDue(props) {
@@ -20,6 +22,8 @@ export default function PurchaseProductDue(props) {
 
     const [fieldValue,setFieldValue] = useState("");
     const [purchaseDueProduct,setPurchaseDueProduct] = useState("");
+    const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
+    const [tmpData,setTmpData] = useState({});
 
     const [columns,] =  useState([
         { title: 'Purchase Due Product Id   ', field: 'purchaseId' },
@@ -71,16 +75,40 @@ export default function PurchaseProductDue(props) {
     }
 
     const markDOne = (data) => {
-      var purchaseDue = {
-        purchaseDueProductId : data.purchaseDueProductId,
-        purchaseId : data.purchaseId,
-        productQuantity : data.purchaseDueProductsQuantity
-      }
-      submitForm("purchases/purchase/update-purchase-due/"+data.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+        setOpenDeleteAlert(true);
+        setTmpData(data);
+        
+    }
+
+    const handleDeleteALertDisAgree = () => {
+        setOpenDeleteAlert(false);
+        setTmpData(null);
+    }
+
+    const handleDeleteALertAgree = () => {
+        if (tmpData === null) {
+            alert('Something Went wrong');
+            return ;
+        }
+        var purchaseDue = {
+            purchaseDueProductId : tmpData.purchaseDueProductId,
+            purchaseId : tmpData.purchaseId,
+            productQuantity : tmpData.purchaseDueProductsQuantity
+        }
+        submitForm("purchases/purchase/update-purchase-due/"+purchaseDue.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+        setOpenDeleteAlert(false);
+        setTmpData(null);
     }
 
     return(
         <div>
+            <DeleteALert 
+                message="Make sure that you recieve all products of this Purchase . "
+                title=" Are you sure to Mark this purchase as Mark Purchase Product Recieved ?" 
+                open={openDeleteAlert}
+                handleDisagree={handleDeleteALertDisAgree}
+                handleAgree={handleDeleteALertAgree}
+                />
             <Dialog open={open} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Purchase Due Products</DialogTitle>
                 <DialogContent>
@@ -110,17 +138,17 @@ export default function PurchaseProductDue(props) {
                 title="Manage Purchase Due Products"
                 columns={columns}
                 data={data}
-                actkzions={[
+                actions={[
                     {
                     icon: 'edit',
                     tooltip: 'Update Product Due Information',
                     onClick: (event, rowData) => handleDialog(rowData)
                     },
                     rowData => ({
-                    icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                    tooltip: 'Mark Purchase Product Recieved',
-                    onClick: (event, rowData) => markDOne(rowData),
-                    disabled: rowData.birthYear < 2000
+                        icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
+                        tooltip: 'Mark Purchase Product Recieved',
+                        onClick: (event, rowData) => markDOne(rowData),
+                        disabled: rowData.birthYear < 2000
                     })
                 ]}
              

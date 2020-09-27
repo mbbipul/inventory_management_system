@@ -11,6 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
+import DeleteALert from '../components/deleteALert';
 
   
 export default function SalesProductDue(props) {
@@ -20,6 +21,8 @@ export default function SalesProductDue(props) {
 
     const [fieldValue,setFieldValue] = useState("");
     const [salesDueProduct,setSalesDueProduct] = useState("");
+    const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
+    const [tmpData,setTmpData] = useState({});
 
     const [columns,] =  useState([
         { title: 'Sales Due Product Id   ', field: 'salesDueProductId' },
@@ -70,19 +73,42 @@ export default function SalesProductDue(props) {
       }
     }
 
+
+
     const markDOne = (data) => {
-      var salesDue = {
-        salesDueProductId : data.salesDueProductId,
-        salesId : data.salesId,
-        productQuantity : data.salesDueProductsQuantity
-      }
-      console.log(data);
-      console.log(salesDue);
-      submitForm("sales/sales/update-sales-due/"+data.salesDueProductId,"POST",salesDue,() => FetchData());
+        setOpenDeleteAlert(true);
+        setTmpData(data);
     }
 
+    const handleDeleteALertDisAgree = () => {
+        setOpenDeleteAlert(false);
+        setTmpData(null);
+    }
+
+    const handleDeleteALertAgree = () => {
+        if (tmpData === null) {
+            alert('Something Went wrong');
+            return ;
+        }
+        var salesDue = {
+            salesDueProductId : tmpData.salesDueProductId,
+            salesId : tmpData.salesId,
+            productQuantity : tmpData.salesDueProductsQuantity
+        }
+        submitForm("sales/sales/update-sales-due/"+salesDue.salesDueProductId,"POST",salesDue,() => FetchData());
+        
+        setOpenDeleteAlert(false);
+        setTmpData(null);
+    }
     return(
         <div>
+            <DeleteALert 
+                message="Make sure that you return all products of this Sales to Customer . "
+                title=" Are you sure to Mark this Sales as Mark Sales Product Returned ?" 
+                open={openDeleteAlert}
+                handleDisagree={handleDeleteALertDisAgree}
+                handleAgree={handleDeleteALertAgree}/>
+
             <Dialog open={open} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Sales Due Products</DialogTitle>
                 <DialogContent>
@@ -114,15 +140,15 @@ export default function SalesProductDue(props) {
                 data={data}
                 actions={[
                     {
-                    icon: 'edit',
-                    tooltip: 'Update Product Due Information',
-                    onClick: (event, rowData) => handleDialog(rowData)
+                        icon: 'edit',
+                        tooltip: 'Update Product Due Information',
+                        onClick: (event, rowData) => handleDialog(rowData)
                     },
                     rowData => ({
-                    icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                    tooltip: 'Mark Sales Product Recieved',
-                    onClick: (event, rowData) => markDOne(rowData),
-                    disabled: rowData.birthYear < 2000
+                        icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
+                        tooltip: 'Mark Sales Product Returned',
+                        onClick: (event, rowData) => markDOne(rowData),
+                        disabled: rowData.birthYear < 2000
                     })
                 ]}
              
