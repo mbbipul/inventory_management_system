@@ -9,7 +9,7 @@ import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddOrder from "./addOrder";
-import { Button, Chip, Grid } from "@material-ui/core";
+import { Button, ButtonGroup, Chip, Grid } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import HistoryVisual from "../components/historyWithVisualization";
 import MaterialTable from "material-table";
@@ -58,7 +58,7 @@ function Order() {
         { title: 'Order ID', field: 'orderId' },
         { title: 'Order Customer Name', field: 'customerName' },
         { title: 'Product Name', field: 'productName' },
-        { title: 'Recieve Product Quantity', field: 'orderProductQuantity' },
+        { title: 'Order Product Quantity', field: 'orderProductQuantity' },
         { 
             title: 'Order Date', 
             field: 'orderDate' ,
@@ -72,26 +72,63 @@ function Order() {
                                         color="primary"
                                         label={'Order Completed'}
                                         clickable /> :
-
-                                    <Button 
-                                        variant='filled' 
-                                        style={{backgroundColor : '#000',color: '#fff',marginRight:10}}
+                                    <Chip 
+                                        color="secondary"
+                                        label={'Complete Order Now'}
+                                        clickable
                                         onClick={() => completeOrder(rowData)}
-                                    >
-                                        Complete Order Now
-                                    </Button>
+                                    />
+
                                     
         }
     ];
 
+
     const FetchOrders = () => {
-        submitForm('Orders/all-orders','GET','',(res) => setData(JSON.parse(res)));
+        submitForm('Orders/all-orders','GET','',(res) => {
+            submitForm('Orders','GET','',(res2) => {
+                let resArr1 = JSON.parse(res);
+                let resArray2 = JSON.parse(res2);
+                let result = resArr1.concat(resArray2);
+                console.log(result);
+                setData(result);
+            });
+        });
+        
     }
     const FetchDataByDate = (date) => {
-        submitForm("Orders/by-date/"+date,"GET","",(res) => setData(JSON.parse(res)));
+        
+        submitForm("Orders/by-date/"+date,"GET","",(res) => {
+            submitForm('Orders/place-order-by-date/'+date,'GET','',(res2) => {
+                let resArr1 = JSON.parse(res);
+                let resArray2 = JSON.parse(res2);
+                let result = resArr1.concat(resArray2);
+                console.log(result);
+                setData(result);
+            });
+        });
+    }
+    const FetchOrdersByDateRange = (fromDate,toDate) => {
+        submitForm("Orders/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => {
+            submitForm('Orders/place-order-by-date-range'+fromDate+"-"+toDate,'GET','',(res2) => {
+                let resArr1 = JSON.parse(res);
+                let resArray2 = JSON.parse(res2);
+                let result = resArr1.concat(resArray2);
+                console.log(result);
+                setData(result);
+            });
+        });
     }
     const FetchDataByDays = (days) => {
-        submitForm("Orders/by-days/"+days,"GET","",(res) => setData(JSON.parse(res)));
+        submitForm("Orders/by-days/"+days,"GET","",(res) => {
+            submitForm('Orders/place-orders-by-days/'+days,'GET','',(res2) => {
+                let resArr1 = JSON.parse(res);
+                let resArray2 = JSON.parse(res2);
+                let result = resArr1.concat(resArray2);
+                console.log(result);
+                setData(result);
+            });
+        });
     }
 
     useEffect(() => {
@@ -158,7 +195,7 @@ function Order() {
             if(fromDate > toDate){
                 alert("Starting date cannot larger than Last Date");
             }else{
-                submitForm("Orders/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+                FetchOrdersByDateRange(fromDate,toDate);
             }    
         }
     },[fromDate]);
@@ -168,7 +205,7 @@ function Order() {
             if(fromDate > toDate){
                 alert("Starting date cannot larger than Last Date");
             }else{
-                submitForm("Orders/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+                FetchOrdersByDateRange(fromDate,toDate);
             }    
         }
     },[toDate]);
@@ -240,7 +277,56 @@ function Order() {
                         <MaterialTable
                             title="All Orders"
                             columns={columns}
-                            data={data} />
+                            data={data} 
+                            detailPanel={rowData => {
+                                return (
+                                    <div>
+                                        {
+                                            rowData.orderStaus === 'orderComplete' && 
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="center"
+                                                style={{padding : 50}}
+                                                >
+                                                <Grid item xs >
+                                                    <Chip 
+                                                    color="primary"
+                                                    label={'Order Sales Product Quantity : '+rowData.productQuantity}
+                                                    clickable /> 
+                                                </Grid>
+                                                <Grid item xs >
+                                                    <Chip 
+                                                    color="primary"
+                                                    label={'Sales Rate : '+ (rowData.salesPrice/rowData.productQuantity).toFixed(2)+' tk'}
+                                                    clickable /> 
+                                                </Grid>
+                                                <Grid item xs >
+                                                    <Chip 
+                                                    color="primary"
+                                                    label={'Total Sales Amount : '+rowData.salesPrice+' tk'}
+                                                    clickable /> 
+                                                </Grid>
+                                                <Grid item xs >
+                                                    <Chip 
+                                                    color="primary"
+                                                    label={'Discount : '+rowData.salesDiscount+' tk'}
+                                                    clickable /> 
+                                                </Grid>
+                                                <Grid item xs >
+                                                    <Chip 
+                                                    color="primary"
+                                                    label={'Miscellaneous cost : '+rowData.miscellaneousCost+' tk'}
+                                                    clickable />
+                                                </Grid>
+                                            </Grid>
+                                        }
+                                    </div>
+                                   
+                                )
+                            }}
+                            />
                     </div>
                 </Route>
                 <Route exact path="/order/add-order">
