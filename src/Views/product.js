@@ -11,6 +11,7 @@ import Category from "./category";
 import apiUrl from "../utils/apiInfo";
 import ManageTable from "../components/manageTable";
 import DetailsTable from "../components/collapseTable";
+import { Chip } from "@material-ui/core";
 
 function Product() {
     let location = useLocation().pathname.split("/");
@@ -28,7 +29,18 @@ function Product() {
                         { title: 'Product Name', field: 'productName' },
                         { title: 'Product Code', field: 'productCode' },
                         { title: 'Product Type', field: 'productCategoryName' },
-                        { title: 'Product Quantity (In stock)', field: 'totalProductInStock' },
+                        {   
+                            title: 'Product Quantity (In stock)', 
+                            field: 'totalProductInStock' ,
+                            render : rowData => rowData.totalProductInStock === 0 ?  <Chip 
+                                                    color="secondary"
+                                                    label="Product Out Of Stock"
+                                                    clickable /> :
+                                                <Chip 
+                                                    color="primary"
+                                                    label={rowData.totalProductInStock}
+                                                    clickable /> 
+                        },
                         { title: 'Total Purchase Price', field: 'productPrice' },
                         { title: 'Sales Price (per product)', field: 'salestPrice' },
                     ]);
