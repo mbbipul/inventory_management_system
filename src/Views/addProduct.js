@@ -4,13 +4,17 @@ import Form from '../components/form';
 import { addProductFormFileds } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
+import AppContext  from '../context/appContext';
+
 
 class AddProduct extends React.Component {
+    static contextType = AppContext;
 
     constructor(props){
         super(props);
         this.state = {
             product : {},
+            refreshContext : false,
             openSnackbar : false,
         }
     }
@@ -19,6 +23,8 @@ class AddProduct extends React.Component {
         this.setState({
             openSnackbar : true,
         });
+        this.context.setProNumber();
+        this.context.setPurPaymentDue();
 
     }
     handleSnackbar = () => {
@@ -63,8 +69,7 @@ class AddProduct extends React.Component {
                 "productId" : product.productId
     
             }
-            console.log(product);
-            console.log(purchase)
+            
             submitForm("Purchases","POST",purchase,this.onProductAddSucces);
 
         });

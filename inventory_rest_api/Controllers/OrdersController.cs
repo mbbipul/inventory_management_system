@@ -21,6 +21,10 @@ namespace inventory_rest_api.Controllers
             _context = context;
         }
 
+        [HttpGet("just-all")]
+        public ActionResult<IEnumerable> GetAlls(){
+            return _context.Orders.ToList();
+        }
         [HttpGet("all-orders")]
         public ActionResult<IEnumerable> GetOrdersLl(){
 

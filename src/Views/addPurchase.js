@@ -17,7 +17,6 @@ class AddPurchase extends React.Component {
             purchase : {},
             openSnackbar : false,
         }
-        console.log(this.purDueCon);
 
     }
 
@@ -26,6 +25,8 @@ class AddPurchase extends React.Component {
             purchase : JSON.parse(result),
             openSnackbar : true,
         });
+        this.context.setProNumber();
+        this.context.setPurPaymentDue();
 
     }
     handleSnackbar = () => {
@@ -67,7 +68,7 @@ class AddPurchase extends React.Component {
                 "salestPrice" : parseInt(state.SalesPrice),
                 "productDetails" : state.ProductName.productId.productDetails,
             }
-            submitForm("Products/"+2+"/"+purchase.productId,"PUT",product,() => {this.onPurchaseAddSucces(res);context.setProNumber();             });
+            submitForm("Products/"+2+"/"+purchase.productId,"PUT",product,() => {this.onPurchaseAddSucces(res);     });
 
         });
         

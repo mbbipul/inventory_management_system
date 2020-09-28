@@ -101,7 +101,6 @@ function Category(){
         setOpen(false);
     };
 
-    const ondataChange = (data) => setData(data);
 
     let tabs = [
       
@@ -117,7 +116,7 @@ function Category(){
                     uniqueName="productCategoryName" 
                     apiUrl={"ProductCategory/"}
                     editable={true}
-                    ondataChange={() => {}} 
+                    onChangeData={FetchData} 
                     columns={columns} 
                     data={data} />
             </div>

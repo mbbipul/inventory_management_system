@@ -4,9 +4,10 @@ import Form from '../components/form';
 import {  newSalesFormFields } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
+import AppContext from '../context/appContext';
 
 class NewSales extends React.Component {
-
+    static contextType = AppContext;
 
     constructor(props){
         super(props);
@@ -22,6 +23,8 @@ class NewSales extends React.Component {
             sales : JSON.parse(result),
             openSnackbar : true,
         });
+        this.context.setSalesDueNumber();
+        this.context.setSalesPaymentDue();
 
     }
     handleSnackbar = () => {

@@ -157,11 +157,12 @@ const DashBoard = () =>{
             name : "Total Supplier",
             count : reportDetails.totalSupplier,
             icon : "supervisor_account"
-        },{
-            name : "Total Invoice",
-            count : 189,
-            icon : "shopping_basket"
-        }
+        },
+        // {
+        //     name : "Total Invoice",
+        //     count : 189,
+        //     icon : "shopping_basket"
+        // }
     ]
     
     const getDataPoints = (rowData,key) => {

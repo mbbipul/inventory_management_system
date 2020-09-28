@@ -28,7 +28,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function ToggleButtons(props) {
 
-  const [toggle, setToggleAct] = React.useState(0);
+
+  const [toggle, setToggleAct] = React.useState(99999999);
   const [data, setData] = React.useState([]);
 
   const handleToggle = (event, act) => {
@@ -39,7 +40,6 @@ export default function ToggleButtons(props) {
 
   const onFetchDataSuccess = (result) => {
     setData(JSON.parse(result));
-    console.log(result);
 
   }
 
@@ -49,6 +49,7 @@ export default function ToggleButtons(props) {
 
   useEffect(() => {
     props.onChange(data[toggle]);
+
   },[data]);
 
   useEffect(() => {
@@ -69,14 +70,22 @@ export default function ToggleButtons(props) {
             aria-label="text alignment"
           >
           {
-              data.map((item,i) => (
-                  <ToggleButton
-                      className={classes.tab}
-                      value={i}
-                  >
-                      {props.title.productName+ " - "+ item.perProductPurchasePrice+"tk"}
-                  </ToggleButton>
-              ))
+              data.map((item,i) => {
+                let jsx = <ToggleButton
+                              className={classes.tab}
+                              value={i}
+                          >
+                              {
+                                props.title.productName+ " - "+ item.perProductPurchasePrice+"tk"
+                              }
+                          </ToggleButton>
+                if (item.productQuantity <= 0){
+                  jsx = '';
+                  return jsx;
+                }
+                return jsx;
+                  
+           })
           }
         
           
@@ -86,7 +95,9 @@ export default function ToggleButtons(props) {
 
         {
          props.field.content.map((c,i) => {
-
+              if ( toggle === 99999999){
+                return ;
+              }
               let chip ="";
               if(data.length > 0){
                 chip = c.label+" : "+data[toggle][c.data]+c.postText
