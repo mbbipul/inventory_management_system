@@ -129,6 +129,13 @@ namespace inventory_rest_api.Models
                 .WithMany(c => c.Orders)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Sales)
+                .WithOne(c => c.Order)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
     }

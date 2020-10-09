@@ -19,7 +19,12 @@ function Customer() {
         { title: 'Contact Number', field: 'customerContact' },
         { title: 'Customer Email', field: 'customerEmail' },
         { title: 'Customer NID', field: 'customerNID' },
-        { title: 'Join Date', field: 'customerJoinDate' }
+        { 
+            title: 'Join Date', 
+            field: 'customerJoinDate',
+            render : rowData => new Date(parseInt(rowData.customerJoinDate)).toDateString()
+
+        }
 
     ]);
     const [data,setData] = useState([]);

@@ -9,8 +9,8 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20200926081725_FinalVersion")]
-    partial class FinalVersion
+    [Migration("20201009060713_OrderSaless")]
+    partial class OrderSaless
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -127,8 +127,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<string>("DamageRetDate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DamageRetFromComAmount")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("DamageRetFromComAmount")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("DamageRetFromCompanyDate")
                         .HasColumnType("nvarchar(max)");
@@ -241,6 +241,9 @@ namespace inventory_rest_api.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SalesId")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -562,6 +565,12 @@ namespace inventory_rest_api.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.Sales", "Sales")
+                        .WithOne("Order")
+                        .HasForeignKey("inventory_rest_api.Models.Order", "SalesId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

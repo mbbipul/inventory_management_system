@@ -5,16 +5,16 @@ import {
   useLocation
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
-import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddOrder from "./addOrder";
-import { Button, ButtonGroup, Chip, Grid } from "@material-ui/core";
+import { Button, ButtonGroup, Chip, Grid, Paper } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import HistoryVisual from "../components/historyWithVisualization";
 import MaterialTable from "material-table";
 import CustomizedDialogs from "../components/formDialog";
 import OrderSales from "./orderSales";
+import DeleteALert from '../components/deleteALert';
 
 function Order() {
     let location = useLocation().pathname.split("/");
@@ -24,34 +24,37 @@ function Order() {
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
     const [order,setOrder] = useState({});
-    const [openOrderDialog,setOrderDialog] = useState(false);
+    const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
+    const [showHisVis,setHisVis] = useState(true);
+
 
     const completeOrder = (rowData) => {
         setOrder(rowData);
-        setOrderDialog(true);
+        setOpenDeleteAlert(true);
     }
 
-    const onOrderSalesSuccess = (result) => {
-        let orderObj = {
-            "orderId": order.orderId,
-            "customerId": result.customerId,
-            "productId": result.productId,
-            "salesId": result.salesId,
-            "orderDate": order.orderDate,
-            "orderStaus": "orderComplete",
-            "orderProductQuantity": order.orderProductQuantity,
-            "miscellaneousCost": result.miscellaneousCost,
+    const handleDeleteALertDisAgree = () => {
+        setOpenDeleteAlert(false);
+        setOrder(null);
+    }
+
+    const handleDeleteALertAgree = () => {
+        if (order === null) {
+            alert('Something Went wrong');
+            return ;
         }
-        submitForm('Orders/'+orderObj.orderId,'PUT',orderObj,(res) => {
+        order.orderStaus = 'orderComplete';
+        submitForm('Orders/'+order.orderId,'PUT',order,(res) => {
             this.setState({
                 snackSeverity : 'success',
-                snackText : "Successfully  Order " + orderObj.orderId+" Updated !", 
+                snackText : "Successfully  Order " + order.orderId+" Updated !", 
                 openSnackbar : true,
                 toggleForm : 3
             });
-            console.log(JSON.parse(result));
-        })
-        
+            console.log(JSON.parse(res));
+        });
+        setOpenDeleteAlert(false);
+        setOrder(null);
     }
 
     const columns = [
@@ -85,14 +88,8 @@ function Order() {
 
 
     const FetchOrders = () => {
-        submitForm('Orders/all-orders','GET','',(res) => {
-            submitForm('Orders','GET','',(res2) => {
-                let resArr1 = JSON.parse(res);
-                let resArray2 = JSON.parse(res2);
-                let result = resArr1.concat(resArray2);
-                console.log(result);
-                setData(result);
-            });
+        submitForm('Orders','GET','',(res) => {
+            setData(JSON.parse(res));
         });
         
     }
@@ -139,8 +136,16 @@ function Order() {
     }, [location]);
 
     useEffect(() => {
-        FetchOrders();
-    },[]);
+        if(headersubtitle==='manage-order'){
+            setHisVis(false);
+        }else if(headersubtitle==='add-order'){
+            setHisVis(false);
+        }
+        else{
+            FetchOrders();
+            setHisVis(true);
+        }
+    },[headersubtitle]);
 
 
     let routeHeader = {
@@ -265,11 +270,13 @@ function Order() {
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-            
-            <HistoryVisual 
-                hasTabPanel={false}
-                handleTabs={setReportTabs} 
-                tabs={hisTabs}/>
+            {
+                showHisVis && 
+                <HistoryVisual 
+                    hasTabPanel={false}
+                    handleTabs={setReportTabs} 
+                    tabs={hisTabs}/>
+            }
 
             <Switch>
                 <Route exact path="/order">
@@ -350,15 +357,13 @@ function Order() {
                         </div>
                     </Route>
             </Switch>
-
-            <CustomizedDialogs 
-                title="Complete Order"
-                dialogContent={
-                    <OrderSales order={order} onSubmitSuccess={onOrderSalesSuccess}/>
-                }
-                
-                changOpenProps={()=> setOrderDialog(false)}
-                open={openOrderDialog} 
+            
+            <DeleteALert 
+                message="Make sure that you ship all product to customer "
+                title=" Are you sure to complete this order?" 
+                open={openDeleteAlert}
+                handleDisagree={handleDeleteALertDisAgree}
+                handleAgree={handleDeleteALertAgree}
             />
         </div>                        
     )

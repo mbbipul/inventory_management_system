@@ -76,7 +76,7 @@ function Supplier() {
                         <div style={{margin:20}}>
                             <ManageTable 
                                 title="Manage Supplier" 
-                                hasUnique={false}
+                                hasUnique={true}
                                 apiInfo="Suppliers"
                                 uniqueKey="supplierId" 
                                 uniqueName="supplierName" 

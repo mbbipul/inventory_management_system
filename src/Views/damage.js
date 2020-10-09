@@ -429,7 +429,7 @@ function Damage () {
     }
 
     const updateDamageProAmount = (state) => {
-        if(parseInt(state.DamageReturnFromCompanyAmount) > damage.damageProductAmount - parseInt(damage.damageRetFromComAmount)  ){
+        if(parseInt(state.DamageReturnFromCompanyAmount) > damage.damageProductAmount - parseFloat(damage.damageRetFromComAmount)  ){
             setSnackText("Damage Return From Company Product Due Amount cannot larger than Actual Damage Product Amount");
             setSnackSeverity('error');
             setOpenSnackbar(true);
@@ -437,7 +437,7 @@ function Damage () {
         }
 
         let damgeReturnCompanyDuePaymentStatus = false;
-        let amount = parseInt(damage.damageRetFromComAmount) + parseInt(state.DamageReturnFromCompanyAmount);
+        let amount = parseFloat(damage.damageRetFromComAmount) + parseFloat(state.DamageReturnFromCompanyAmount);
 
         if(damage.damageProductAmount === amount ){
             damgeReturnCompanyDuePaymentStatus = true;
@@ -445,7 +445,7 @@ function Damage () {
 
 
         damage.damgeReturnCompanyDuePaymentStatus = damgeReturnCompanyDuePaymentStatus;
-        damage['damageRetFromComAmount'] = amount.toString();
+        damage['damageRetFromComAmount'] = amount;
 
         submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
             setSnackText('Successfully Update Return Damage Product Amount');
@@ -482,7 +482,7 @@ function Damage () {
         }
 
         damage['damageRetFromCompanyDate'] = state.DamageReturnFromCompanyDate.toString();
-        damage['damageRetFromComAmount'] = state.DamageReturnFromCompanyAmount;
+        damage['damageRetFromComAmount'] = parseFloat(state.DamageReturnFromCompanyAmount);
         damage['damageRetComProQuantity'] = parseInt(state.DamageReturnFromCompanyProductQuantity);
         damage['damgeReturnCompanyDueDate'] = state.DamageReturnFromCompanyDueDate.toString();
         damage.damageRetComProQuantityDueStatus = damageRetComProQuantityDueStatus;

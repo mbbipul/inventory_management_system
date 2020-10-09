@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inventory_rest_api.Models;
 
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201009060439_OrderSales")]
+    partial class OrderSales
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,10 +433,6 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("CustomerId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
@@ -473,8 +471,6 @@ namespace inventory_rest_api.Migrations
                     b.HasIndex("ProductPurchaseHistoryId");
 
                     b.ToTable("Sales");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Sales");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.SalesDueProduct", b =>
@@ -528,13 +524,6 @@ namespace inventory_rest_api.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Suppliers");
-                });
-
-            modelBuilder.Entity("inventory_rest_api.Models.OrderSales", b =>
-                {
-                    b.HasBaseType("inventory_rest_api.Models.Sales");
-
-                    b.HasDiscriminator().HasValue("OrderSales");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Damage", b =>

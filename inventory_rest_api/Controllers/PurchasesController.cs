@@ -73,6 +73,37 @@ namespace inventory_rest_api.Controllers
 
             return await query.ToListAsync();
         }
+
+        [HttpGet("purchases-by-range/{date1}-{date2}")]
+        public ActionResult<IEnumerable> GetPurchaseWithProductByDateRange(string date1,string date2)
+        {
+            var query = from purchase in _context.Purchases
+                        join product in _context.Products
+                            on purchase.ProductId equals product.ProductId
+                        join supplier in _context.Suppliers
+                            on purchase.SupplierId equals supplier.SupplierId
+                        select new {
+
+                            purchase.PurchaseId,
+                            purchase.ProductId,
+                            supplier.SupplierId,
+                            purchase.ProductQuantity,
+                            purchase.PurchaseDate,
+                            purchase.PurchaseDiscount,
+                            purchase.PurchaseDuePaymentDate,
+                            purchase.PurchasePaidStatus,
+                            purchase.PurchasePaymentAmount,
+                            purchase.PurchasePrice,
+                            purchase.SalesPrice,
+                            ProductDueStatus = purchase.PurchaseDueProduct.PurchaseId,
+                            product.ProductName,
+                            supplier.SupplierName
+
+                        };
+
+            return  query.AsEnumerable().Where(p => (double.Parse(p.PurchaseDate) > double.Parse(date1)) && (double.Parse(p.PurchaseDate) < double.Parse(date2)))
+                                    .ToList();
+        }
         
         [HttpGet("total-purchase-due-products")]
         public ActionResult<int> GetTotalDueProducts(){

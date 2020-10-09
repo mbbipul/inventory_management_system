@@ -41,9 +41,15 @@ const useStyles = makeStyles({
 export default function CustomizedTables(props) {
   const classes = useStyles();
   const rows = [
-    createData('Total Sales', props.rows[0]),
-    createData('Total Purchase', props.rows[1]),
+    createData('Total Sales', props.rows.todaysSales),
+    createData('Total Purchase', props.rows.todaysPurchase),
+    createData('Total Cost Amount', props.rows.totalCostAmount),
+    createData('Total Salary Amount', props.rows.totalSalaryAmount),
+    createData('Total Damage Return Amount', props.rows.totalDamageReturnAmount),
+    createData('Total Damage Return Company Amount', props.rows.totalDamgeReturnFromCompanyAmount),
+
   ];
+  
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">

@@ -122,6 +122,54 @@ namespace inventory_rest_api.Controllers
             return report;
         }
 
+        [HttpGet("purchase-report-range/{date1}-{date2}")]
+        public  ActionResult<Object> GetPurchaseReportByDateRange(string date1,string date2){
+
+            double d1 = double.Parse(date1);
+            double d2 = double.Parse(date2);
+
+            var purchaseRateQuery = from purchase in _context.Purchases
+                                    select new {
+                                        purchase.PurchaseId,
+                                        purchase.ProductId,
+                                        purchase.ProductQuantity,
+                                        purchase.PurchasePrice,
+                                        purchase.PurchasePaidStatus,
+                                        AppUtils.DateTime(purchase.PurchaseDate).Day,
+                                        AppUtils.DateTime(purchase.PurchaseDate).Month,
+                                        AppUtils.DateTime(purchase.PurchaseDate).Year,
+                                        Date = AppUtils.DateTime(purchase.PurchaseDate).ToShortDateString(),
+                                        DateLong = long.Parse(purchase.PurchaseDate)
+                                    };
+            var purQuery = purchaseRateQuery.AsEnumerable().Where(p => p.DateLong >= d1 && p.DateLong < d2)
+                            .ToList();
+
+            var purRateReport = purchaseRateQuery.AsEnumerable()
+                        .GroupBy(
+                            p => p.Date,
+                            (key,g) => new {
+                                Date = key ,
+                                Count = g.Count(),
+                                Data = g.ToList(),
+                            }
+                        ).ToList();
+
+            var pdQuery = from pd in _context.PurchaseDueProducts 
+                                                select new {
+                                                    PurchaseDateLong = long.Parse(pd.Purchase.PurchaseDate),
+                                                    pd.Purchase.ProductId
+                                                };
+            var report = new {
+                TotalProductPurchase  = purQuery.Select(p => p.ProductId).Distinct().Count(),
+                TotalPurchasePrice = purQuery.Sum( p => p.PurchasePrice),
+                TotalPurchaseProductDue = pdQuery.AsEnumerable().Where(pd => pd.PurchaseDateLong >= d1 && pd.PurchaseDateLong < d2).Select( pd => pd.ProductId).Distinct().Count(),
+                TotalPurchasePaymentDue = purQuery.Where( p => p.PurchasePaidStatus == false).Count(),
+                PurchaseRate = purRateReport,
+            };
+
+            return report;
+        }
+
         [HttpGet("sales-report")]
         public  ActionResult<Object> GetSalesReport(){
 
@@ -150,6 +198,55 @@ namespace inventory_rest_api.Controllers
                 TotalSalesPrice = _context.Sales.Sum( p => p.SalesPrice),
                 TotalSalesProductDue = _context.SalesDueProducts.Select( sd => sd.Sales.ProductId).Distinct().Count(),
                 TotalSalesPaymentDue = _context.Sales.Where( s => s.SalesPaidStatus == false).Count(),
+                SalesRate = salesRateReport,
+            };
+
+            return report;
+        }
+
+        [HttpGet("sales-report-range/{date1}-{date2}")]
+        public  ActionResult<Object> GeSalesReportByDateRange(string date1,string date2){
+
+            double d1 = double.Parse(date1);
+            double d2 = double.Parse(date2);
+
+            var salesRateQuery = from sales in _context.Sales
+                                    select new {
+                                        sales.SalesId,
+                                        sales.ProductId,
+                                        sales.ProductQuantity,
+                                        sales.SalesPrice,
+                                        sales.SalesPaidStatus,
+                                        AppUtils.DateTime(sales.SalesDate).Day,
+                                        AppUtils.DateTime(sales.SalesDate).Month,
+                                        AppUtils.DateTime(sales.SalesDate).Year,
+                                        Date = AppUtils.DateTime(sales.SalesDate).ToShortDateString(),
+                                        DateLong = long.Parse(sales.SalesDate)
+                                    };
+            var salesQuery = salesRateQuery.AsEnumerable().Where(s => s.DateLong >= d1 && s.DateLong < d2)
+                            .ToList();
+
+            var salesRateReport = salesQuery.AsEnumerable()
+                        .GroupBy(
+                            p => p.Date,
+                            (key,g) => new {
+                                Date = key ,
+                                Count = g.Count(),
+                                Data = g.ToList(),
+                            }
+                        ).ToList();
+            var sdQuery = from sd in _context.SalesDueProducts 
+                                                select new {
+                                                    DateLong = long.Parse(sd.Sales.SalesDate),
+                                                    sd.Sales.ProductId
+                                                };
+
+
+            var report = new {
+                TotalProductSales  = salesQuery.Select(s => s.ProductId).Distinct().Count(),
+                TotalSalesPrice = salesQuery.Sum( s => s.SalesPrice),
+                TotalSalesProductDue = sdQuery.AsEnumerable().Where(sd => sd.DateLong >= d1 && sd.DateLong < d2).Select( sd => sd.ProductId).Distinct().Count(),
+                TotalSalesPaymentDue = salesQuery.Where( s => s.SalesPaidStatus == false).Count(),
                 SalesRate = salesRateReport,
             };
 

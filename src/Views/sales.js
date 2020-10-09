@@ -15,6 +15,8 @@ import submitForm from "../utils/fetchApi";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
+import { Grid } from "@material-ui/core";
+import MaterialUIPickers from "../components/datePicker";
 
 function Sales () {
 
@@ -24,7 +26,9 @@ function Sales () {
 
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
-    
+    const [fromDate,setFromDate] = useState("");
+    const [toDate,setToDate] = useState("");
+
     const [salesReport,setSalesReport] = useState({});
     const [reportItems,setReportItems] = useState([]);
     const [reportOptions,setReportOptions] = useState({});
@@ -45,6 +49,7 @@ function Sales () {
         switch (reportTabs) {
             case 0:
                 filterValue = unchangeData;
+                FetchReportByDate("");
                 break;
             case 1 :
                 filterValue = unchangeData.filter(sales => 
@@ -88,17 +93,45 @@ function Sales () {
                 );
                 FetchReport(29);
                 break;
+            case 6:
+                if(fromDate > toDate){
+                    alert("Starting date cannot larger than Last Date");
+                }
+                break;
             default:
                 break;
         }
         var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
-        dateFormatData.map(sales => sales.salesDateCustom = new Date(parseInt(sales.salesDate)).toDateString());
-        dateFormatData.map(sales => sales.salesDuePaymentDateCustom = new Date(parseInt(sales.salesDuePaymentDate)).toDateString());
-        
+   
         setData(dateFormatData);
-        console.log(dateFormatData);
     },[reportTabs])
 
+    const FetchReportByDateRange = (date1,date2) => {
+        submitForm("Report/sales-report-range/"+date1+"-"+date2,"GET",'',(res) => setSalesReport(JSON.parse(res)));
+    }
+
+    useEffect(() => {
+        if (reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                FetchSalesByDateRange();
+                FetchReportByDateRange(fromDate,toDate);
+            }    
+        }
+    },[fromDate]);
+
+    useEffect(() => {
+        if( reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                FetchSalesByDateRange();
+                FetchReportByDateRange(fromDate,toDate);
+            }    
+        }
+    },[toDate]);
+    
     useEffect(() => {
         setHeaderSubtitile(location[2]);
         if(location.length <= 2){
@@ -113,7 +146,11 @@ function Sales () {
                         { title: 'Product Name', field: 'productName' },
                         { title: 'Product Quantity', field: 'productQuantity' },
                         { title: 'Sales Price', field: 'salesPrice' ,type : 'numeric'},
-                        { title: 'Sales Date', field: 'salesDate' },
+                        { 
+                            title: 'Sales Date', 
+                            field: 'salesDate',
+                            render : rowData => new Date(parseInt(rowData.salesDate)).toDateString()
+                        },
                         // { title: 'Sales Payment Amount', field: 'salesPaymentAmount' },
                         { 
                             title: 'Sales Product Due Status', 
@@ -128,6 +165,9 @@ function Sales () {
                         
                     ]);
     
+    const FetchSalesByDateRange = () => {
+        submitForm(`Sales/sales-by-range/${fromDate}-${toDate}`,'GET','',res => setData(JSON.parse(res)));
+    }
     const FetchData = async () => {
 
         try {
@@ -174,7 +214,7 @@ function Sales () {
         for (let i = 1; i <= days;i++ ){
             valDays.push(new Date(new Date().getTime() - 86400000*i ).toLocaleDateString());
         }
-        submitForm("Report/sales-report-all/"+new Date().getTime(),"GET","",(res) =>{
+        submitForm("Report/sales-report-all","GET","",(res) =>{
             let allRes = JSON.parse(data);
             let data = allRes.salesRate.filter(p => valDays.includes(p.date));
             let salesDueData = allRes.totalSalesProductDue.filter(p => valDays.includes(p.sales.salesDate));
@@ -240,6 +280,28 @@ function Sales () {
         {
             tab : "This Month",
             tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
+        },
+        {
+            tab : "Jump To",    
+            tabPanel :  
+                        <div>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="center"
+                                alignItems="center">
+
+                                <Grid item xs >
+                                    <strong>From</strong>
+                                    <MaterialUIPickers onChange={(date) => setFromDate(date)} />
+                                </Grid>
+                                <Grid style={{marginLeft:100}} item xs >
+                                    <strong>To</strong>
+                                    <MaterialUIPickers onChange={(date) => setToDate(date)} />
+                                </Grid>
+                            </Grid>
+                            <TodaysReport items={reportItems} options={reportOptions}  />
+                        </div>
         },
 
     ];

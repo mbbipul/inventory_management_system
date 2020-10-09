@@ -2,7 +2,7 @@
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class FinalVersion : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -172,7 +172,7 @@ namespace inventory_rest_api.Migrations
                     DamageSentToCompanyStatus = table.Column<string>(nullable: true),
                     DamageSentToCompanyDate = table.Column<string>(nullable: true),
                     DamageRetFromCompanyDate = table.Column<string>(nullable: true),
-                    DamageRetFromComAmount = table.Column<string>(nullable: true),
+                    DamageRetFromComAmount = table.Column<long>(nullable: false),
                     DamageRetComProQuantity = table.Column<long>(nullable: false),
                     DamageRetComProQuantityDueStatus = table.Column<bool>(nullable: false),
                     DamgeReturnCompanyDueAmount = table.Column<long>(nullable: false),
@@ -202,35 +202,6 @@ namespace inventory_rest_api.Migrations
                         column: x => x.SupplierId,
                         principalTable: "Suppliers",
                         principalColumn: "SupplierId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<long>(nullable: false),
-                    ProductId = table.Column<long>(nullable: false),
-                    SalesId = table.Column<long>(nullable: false),
-                    OrderDate = table.Column<string>(nullable: true),
-                    OrderStaus = table.Column<string>(nullable: true),
-                    OrderProductQuantity = table.Column<int>(nullable: false),
-                    MiscellaneousCost = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId");
-                    table.ForeignKey(
-                        name: "FK_Orders_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId");
                 });
 
             migrationBuilder.CreateTable(
@@ -339,6 +310,41 @@ namespace inventory_rest_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
+                    SalesId = table.Column<long>(nullable: false),
+                    OrderDate = table.Column<string>(nullable: true),
+                    OrderStaus = table.Column<string>(nullable: true),
+                    OrderProductQuantity = table.Column<int>(nullable: false),
+                    MiscellaneousCost = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId");
+                    table.ForeignKey(
+                        name: "FK_Orders_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
+                    table.ForeignKey(
+                        name: "FK_Orders_Sales_SalesId",
+                        column: x => x.SalesId,
+                        principalTable: "Sales",
+                        principalColumn: "SalesId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SalesDueProducts",
                 columns: table => new
                 {
@@ -387,6 +393,12 @@ namespace inventory_rest_api.Migrations
                 name: "IX_Orders_ProductId",
                 table: "Orders",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_SalesId",
+                table: "Orders",
+                column: "SalesId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductPurchaseHistories_ProductId",

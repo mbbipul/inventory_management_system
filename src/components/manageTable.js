@@ -41,7 +41,15 @@ function ManageTable(props){
             }
         }
         if(props.hasUnique){
-            submitForm(props.apiUrl+"find/"+newData[props.uniqueName],"GET","",isCategoryExists);
+            if(newData[props.uniqueName] !== oldData[props.uniqueName]){
+                submitForm(props.apiUrl+"find/"+newData[props.uniqueName],"GET","",isCategoryExists);
+            }else{
+                submitForm(props.apiUrl+newData[props.uniqueKey],"PUT",newData,() => {
+                    setAlertText("Successfully Update !")
+                    setAlert(true);
+                    FetchData();
+                });
+            }
         }else{
             submitForm(props.apiUrl+newData[props.uniqueKey],"PUT",newData,() => {
                 setAlertText("Successfully Update "+props.apiInfo+ " !")

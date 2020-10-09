@@ -28,7 +28,11 @@ function Cost () {
                         { title: 'Cost Id', field: 'costId' },
                         { title: 'Cost Type', field: 'costType' },
                         { title: 'Cost Amount', field: 'costAmount' },
-                        { title: 'Date', field: 'date' },
+                        {
+                            title: 'Date',
+                            field: 'date',
+                            render: rowData => new Date(parseInt(rowData.date)).toDateString()
+                        },
                         { title: 'Cost Description' , field: 'costDescription'}
 
                     ]);

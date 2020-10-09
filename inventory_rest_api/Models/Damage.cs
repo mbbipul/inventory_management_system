@@ -13,7 +13,7 @@ namespace inventory_rest_api.Models
         public string DamageSentToCompanyStatus { get ; set; }
         public string DamageSentToCompanyDate { get ; set; }
         public string DamageRetFromCompanyDate { get ; set; }
-        public string DamageRetFromComAmount { get ; set; }
+        public long DamageRetFromComAmount { get ; set; }
         public long DamageRetComProQuantity { get; set; }
         public bool DamageRetComProQuantityDueStatus { get; set; }
 

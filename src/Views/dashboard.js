@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ColumnLineAreaChart from '../components/columnLineAreaChart';
 import PieChart from '../components/pieChart';
 import SimpleTable from '../components/table';
-import {Grid, Card} from '@material-ui/core';
+import {Grid, Card, Chip} from '@material-ui/core';
 import {Paper} from '@material-ui/core';
 import IconCard from '../components/iconCard';
 import RouteHeader from '../components/routeHeader';
@@ -29,6 +29,7 @@ const DashBoard = () =>{
         switch (reportTabs) {
             case 0:
                 FetchData(0,"all");
+                setreportCardTitle("All");
                 break;
             case 1 :
                 FetchData(2,Date.now());
@@ -69,6 +70,8 @@ const DashBoard = () =>{
             }else{
                 submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
                 submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+                setreportCardTitle(new Date(fromDate).toDateString()+" - "+new Date(toDate).toDateString());
+
             }    
         }
     },[fromDate]);
@@ -80,6 +83,8 @@ const DashBoard = () =>{
             }else{
                 submitForm("profit/report-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setReportDetails(JSON.parse(res)));
                 submitForm("profit/profit-details_range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+                setreportCardTitle(new Date(fromDate).toDateString()+" - "+new Date(toDate).toDateString());
+
             }    
         }
     },[toDate]);
@@ -101,14 +106,26 @@ const DashBoard = () =>{
 
             let totalSalesPurchase = allRes.totalSalesPurchase.filter(p => valDays.includes(p.date));
             let actualPurchasePrice = 0;
+            let totalCostAmount = 0;
+            let totalSalaryAmount = 0;
+            let totalDamageReturnAmount = 0;
+            let totalDamgeReturnFromCompanyAmount = 0;
 
             totalSalesPurchase.map(pur => {
                 profitDetails.push({
                     date : pur.date,
-                    totalPurchaseAmount : pur.totalPurchaseAmountAll,
-                    totalSalesAmount : pur.totalSalesAmount
+                    totalPurchaseAmount : pur.totalPurchaseAmount,
+                    totalPurchaseAmountAll : pur.totalPurchaseAmountAll,
+                    totalSalesAmount : pur.totalSalesAmount,
+                    totalCostAmount : pur.totalCostAmount,
+                    totalSalaryAmount : pur.totalSalaryAmount,
+                    totalDamageReturnAmount : pur.totalDamageReturnAmount,
                 });
                 actualPurchasePrice += pur.totalPurchaseAmountAll; 
+                totalCostAmount += pur.totalCostAmount;
+                totalSalaryAmount += pur.totalSalaryAmount;
+                totalDamageReturnAmount += pur.totalDamageReturnAmount;
+                totalDamgeReturnFromCompanyAmount += pur.totalDamgeReturnFromCompanyAmount;
             });
             console.log(profitDetails);
             setData(profitDetails);
@@ -118,6 +135,11 @@ const DashBoard = () =>{
                 "totalSupplier": allRes.totalSupplier,
                 "todaysSales": profitDetails.reduce((a, b) => +a + +b.totalSalesAmount, 0),
                 "todaysPurchase": actualPurchasePrice,
+                totalCostAmount : totalCostAmount,
+                totalSalaryAmount : totalSalaryAmount,
+                totalDamageReturnAmount : totalDamageReturnAmount,
+                totalDamgeReturnFromCompanyAmount : totalDamgeReturnFromCompanyAmount,
+                profit: allRes.profit,
                 "categories": allRes.categories
             });
         });
@@ -178,7 +200,7 @@ const DashBoard = () =>{
             }else{
                 value = d[key];
             }
-            data.push({ x: new Date(date[2],date[0],date[1]), y:  value})
+            data.push({ x: new Date(date[2],parseInt(date[0])-1,date[1]), y:  value})
             
         });
 
@@ -219,6 +241,30 @@ const DashBoard = () =>{
                 showInLegend: true,
                 yValueFormatString: "$#,##0",
                 dataPoints: getDataPoints(data,"totalPurchaseAmountAll") 
+
+            },
+            {
+                type: "column",
+                name: "Cost Price",
+                showInLegend: true,
+                yValueFormatString: "$#,##0",
+                dataPoints: getDataPoints(data,"totalCostAmount") 
+
+            },
+            // {
+            //     type: "column",
+            //     name: "Salary Amount",
+            //     showInLegend: true,
+            //     yValueFormatString: "$#,##0",
+            //     dataPoints: getDataPoints(data,"totalSalaryAmount") 
+
+            // },
+            {
+                type: "column",
+                name: "Damage Amount",
+                showInLegend: true,
+                yValueFormatString: "$#,##0",
+                dataPoints: getDataPoints(data,"totalDamageReturnAmount") 
 
             },
             {
@@ -325,7 +371,29 @@ const DashBoard = () =>{
                     <Grid item xs={4}>
                         <Paper  style={{paddingLeft:20,paddingRight:20}}>
                             <h1>{reportCardTitle} Report</h1>
-                            <SimpleTable title={reportCardTitle} rows={[reportDetails.todaysSales,reportDetails.todaysPurchase]}/>
+                            <SimpleTable 
+                                title={reportCardTitle} 
+                                rows={reportDetails}
+
+                            />
+                            <Paper style={{padding:30,paddingLeft: 30,backgroundColor: '#000'}}>
+                                <Chip 
+                                    style={{marginBottom:20}}
+                                    color={reportDetails.profit+reportDetails.totalSalaryAmount+reportDetails.totalCostAmount+reportDetails.totalDamageReturnAmount > 0 ? 'primary' : 'secondary'}
+                                    label={`Purchase - Sales Profit : ${reportDetails.profit+reportDetails.totalSalaryAmount+reportDetails.totalCostAmount+reportDetails.totalDamageReturnAmount}`}
+                                    clickable />
+                                <Chip 
+                                    style={{marginBottom:20}}
+                                    color={reportDetails.profit+reportDetails.totalSalaryAmount > 0 ? 'primary' : 'secondary'}
+                                    label={`Profit Without Salary : ${reportDetails.profit+reportDetails.totalSalaryAmount}`}
+                                    clickable />
+                                <Chip 
+                                    style={{marginBottom:10}}
+                                    color={reportDetails.profit > 0 ? 'primary' : 'secondary'}
+                                    label={`Profit - Included Salary : ${reportDetails.profit}`}
+                                    clickable />
+
+                            </Paper>
                             <br />
                             <PieChart 
                                 title="Product Categories Overview"

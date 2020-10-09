@@ -15,6 +15,8 @@ import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
 import submitForm from "../utils/fetchApi";
+import { Grid } from "@material-ui/core";
+import MaterialUIPickers from "../components/datePicker";
 
 function Purchase () {
     const [reportTabs,setReportTabs] = useState(0);
@@ -47,6 +49,7 @@ function Purchase () {
         switch (reportTabs) {
             case 0:
                 filterValue = unchangeData;
+                FetchReportByDate("");
                 break;
             case 1 :
                 filterValue = unchangeData.filter(purchase => 
@@ -102,11 +105,7 @@ function Purchase () {
             
         }
         // console.log(filterValue);
-        var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ; 
-        dateFormatData.map(purchase => purchase.purchaseDateCustom = new Date(parseInt(purchase.purchaseDate)).toDateString());
-        dateFormatData.map(purchase => purchase.purchaseDuePaymentDateCustom = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
-      
-
+        var dateFormatData = JSON.parse(JSON.stringify(filterValue)) ;
         setData(dateFormatData);
        
     },[reportTabs])
@@ -119,13 +118,30 @@ function Purchase () {
        
     }, [location]); 
 
+    const FetchPurchaseByDateRange = () => {
+        submitForm(`Purchases/purchases-by-range/${fromDate}-${toDate}`,'GET','',res => setData(JSON.parse(res)));
+    }
     useEffect(() => {
-        if(fromDate > toDate){
-            alert("Starting date cannot larger than Last Date");
-        }else{
-
+        if (reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                FetchPurchaseByDateRange();
+                FetchReportByDateRange(fromDate,toDate);
+            }    
         }
-    },[fromDate,toDate]);
+    },[fromDate]);
+
+    useEffect(() => {
+        if( reportTabs === 6){
+            if(fromDate > toDate){
+                alert("Starting date cannot larger than Last Date");
+            }else{
+                FetchPurchaseByDateRange();
+                FetchReportByDateRange(fromDate,toDate);
+            }    
+        }
+    },[toDate]);
 
     const [columns,] =  useState([
                             { title: 'Purchase ID', field: 'purchaseId' },
@@ -133,7 +149,11 @@ function Purchase () {
                             { title: 'Product Name', field: 'productName' },
                             { title: 'Product Quantity', field: 'productQuantity' },
                             { title: 'Purchase Price', field: 'purchasePrice' },
-                            { title: 'Purchase Date', field: 'purchaseDateCustom' },
+                            { 
+                                title: 'Purchase Date', 
+                                field: 'purchaseDate',
+                                render : rowData => new Date(parseInt(rowData.purchaseDate)).toDateString()
+                            },
                             // { title: 'Sales Price', field: 'salesPrice' },
                             { 
                                 title: 'Purchase Product Due Status', 
@@ -163,12 +183,7 @@ function Purchase () {
             const res = await fetch(apiUrl+"Purchases", requestOptions);
             const json = await res.json();
             setUnchangeData(json);
-            var dateFormatData = JSON.parse(JSON.stringify(json)) ; 
-            dateFormatData.map(purchase => purchase.purchaseDateCustom = new Date(parseInt(purchase.purchaseDate)).toDateString());
-            dateFormatData.map(purchase => purchase.purchaseDuePaymentDateCustom = new Date(parseInt(purchase.purchaseDuePaymentDate)).toDateString());
-
-
-            setData(dateFormatData);
+            setData(json);
         } catch (error) {
             console.log("error - ", error);
         }
@@ -229,13 +244,14 @@ function Purchase () {
         submitForm("Report/purchase-report/"+date,"GET","",(res) => setPurchaseReport(JSON.parse(res)));
     }
 
+    const FetchReportByDateRange = (date1,date2) => {
+        submitForm("Report/purchase-report-range/"+date1+"-"+date2,"GET",'',(res) => setPurchaseReport(JSON.parse(res)));
+    }
+
     const FetchAlls = () => {
         FetchData();
         FetchReportByDate("");
     }
-    useEffect(() => {
-        FetchAlls();
-    },[]);
 
     useEffect(() => {
         FetchAlls();
@@ -337,24 +353,28 @@ function Purchase () {
             tab : "This Month",
             tabPanel : <TodaysReport items={reportItems} options={reportOptions}  />
         },
-        // {
-        //     tab : "Jump To",    
-        //     tabPanel :  <Grid
-        //                     container
-        //                     direction="row"
-        //                     justify="center"
-        //                     alignItems="center">
+        {
+            tab : "Jump To",    
+            tabPanel :  
+                        <div>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="center"
+                                alignItems="center">
 
-        //                     <Grid item xs >
-        //                         <strong>From</strong>
-        //                         <MaterialUIPickers onChange={(date) => setFromDate(date)} />
-        //                     </Grid>
-        //                     <Grid style={{marginLeft:100}} item xs >
-        //                         <strong>To</strong>
-        //                         <MaterialUIPickers onChange={(date) => setToDate(date)} />
-        //                     </Grid>
-        //                 </Grid>
-        // },
+                                <Grid item xs >
+                                    <strong>From</strong>
+                                    <MaterialUIPickers onChange={(date) => setFromDate(date)} />
+                                </Grid>
+                                <Grid style={{marginLeft:100}} item xs >
+                                    <strong>To</strong>
+                                    <MaterialUIPickers onChange={(date) => setToDate(date)} />
+                                </Grid>
+                            </Grid>
+                            <TodaysReport items={reportItems} options={reportOptions}  />
+                        </div>
+        },
 
     ];
 

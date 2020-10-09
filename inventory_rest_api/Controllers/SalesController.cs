@@ -67,6 +67,52 @@ namespace inventory_rest_api.Controllers
 
         }
 
+        [HttpGet("sales-by-range/{date1}-{date2}")]
+        public ActionResult<IEnumerable> GetSalesProductCustomersByRange(string date1,string date2){
+            var query = from sales in _context.Sales
+                        join product in _context.Products
+                            on sales.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        join pph in _context.ProductPurchaseHistories
+                            on sales.ProductPurchaseHistoryId equals pph.ProductPurchaseHistoryId
+                        select new {
+                                sales.SalesId,
+                                sales.CustomerId,
+                                sales.ProductQuantity,
+                                sales.SalesDate,
+                                sales.SalesPrice,
+                                sales.SalesPaymentAmount,
+                                sales.SalesDueAmount,
+                                sales.SalesPaidStatus,
+                                sales.SalesDuePaymentDate,
+                                sales.SalesDiscount,
+
+                                ProductDueStatus = sales.SalesDueProduct.SalesId,
+
+                                product.ProductId,
+                                product.ProductName,
+                                product.ProductCode,
+                                product.ProductCategoryId,
+                                product.TotalProducts,
+                                product.TotalProductInStock,
+                                product.ProductPrice,
+                                product.SalestPrice,
+                                product.ProductDetails,
+                                customer.CustomerName,
+                                // customer.CustomerEmail,
+                                // customer.CustomerContact,
+                                // customer.CustomerAddress,
+                                // customer.CustomerJoinDate,
+                                // customer.CustomerNID,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice
+                            };
+            return  query.AsEnumerable().Where(s => (double.Parse(s.SalesDate) > double.Parse(date1)) && (double.Parse(s.SalesDate) < double.Parse(date2)))
+                                    .ToList();
+
+        }
+
         // GET: api/Sales/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Sales>> GetSales(long id)

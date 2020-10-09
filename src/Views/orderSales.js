@@ -1,20 +1,10 @@
 import React from 'react';
 import { Card , CardHeader, Divider,Snackbar } from '@material-ui/core';
 import Form from '../components/form';
-import {  newSalesFormFields } from '../utils/appFormsFileds';
+import {  salesOrderFormFileds } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
 import AppContext from '../context/appContext';
-
-const salesOrderFormFileds = [...newSalesFormFields];
-salesOrderFormFileds.push({
-    label : "Miscellaneous cost",
-    placeholder : "200.00 tk",
-    type : 0,
-    required : true,
-    disabled : false,
-    validation : [0]
-});
 
 class OrderSales extends React.Component {
     static contextType = AppContext;
@@ -51,25 +41,8 @@ class OrderSales extends React.Component {
 
     submitPurchaseForm = (state) => {
 
-        if (this.props.order.productId !== state.ProductName.productId){
-            this.setState({
-                snackSeverity : 'error',
-                snackText : 'Order Product and Sales Product are not same . Please choose order Product .',
-                openSnackbar : true
-            });
-            return ;
-        }
 
-        if (this.props.order.productId !== state.ProductName.productId){
-            this.setState({
-                snackSeverity : 'error',
-                snackText : 'Order Customer and Sales Customer are not same . Please choose order Customer .',
-                openSnackbar : true
-            });
-            return ;
-        }
-
-        let exactSalesPrice = parseFloat(state.SalesPrice)*parseInt(state.ProductQuantity)-parseFloat(state.SalesDiscount)+parseFloat(state.Miscellaneouscost);
+        let exactSalesPrice = parseFloat(state.SalesPrice)*parseInt(state.ReceiveOrderProductQuantity)-parseFloat(state.SalesDiscount)+parseFloat(state.Miscellaneouscost);
 
         let paid = exactSalesPrice - parseFloat(state.SalesPaymentAmount) ;
         let paidStatus = paid > 0 ? false : true ;
@@ -78,7 +51,7 @@ class OrderSales extends React.Component {
             "customerId" : state.CustomerName.customerId,
             "productId" : state.ProductName.productId,
             "productPurchaseHistoryId" : state.purchaseHistory.productPurchaseHistoryId,
-            "productQuantity" : parseInt(state.ProductQuantity),
+            "productQuantity" : parseInt(state.ReceiveOrderProductQuantity),
             "salesDate" : Date.now().toString(),
             "salesPrice" : parseFloat(exactSalesPrice),
             "salesPaymentAmount" : parseFloat(state.SalesPaymentAmount),
@@ -95,7 +68,7 @@ class OrderSales extends React.Component {
                "productCode" : state.ProductName.productCode,
                "productCategoryId" : state.ProductName.productCategoryId,
                "totalProducts" : 0,
-               "totalProductInStock" : parseInt(state.ProductQuantity),
+               "totalProductInStock" : parseInt(state.ReceiveOrderProductQuantity),
                "productPrice" : 0,
                "salestPrice" : 0,
                "productDetails" : "s",
@@ -111,12 +84,8 @@ class OrderSales extends React.Component {
     render(){
         return (
             <Card style={{margin:40}}>
-
-                <CardHeader
-                    title="Add New Sales"
-                />
                 <Divider />
-                <Form onSubmit={this.submitPurchaseForm} submitButton="Add Sales" fields={salesOrderFormFileds}/>
+                <Form onSubmit={this.submitPurchaseForm} submitButton="Add Orders" fields={salesOrderFormFileds}/>
 
                 <Snackbar 
                     open={this.state.openSnackbar} 

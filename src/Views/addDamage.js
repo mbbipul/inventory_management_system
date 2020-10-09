@@ -29,15 +29,17 @@ class AddDamage extends React.Component {
     }
 
     submitDamageForm = (state) => {
-     
-       let damage = {
+        let date = new Date().getTime().toString();
+        let damage = {
            productId : state.ProductName.productId,
            customerId : state.CustomerName.customerId,
            employeeId : state.EmployeeName.employeeId,
            supplierId : state.SupplierName.supplierId,
            productQuantity : parseInt(state.ProductQuantity),
            damageProductAmount : parseFloat(state.DamageProductAmount) ,
-           damageRetDate : new Date().getTime().toString(),
+           damageRetDate : date,
+           damageSentToCompanyDate : date,
+           damageRetFromCompanyDate : date,
            damageSentToCompanyStatus : 'added'
        };
     
