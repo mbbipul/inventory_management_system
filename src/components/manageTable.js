@@ -105,6 +105,7 @@ function ManageTable(props){
                 columns={props.columns}
                 data={props.data}
                 options={{
+                    exportButton: true,
                     selection: true
                 }}
                 actions={[

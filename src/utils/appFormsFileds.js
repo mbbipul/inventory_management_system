@@ -857,7 +857,66 @@ const addOrderFormFields = [
         disabled : false,
         validation : [0]
     },
-]
+];
+
+const memoFormFields =  [
+    {
+        label : "কাষ্টমারের নাম",
+        placeholder : "মিঃ রয় ",
+        type : 3,
+        dialogFormContent : <AddCustomer />,
+        fetchUrl : apiUrl+"Customers",
+        selectName : "customerName",
+        selectKey : "customerId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "মোবাইল নাম্বার ",
+        placeholder : "1",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "ঠিকানা",
+        placeholder : "1",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "প্রোডাক্টের নাম",
+        placeholder : "তেল ",
+        type : 3,
+        dialogFormContent : <AddCustomer />,
+        fetchUrl : apiUrl+"Customers",
+        selectName : "customerName",
+        selectKey : "customerId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
+        label : "প্রোডাক্টের পরিমাণ",
+        placeholder : "1",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },{
+        label : "প্রোডাক্টের পরিমাণ",
+        placeholder : "1",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+];
+
 export { 
     addProductFormFileds , 
     addCompanyFormFields , 
@@ -871,5 +930,6 @@ export {
     addSalaryFormFields,
     addDamageFormFields,
     addReturnDamageFormFileds,
-    addOrderFormFields
+    addOrderFormFields,
+    memoFormFields
 };

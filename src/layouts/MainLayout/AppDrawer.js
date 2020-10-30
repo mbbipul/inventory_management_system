@@ -32,7 +32,7 @@ const drawerWidth = 200;
 
 const appComfigs = {
   appName : "Matrivandar Store",
-  appBarBackground : "#060620",
+  appBarBackground : "#000",
 }
 const useStyles = makeStyles((theme) => ({
   root: {

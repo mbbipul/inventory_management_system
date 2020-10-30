@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -52,5 +53,10 @@ namespace inventory_rest_api.Models
         
         [JsonIgnore]
         public Order Order { get; set; }
+
+        [JsonIgnore]
+        public List<PaymentSales> PaymentSales { get; set; }
+        public List<SalesHistory> SalesHistories { get; set; }
+
     }
 }

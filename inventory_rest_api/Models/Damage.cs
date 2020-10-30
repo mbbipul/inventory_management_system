@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace inventory_rest_api.Models
 {
     public class Damage
@@ -27,5 +29,8 @@ namespace inventory_rest_api.Models
         public Customer Customer { get; set; }
         public Employee Employee { get; set; }
         public Supplier Supplier { get; set; }
+        public List<DamageReceptionHistory> DamageReceptionHistories { get; set; }
+        public List<DamageDeliveryHistory> DamageDeliveryHistories { get; set; }
+
     }
 }

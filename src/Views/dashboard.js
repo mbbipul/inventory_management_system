@@ -209,6 +209,7 @@ const DashBoard = () =>{
     const monthlyChartOptions = {
         // theme: "dark2",
         animationEnabled: true,
+        exportEnabled: true,
         colorSet: "colorSet2",
         title: {
             text: ""

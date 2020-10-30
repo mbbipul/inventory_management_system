@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -44,6 +45,9 @@ namespace inventory_rest_api.Models
 
         [JsonIgnore]
         public PurchaseDueProduct PurchaseDueProduct { get ; set ; }
+
+        public List<PaymentPurchase> PaymentPurchases { get; set; }
+        public List<PurchaseHistory> PurchaseHistories { get; set; }
 
     }
 }

@@ -32,6 +32,7 @@ namespace inventory_rest_api.Models
         public List<Damage> Damages { get; set; }
 
         public List<Order> Orders { get; set; }
+        public List<PaymentSales> PaymentSaleses { get; set; }
 
     }
 }

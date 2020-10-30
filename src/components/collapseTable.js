@@ -3,6 +3,7 @@ import MaterialTable from 'material-table';
 import { Grid } from '@material-ui/core';
 import IconCard from './iconCard';
 import submitForm from '../utils/fetchApi';
+import DataTableExtensions from "react-data-table-component-extensions";
 
 function DetailsTable(props) {
 
@@ -21,13 +22,17 @@ function DetailsTable(props) {
 //     </tr>
 //   ))}
 // </table>;
-
+  const tableData = {
+    columns : props.columns,
+    data : props.data
+  };
 
   return (
     <MaterialTable
       title={props.title}
       columns={props.columns}
       data={props.data}
+      options={{exportButton:true}}
       detailPanel={rowData => {
         let overViewItems = props.detailsPane(rowData);
         

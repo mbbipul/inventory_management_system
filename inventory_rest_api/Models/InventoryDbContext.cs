@@ -38,6 +38,15 @@ namespace inventory_rest_api.Models
 
         public DbSet<Order> Orders { get; set; }
 
+        public DbSet<PaymentPurchase> PaymentPurchases { get; set; }
+        public DbSet<PaymentSales> PaymentSales { get; set; }
+        public DbSet<PurchaseHistory> PurchaseHistories { get; set; }
+        public DbSet<SalesHistory> SalesHistories { get; set; }
+        public DbSet<DamageDeliveryHistory> DamageDeliveryHistories { get; set; }
+        public DbSet<DamageReceptionHistory> DamageReceptionHistories { get; set; }
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -63,9 +72,33 @@ namespace inventory_rest_api.Models
                 .WithOne(p => p.Purchase)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Purchase>()
+                .HasMany(p => p.PaymentPurchases)
+                .WithOne(p => p.Purchase)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Purchase>()
+                .HasMany(p => p.PurchaseHistories)
+                .WithOne(p => p.Purchase)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Sales>()
                 .HasOne(s => s.SalesDueProduct)
+                .WithOne(s => s.Sales)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Sales>()
+                .HasMany(s => s.PaymentSales)
+                .WithOne(s => s.Sales)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Sales>()
+                .HasMany(s => s.SalesHistories)
                 .WithOne(s => s.Sales)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -75,6 +108,18 @@ namespace inventory_rest_api.Models
                 .WithOne(company => company.Company)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Supplier>()
+                .HasMany(s => s.PaymentPurchases)
+                .WithOne(s => s.Supplier)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.SetNull);
+            
+            modelBuilder.Entity<Customer>()
+                .HasMany(c => c.PaymentSaleses)
+                .WithOne(c => c.Customer)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<ProductCategory>()
                 .HasMany(product => product.Products)
@@ -117,6 +162,18 @@ namespace inventory_rest_api.Models
                 .WithMany(p => p.Damages)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Damage>()
+                .HasMany(d => d.DamageDeliveryHistories)
+                .WithOne(p => p.Damage)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Damage>()
+                .HasMany(d => d.DamageReceptionHistories)
+                .WithOne(p => p.Damage)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Product)
