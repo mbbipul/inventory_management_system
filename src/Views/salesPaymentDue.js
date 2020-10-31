@@ -61,8 +61,20 @@ export default function SalesPaymentDue(props) {
         if(parseFloat(fieldValue) > salesWithDue.salesPaymentDue){
             alert("Your Sales due amount is more than "+salesWithDue.salesPaymentDue);
         }else{
+
+            let paymentSaleseHis = {
+                salesId : salesWithDue.salesId,
+                paymentSalesDate : nextPaymentDueDate.toString(),
+                paymentAmount : parseFloat(fieldValue),
+            }
+           
             submitForm("sales/sales-payment-due/"+ 
-                    salesWithDue.salesId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+                    salesWithDue.salesId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {
+                        submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                            console.log(JSON.parse(res));
+                        });
+                        FetchData();
+                    });
             setOpen(false);     
 
         }

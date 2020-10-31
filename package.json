@@ -18,11 +18,12 @@
     "materialize-css": "^1.0.0",
     "react": "^16.13.1",
     "react-async": "^10.0.1",
+    "react-data-table-component-extensions": "^1.4.1",
     "react-dom": "^16.13.1",
     "react-draggable": "^4.4.3",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.3",
     "react-swipeable-views": "^0.13.9",
     "redux": "^4.0.5"
   },

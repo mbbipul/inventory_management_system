@@ -29,7 +29,5 @@ namespace inventory_rest_api.Models
         [JsonIgnore]
         public List<Damage> Damages { get; set; }
 
-        [JsonIgnore]
-        public List<PaymentPurchase> PaymentPurchases { get; set; }
     }
 }

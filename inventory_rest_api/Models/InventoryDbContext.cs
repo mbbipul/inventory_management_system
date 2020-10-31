@@ -109,18 +109,7 @@ namespace inventory_rest_api.Models
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Supplier>()
-                .HasMany(s => s.PaymentPurchases)
-                .WithOne(s => s.Supplier)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.SetNull);
-            
-            modelBuilder.Entity<Customer>()
-                .HasMany(c => c.PaymentSaleses)
-                .WithOne(c => c.Customer)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.SetNull);
-
+    
             modelBuilder.Entity<ProductCategory>()
                 .HasMany(product => product.Products)
                 .WithOne(productCategory => productCategory.ProductCategories)

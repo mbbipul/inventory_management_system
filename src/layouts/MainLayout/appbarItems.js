@@ -67,7 +67,24 @@ const sideBarItems = [
                 ref : "sales/pos-sales"
             }
         ]
-    },{
+    },
+    {
+        name : "Payment",
+        icon : "payments",
+        ref : "/payment",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Purchase Payment",
+                ref : "payment/purchase-payment"
+            }, 
+            {
+                name : "Sales Payment",
+                ref : "payment/sales-payment"
+            },
+        ]
+    },
+    {
         name : "Product",
         icon : "storefront",
         ref : "/product",

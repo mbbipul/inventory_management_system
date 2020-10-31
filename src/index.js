@@ -6,16 +6,24 @@ import * as serviceWorker from './serviceWorker';
 import {createStore} from 'redux';
 import reducers from './reducers';
 import {Provider} from 'react-redux';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 
 const store = createStore(
   reducers,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
+const Theme = (theme) => createMuiTheme({
+  palette: {
+    type: theme,
+  },
+});
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ThemeProvider theme={Theme('light')}>
+        <App />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

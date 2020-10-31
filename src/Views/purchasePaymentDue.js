@@ -61,8 +61,20 @@ export default function PurchasePaymentDue(props) {
         if(parseFloat(fieldValue) > purchaseWithDue.purchasePaymentDue){
             alert("Your purchase due amount is more than "+purchaseWithDue.purchasePaymentDue);
         }else{
+            let paymentPurchaseHis = {
+                purchaseId : purchaseWithDue.purchaseId,
+                paymentPurchaseDate : nextPaymentDueDate.toString(),
+                paymentAmount : parseFloat(fieldValue),
+            }
+            
+
             submitForm("purchases/purchase-payment-due/"+ 
-                    purchaseWithDue.purchaseId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+                    purchaseWithDue.purchaseId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {
+                        submitForm("Paymentpurchase","POST",paymentPurchaseHis, (res) => {
+                            console.log(JSON.parse(res));
+                        });
+                        FetchData();
+                    });
             setOpen(false);     
 
         }

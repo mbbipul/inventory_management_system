@@ -13,3 +13,5 @@ namespace inventory_rest_api
         public string Summary { get; set; }
     }
 }
+
+//dotnet aspnet-codegenerator controller -name TodoItemsController -async -api -m TodoItem -dc TodoContext -outDir Controllers

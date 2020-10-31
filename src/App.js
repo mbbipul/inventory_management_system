@@ -25,6 +25,7 @@ import PurchasePaymentDue from './Views/purchasePaymentDue';
 import SalesPaymentDue from './Views/salesPaymentDue';
 import Damage from './Views/damage';
 import Order from './Views/order';
+import Payment from './Views/payment';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -128,7 +129,9 @@ function App() {
             <Route path="/purchase">
               <Purchase />
             </Route>
-          
+            <Route path="/payment">
+              <Payment />
+            </Route>
             <Route path="/product">
               <Product />
             </Route>

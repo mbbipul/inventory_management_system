@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(props.default ? props.default : 0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -66,6 +66,10 @@ export default function FullWidthTabs(props) {
       props.onChangeTab(value);
     }
   },[value]);
+
+  useEffect(() => {
+    setValue(props.default ? props.default : 0);
+  },[props]);
 
   return (
     <div className={classes.root}>
