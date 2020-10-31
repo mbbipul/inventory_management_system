@@ -31,12 +31,15 @@ namespace inventory_rest_api.Controllers
         public ActionResult<Object> GetSalesPurchasesRegardCustomer()
         {
             var query = from ps in _context.PaymentSales 
-                        from s in _context.Sales
+                        join s in _context.Sales
+                            on ps.SalesId equals s.SalesId
                         join c in _context.Customers 
                             on s.CustomerId equals c.CustomerId
                         select new { 
                             ps.PaymentSalesId,
                             s.Product.ProductName,
+                            s.SalesPrice,
+                            s.SalesId,
                             ps.PaymentSalesDate,
                             ps.PaymentAmount,
                             c.CustomerName,
@@ -48,7 +51,8 @@ namespace inventory_rest_api.Controllers
                     Headers = new List<string> {
                         key,
                         g.Count().ToString(),
-                        g.Sum(pp => pp.PaymentAmount).ToString(),
+                        g.GroupBy(ps => ps.SalesId).Select(g => g.First()).Sum(ps => ps.SalesPrice).ToString(),
+                        g.Sum(ps => ps.PaymentAmount).ToString(),
                     },
                     Data = g.ToList()
                 }

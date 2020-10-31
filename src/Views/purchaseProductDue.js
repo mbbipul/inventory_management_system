@@ -13,6 +13,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
 import { Delete } from '@material-ui/icons';
 import DeleteALert from '../components/deleteALert';
+import ProductReception from './purProReceptionHistory';
+import FullWidthTabs from '../components/tab';
 
   
 export default function PurchaseProductDue(props) {
@@ -30,7 +32,12 @@ export default function PurchaseProductDue(props) {
         { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Product Name', field: 'productName' },
         { title: 'Purchase Due Product Quantity', field: 'purchaseDueProductsQuantity' },
-        { title: 'Purchase Date', field: 'purchaseDate' },
+        { 
+            title: 'Purchase Date', 
+            field: 'purchaseDate' ,
+            render : rowData => new Date(parseInt(rowData.purchaseDate)).toDateString() 
+
+        },
 
     ]);
 
@@ -68,8 +75,18 @@ export default function PurchaseProductDue(props) {
       if(parseInt(fieldValue) > purchaseDueProduct.purchaseDueProductsQuantity){
         alert("Your purchase product quantity is less than "+fieldValue);
       }else{
-        submitForm("purchases/purchase/update-purchase-due/"+purchaseDueProduct.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
-        setOpen(false);
+            let purchaseHistory = {
+                purchaseId : purchaseDueProduct.purchaseId,
+                productQuantity : parseInt(fieldValue),
+                receptionDate :new Date().getTime().toString()
+                
+            }
+            submitForm("purchases/purchase/update-purchase-due/"+purchaseDueProduct.purchaseDueProductId,"POST",purchaseDue,() => {
+                submitForm("ProductReception","POST",purchaseHistory,() => {
+                    FetchData();
+                });
+            });
+            setOpen(false);
 
       }
     }
@@ -95,10 +112,54 @@ export default function PurchaseProductDue(props) {
             purchaseId : tmpData.purchaseId,
             productQuantity : tmpData.purchaseDueProductsQuantity
         }
-        submitForm("purchases/purchase/update-purchase-due/"+purchaseDue.purchaseDueProductId,"POST",purchaseDue,() => FetchData());
+        let purchaseHistory = {
+            purchaseId : tmpData.purchaseId,
+            productQuantity :  tmpData.purchaseDueProductsQuantity,
+            receptionDate :new Date().getTime().toString()
+            
+        }
+        submitForm("purchases/purchase/update-purchase-due/"+purchaseDue.purchaseDueProductId,"POST",purchaseDue,() => {
+            submitForm("ProductReception","POST",purchaseHistory,() => {
+                FetchData();
+            });
+        });
         setOpenDeleteAlert(false);
         setTmpData(null);
     }
+
+    const tabs = [
+        {
+            tab : "Purchase Due Products",
+            tabPanel :  <MaterialTable
+                            title="Manage Purchase Due Products"
+                            columns={columns}
+                            data={data}
+                            actions={[
+                                {
+                                icon: 'edit',
+                                tooltip: 'Update Product Due Information',
+                                onClick: (event, rowData) => handleDialog(rowData)
+                                },
+                                rowData => ({
+                                    icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
+                                    tooltip: 'Mark Purchase Product Recieved',
+                                    onClick: (event, rowData) => markDOne(rowData),
+                                    disabled: rowData.birthYear < 2000
+                                })
+                            ]}
+                        
+                            options={{
+                                actionsColumnIndex: -1
+                            }}
+                        />
+        },
+        {
+            tab : "Purchase Product Reception History",
+            tabPanel :  <div>
+               <ProductReception />
+            </div>
+        }
+    ];
 
     return(
         <div>
@@ -134,28 +195,7 @@ export default function PurchaseProductDue(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <MaterialTable
-                title="Manage Purchase Due Products"
-                columns={columns}
-                data={data}
-                actions={[
-                    {
-                    icon: 'edit',
-                    tooltip: 'Update Product Due Information',
-                    onClick: (event, rowData) => handleDialog(rowData)
-                    },
-                    rowData => ({
-                        icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                        tooltip: 'Mark Purchase Product Recieved',
-                        onClick: (event, rowData) => markDOne(rowData),
-                        disabled: rowData.birthYear < 2000
-                    })
-                ]}
-             
-                options={{
-                    actionsColumnIndex: -1
-                }}
-            />
+            <FullWidthTabs tabs={tabs}/>
         </div>
         
     )

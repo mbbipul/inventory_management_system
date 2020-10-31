@@ -2,27 +2,28 @@ import React, { useEffect, useState } from 'react';
 import AccordionsTable from '../components/accordionTable';
 import submitForm from '../utils/fetchApi';
 
-export default function PurchasePayment(){
+export default function ProductReception(){
 
     const [data,setData] = useState([]);
-
+   
     const columns = [
         { title: 'Product Name', field: 'productName' },
+        { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Company Name', field: 'companyName' },
-        { title: 'Purchase Payment Amount', field: 'paymentAmount' },
+        { title: 'Recieve product quantity', field: 'productQuantity' },
         { 
-            title: 'Purchase Payment Date', 
-            field: 'paymentPurchaseDate',
-            render : rowData => new Date(parseInt(rowData.paymentPurchaseDate)).toDateString() 
+            title: 'Reception Date', 
+            field: 'receptionDate',
+            render : rowData => new Date(parseInt(rowData.receptionDate)).toDateString() 
         },
 
     ];
 
     const FetchData = () => {
-        submitForm("paymentpurchase/regarding-supplier","GET","",(res) => setData(JSON.parse(res)));
+        submitForm("ProductReception/regarding-purchaseId","GET","",(res) => setData(JSON.parse(res)));
     }
 
-    const accordionsHeaders = ["Supplier Name","Total Purchase Payment","Total Purchase Payment Amount","Paid Purchase Amount"];
+    const accordionsHeaders = ["Purchase Id","Product Name","Total Purchase Product Quantity","Received Product Quantity"];
 
     useEffect(() => {
         FetchData();
@@ -32,7 +33,7 @@ export default function PurchasePayment(){
         <div>
             <AccordionsTable 
                 theme={'dark'}
-                title={"All Purchase Payments Of "}
+                title={"All Purchase Product Reception History Of "}
                 headers={accordionsHeaders}
                 accordions={data}
                 columns={columns}

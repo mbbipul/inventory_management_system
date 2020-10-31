@@ -5,7 +5,7 @@ import PurchasePayment from './purchasePayment';
 import SalesPayment from './SalesPayment';
 
 export default function Payment() {
-    let location = useLocation().pathname.split("/");
+    const location = useLocation().pathname.split("/");
     const [defaultTab,setDefaultTab] = useState(0);
 
     useEffect(() => {

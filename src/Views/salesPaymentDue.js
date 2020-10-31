@@ -31,8 +31,18 @@ export default function SalesPaymentDue(props) {
         { title: 'Customer Name', field: 'customerName' },
         { title: 'Product Name', field: 'productName' },
         { title: 'Sales Payment Due Amount', field: 'salesPaymentDue' },
-        { title: 'Sales Date', field: 'salesDate' },
-        { title: 'Sales Due Payment Date', field: 'salesDuePaymentDate' },
+        { 
+            title: 'Sales Date', 
+            field: 'salesDate' ,
+            render : rowData => new Date(parseInt(rowData.salesDate)).toDateString() 
+
+        },
+        { 
+            title: 'Sales Due Payment Date', 
+            field: 'salesDuePaymentDate',
+            render : rowData => new Date(parseInt(rowData.salesDuePaymentDate)).toDateString() 
+
+         },
 
 
     ]);
@@ -64,16 +74,15 @@ export default function SalesPaymentDue(props) {
 
             let paymentSaleseHis = {
                 salesId : salesWithDue.salesId,
-                paymentSalesDate : nextPaymentDueDate.toString(),
+                paymentSalesDate : new Date().getTime().toString(),
                 paymentAmount : parseFloat(fieldValue),
             }
            
             submitForm("sales/sales-payment-due/"+ 
                     salesWithDue.salesId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {
                         submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
-                            console.log(JSON.parse(res));
+                            FetchData();
                         });
-                        FetchData();
                     });
             setOpen(false);     
 
@@ -97,8 +106,17 @@ export default function SalesPaymentDue(props) {
             return ;
         }
 
+        let paymentSaleseHis = {
+            salesId : tmpData.salesId,
+            paymentSalesDate : new Date().getTime().toString(),
+            paymentAmount : tmpData.salesPaymentDue,
+        }
         submitForm("sales/sales-payment-due/"+ 
-            tmpData.salesId+"-"+tmpData.salesPaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+            tmpData.salesId+"-"+tmpData.salesPaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {
+                submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                    FetchData();
+                });
+            });
 
         setOpenDeleteAlert(false);
         setTmpData(null);

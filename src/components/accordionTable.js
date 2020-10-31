@@ -15,17 +15,14 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   heading: {
-    fontSize: theme.typography.pxToRem(25),
-    flexBasis: '33.33%',
+    fontSize: theme.typography.pxToRem(20),
+    flexBasis: '30%',
     flexShrink: 0,
   },
   secondaryHeading: {
-    fontSize: theme.typography.pxToRem(20),
-    flexBasis: '33.33%',
+    fontSize: theme.typography.pxToRem(14),
+    flexBasis: '30%',
     flexShrink: 0,
-  },
-  expand : {
-    backgroundColor : grey[100]
   },
 
  

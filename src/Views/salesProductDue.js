@@ -12,6 +12,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
 import DeleteALert from '../components/deleteALert';
+import SalesDelivery from './salesProDeliveryHis';
+import FullWidthTabs from '../components/tab';
 
   
 export default function SalesProductDue(props) {
@@ -29,7 +31,11 @@ export default function SalesProductDue(props) {
         { title: 'Customer Name', field: 'customerName' },
         { title: 'Product Name', field: 'productName' },
         { title: 'Sales Due Product Quantity', field: 'salesDueProductsQuantity' },
-        { title: 'Sales Date', field: 'salesDate' },
+        { 
+            title: 'Sales Date', 
+            field: 'salesDate' ,
+            render : rowData => new Date(parseInt(rowData.salesDate)).toDateString() 
+        },
 
     ]);
 
@@ -67,7 +73,17 @@ export default function SalesProductDue(props) {
       if(parseInt(fieldValue) > salesDueProduct.salesDueProductsQuantity){
         alert("Your sales product quantity is less than "+fieldValue);
       }else{
-        submitForm("sales/sales/update-sales-due/"+salesDueProduct.salesDueProductId,"POST",salesDue,() => FetchData());
+        let salesHistory = {
+            salesId : salesDueProduct.salesId,
+            productQuantity : parseInt(fieldValue),
+            deliveryDate : new Date().getTime().toString()
+            
+        }
+        submitForm("sales/sales/update-sales-due/"+salesDueProduct.salesDueProductId,"POST",salesDue,() => {
+            submitForm("ProductDelivery","POST",salesHistory,() => {
+                FetchData();
+            });
+        });
         setOpen(false);
 
       }
@@ -95,11 +111,57 @@ export default function SalesProductDue(props) {
             salesId : tmpData.salesId,
             productQuantity : tmpData.salesDueProductsQuantity
         }
-        submitForm("sales/sales/update-sales-due/"+salesDue.salesDueProductId,"POST",salesDue,() => FetchData());
+
+        let salesHistory = {
+            salesId : tmpData.salesId,
+            productQuantity : tmpData.salesDueProductsQuantity,
+            deliveryDate :new Date().getTime().toString()
+            
+        }
+        submitForm("sales/sales/update-sales-due/"+salesDue.salesDueProductId,"POST",salesDue,() =>{
+            submitForm("ProductDelivery","POST",salesHistory,() => {
+                FetchData();
+            });
+        });
         
         setOpenDeleteAlert(false);
         setTmpData(null);
     }
+
+    const tabs = [
+        {
+            tab : "Sales Due Products",
+            tabPanel :  <MaterialTable
+                            title="Manage Sales Due Products"
+                            columns={columns}
+                            data={data}
+                            actions={[
+                                {
+                                    icon: 'edit',
+                                    tooltip: 'Update Product Due Information',
+                                    onClick: (event, rowData) => handleDialog(rowData)
+                                },
+                                rowData => ({
+                                    icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
+                                    tooltip: 'Mark Sales Product Returned',
+                                    onClick: (event, rowData) => markDOne(rowData),
+                                    disabled: rowData.birthYear < 2000
+                                })
+                            ]}
+                        
+                            options={{
+                                actionsColumnIndex: -1
+                            }}
+                        />
+        },
+        {
+            tab : "Sales Product Deleivery History",
+            tabPanel :  <div>
+               <SalesDelivery />
+            </div>
+        }
+    ];
+
     return(
         <div>
             <DeleteALert 
@@ -134,28 +196,8 @@ export default function SalesProductDue(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <MaterialTable
-                title="Manage Sales Due Products"
-                columns={columns}
-                data={data}
-                actions={[
-                    {
-                        icon: 'edit',
-                        tooltip: 'Update Product Due Information',
-                        onClick: (event, rowData) => handleDialog(rowData)
-                    },
-                    rowData => ({
-                        icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                        tooltip: 'Mark Sales Product Returned',
-                        onClick: (event, rowData) => markDOne(rowData),
-                        disabled: rowData.birthYear < 2000
-                    })
-                ]}
-             
-                options={{
-                    actionsColumnIndex: -1
-                }}
-            />
+
+            <FullWidthTabs tabs={tabs}/>
         </div>
         
     )

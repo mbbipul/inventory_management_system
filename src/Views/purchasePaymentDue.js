@@ -63,7 +63,7 @@ export default function PurchasePaymentDue(props) {
         }else{
             let paymentPurchaseHis = {
                 purchaseId : purchaseWithDue.purchaseId,
-                paymentPurchaseDate : nextPaymentDueDate.toString(),
+                paymentPurchaseDate : new Date().getTime().toString(),
                 paymentAmount : parseFloat(fieldValue),
             }
             
@@ -71,9 +71,8 @@ export default function PurchasePaymentDue(props) {
             submitForm("purchases/purchase-payment-due/"+ 
                     purchaseWithDue.purchaseId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {
                         submitForm("Paymentpurchase","POST",paymentPurchaseHis, (res) => {
-                            console.log(JSON.parse(res));
+                            FetchData();
                         });
-                        FetchData();
                     });
             setOpen(false);     
 
@@ -97,8 +96,17 @@ export default function PurchasePaymentDue(props) {
             return ;
         }
 
+        let paymentPurchaseHis = {
+            purchaseId : tmpData.purchaseId,
+            paymentPurchaseDate : new Date().getTime().toString(),
+            paymentAmount : tmpData.purchasePaymentDue,
+        }
         submitForm("purchases/purchase-payment-due/"+ 
-            tmpData.purchaseId+"-"+tmpData.purchasePaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {FetchData();});
+            tmpData.purchaseId+"-"+tmpData.purchasePaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {
+                submitForm("Paymentpurchase","POST",paymentPurchaseHis, (res) => {
+                    FetchData();
+                });
+            });
         setOpenDeleteAlert(false);
         setTmpData(null);
     }

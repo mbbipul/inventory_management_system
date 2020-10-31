@@ -260,7 +260,7 @@ namespace inventory_rest_api.Controllers
         public async Task<ActionResult<Purchase>> PostPurchases(Purchase purchase)
         {
             _context.Purchases.Add(purchase);
-
+            
             ProductPurchaseHistory productPurchaseHistory = new ProductPurchaseHistory {
                 ProductId = purchase.ProductId,
                 ProductQuantity = purchase.ProductQuantity,
@@ -285,13 +285,22 @@ namespace inventory_rest_api.Controllers
                 _context.ProductPurchaseHistories.Add(productPurchaseHistory);
             }
 
-                        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
 
             PurchaseDueProduct purchaseDueProduct = new PurchaseDueProduct {
                 PurchaseId = purchase.PurchaseId,
                 ProductQuantity = purchase.ProductQuantity
             };
+
+            var paymentPurchaseHis = new PaymentPurchase() {
+                PurchaseId = purchase.PurchaseId,
+                PaymentPurchaseDate = DateTime.Now.ToString(),
+                PaymentAmount = purchase.PurchasePaymentAmount
+            };
+
+            _context.PaymentPurchases.Add(paymentPurchaseHis);
+
 
             _context.PurchaseDueProducts.Add(purchaseDueProduct);
             

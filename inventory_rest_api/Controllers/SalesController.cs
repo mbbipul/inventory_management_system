@@ -289,6 +289,14 @@ namespace inventory_rest_api.Controllers
 
             await _context.SaveChangesAsync();
 
+            var PaymentSaleseHis = new PaymentSales (){
+                            SalesId = sales.SalesId,
+                            PaymentSalesDate = DateTime.Now.ToString(),
+                            PaymentAmount =  sales.SalesPaymentAmount,
+                        };
+
+            _context.PaymentSales.Add(PaymentSaleseHis);
+            
             SalesDueProduct salesDueProduct = new SalesDueProduct {
                 SalesId = sales.SalesId,
                 ProductQuantity = sales.ProductQuantity
