@@ -9,13 +9,18 @@ import ImageIcon from '@material-ui/icons/Image';
 import WorkIcon from '@material-ui/icons/Work';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import { Badge, Paper } from '@material-ui/core';
+import { getStoreInfo } from '../utils/storeInfo';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
+    maxHeight : 300,
     backgroundColor: 'transparent',
-    color : '#fff'
+    color : '#fff',
+    overflowY : 'scroll',
+    scrollbarWidth: 'none', /* Firefox */
+    '-ms-overflow-style': 'none',  /* Internet Explorer 10+ */
   },
   profileText : {
     fontSize : 20,
@@ -31,21 +36,36 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#000000',
     opacity : 0.7,
     marginBottom : 10,
-    borderRadius : 10
+    borderRadius : 10,
+    cursor : 'pointer',
+    "&:hover": {
+      backgroundColor: "green",
+    }, 
     
+    animation: `$enter 550ms ${theme.transitions.easing.easeInOut}` 
+  },
+  "@keyframes enter": {
+    "0%": {
+      transform: "scale(0)",
+      opacity: 0.1
+    },
+    "100%": {
+      transform: "scale(1)",
+      opacity: 0.5
+    }
   }
 }));
 
-export default function ProfileList() {
+export default function ProfileList(props) {
   const classes = useStyles();
 
   return (
-    <List className={classes.root}>
+    <List className={classes.root+" hidden-scrollbar"}>
         
             {
-                [1,2,3].map(v => (
-                    <Badge color="secondary" badgeContent="super">
-                        <Paper className={classes.paper}>
+                props.users.map((user,i) => (
+                    <Badge color="secondary" badgeContent={user.adminRole === 999 ? 'Admin' : null} key={i}>
+                        <Paper  className={classes.paper} onClick={() => props.onProfileClick(user)}>
                             <ListItem>
                                 <ListItemAvatar>
                                 <Avatar>
@@ -54,7 +74,8 @@ export default function ProfileList() {
                                 </ListItemAvatar>
                                 <ListItemText 
                                     primary={
-                                        <span className={classes.profileText}>Bipul Mandol{<span className={classes.profileSubText}>-Matrivander store</span>}</span>
+                                        <span className={classes.profileText}>
+                                          {user.firstName +" "+user.lastName}{<span className={classes.profileSubText}>-{getStoreInfo(user.adminRole)}</span>}</span>
                                     } 
                                     secondary={
                                         <span className={classes.profileText}>Jan 9, 2014</span>

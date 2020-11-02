@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, LinearProgress, MenuItem, Select } from '@material-ui/core';
 import ProfileList from '../../components/profileList';
 import { event } from 'jquery';
 import { userService } from '../../services/userServices';
@@ -23,6 +23,8 @@ import signInSuccessImage from '../../assets/signin_success.jpg';
 import breakImage from '../../assets/break.png';
 import { decode } from 'js-base64';
 import { getStoreInfo } from '../../utils/storeInfo';
+import AppContext from '../../context/appContext';
+import submitForm from '../../utils/fetchApi';
 
 function Copyright() {
   return (
@@ -108,6 +110,7 @@ export default function SignInSide() {
   	const classes = useStyles();
 	const [switchForm,setSwitchForm] = useState(true);
 	const [showSignInSuccess,setShowSignInSuccess] = useState(false);
+	const [allUsers,setUsers] = useState([]);
 
 	const [userEmail,setUserEmail] = useState('');
 	const [userPassword,setUserPassword] = useState('');
@@ -120,8 +123,11 @@ export default function SignInSide() {
 	const [isSignInSuccess,setSignInSuccess] = useState(false);
 	const [isSignInNotSuccess,setSignInNotSuccess] = useState(false);
 
-	const [currentUser,setUser] = useState(null);
+	const [currentUser,setUserInfo] = useState(null);
 	const [userFullName,setUserFullName] = useState('');
+
+	const {  setUserLoginStatus , setUser } = React.useContext(AppContext);
+	const [progress, setProgress] = React.useState(0);
 
 	const retryLogin = () => {
 		setShowSignInSuccess(!showSignInSuccess);
@@ -134,6 +140,23 @@ export default function SignInSide() {
 	const switchSignInSuceess = () => {
 		setShowSignInSuccess(!showSignInSuccess);
 		setSignInSuccess(!isSignInSuccess);
+		
+		const timer = setInterval(() => {
+			setProgress((oldProgress) => {
+			  if (oldProgress === 100) {
+				setUserLoginStatus(true);
+				setUser();
+				return 0;
+			  }
+			  const diff = Math.random() * 10;
+			  return Math.min(oldProgress + diff, 100);
+			});
+		}, 100);
+		
+		return () => {
+			clearInterval(timer);
+		  
+		};
 	}
 
 	const handleSuperAdminCheckbox = () => {
@@ -143,6 +166,9 @@ export default function SignInSide() {
 	const signUpSuccess = () => {
 		switchSignInUp();
 		setSignUpSuccess(true);
+		setTimeout(function() {
+			setSignUpSuccess(false);
+		}, 1500);
 	}
 
 	const signInSuccess = () => {
@@ -152,6 +178,7 @@ export default function SignInSide() {
 	const signInNotSuccess = () => {
 		setShowSignInSuccess(!showSignInSuccess);
 		setSignInNotSuccess(!isSignInNotSuccess);
+		setUserLoginStatus(false);
 	}
 
 	const handleSignUpSubmit = (e) => {
@@ -167,13 +194,9 @@ export default function SignInSide() {
 		userService.registerUser(user).then(
 			success => { 
 				signUpSuccess();
-				// history.push('/login');
-				// dispatch(alertActions.success('Registration successful'));
 			},
 			error => {
 				alert(error)
-				// dispatch(failure(error));
-				// dispatch(alertActions.error(error));
 			}
 		);
 	}
@@ -195,21 +218,27 @@ export default function SignInSide() {
 		);
 	}
 
+	const handleSelectChange = ( event ) => {
+		const value = event.target.value;
+		setStore(value);
+
+	}
+
 	const handleInputChnage = (event) => {
 		const value = event.target.value;
 		const field = event.target.name;
 		switch (field) {
 			case 'userEmail':
-				setUserEmail(value)
+				setUserEmail(value);
 				break;
 			case 'userPassword':
-				setUserPassword(value)
+				setUserPassword(value);
 				break;
 			case 'userFirstName':
-				setFirstName(value)
+				setFirstName(value);
 				break;
 			case 'userLastName':
-				setLastName(value)
+				setLastName(value);
 				break;
 			case 'storeType' :
 				setStore(value);
@@ -264,7 +293,7 @@ export default function SignInSide() {
 			let user = getCurrentUsers();
 			console.log(user);
 			setUserFullName(getFullName(user));
-			setUser(user);
+			setUserInfo(user);
 		}
 	},[isSignInSuccess]);
 
@@ -278,15 +307,27 @@ export default function SignInSide() {
 		},
 	}))(Button);
 
+	useEffect(() => {
+		submitForm("users","GET","", (res) => {
+			setUsers(JSON.parse(res));
+		});
+	},[]);
+
+	const onProfileClick = (user) => {
+		setUserEmail(user.userEmail);
+	}
+
 	return (
 		<Grid container component="main" className={classes.root}>
 			<CssBaseline />
 			<Grid item justify='center' xs={false} sm={4} md={7} className={classes.image} >
-				<ProfileList />
+				<ProfileList onProfileClick={onProfileClick} users={allUsers}/>
 			</Grid>
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className={!switchForm ? classes.overFlowY : showSignInSuccess && classes.showSignInSuccess}>
+				<LinearProgress variant="determinate" value={progress} style={{width : '100%'}} />
+
 				{
-					isSignUpSuccess && <Box 
+					isSignUpSuccess && switchForm && <Box 
 											style={{paddingLeft : 20,paddingTop : 20,paddingRight : 20}} 
 											className="shake-image"
 										>
@@ -329,6 +370,7 @@ export default function SignInSide() {
 												</div>
 											) : (
 												<div className={classes.paper}>
+
 													<Avatar className={classes.avatar} >
 														<LockOutlinedIcon  />
 													</Avatar>
@@ -346,6 +388,7 @@ export default function SignInSide() {
 															name="userEmail"
 															autoComplete="email"
 															autoFocus
+															value={userEmail}
 															onChange={handleInputChnage}
 														/>
 														<TextField
@@ -453,10 +496,10 @@ export default function SignInSide() {
 													labelId="demo-simple-select-outlined-label"
 													id="demo-simple-select-outlined"
 													// onChange={handleChange}
-													value={0}
+													value={storeType}
 													name="storeType"
 													label="Select Store - Account Controll"
-													onChange={(event) => handleInputChnage(event)}
+													onChange={(event) => handleSelectChange(event)}
 												>
 													<MenuItem value={0}>Matrivandar Store</MenuItem>
 													<MenuItem value={1}>Radhuni Store</MenuItem>

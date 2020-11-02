@@ -106,6 +106,7 @@ namespace inventory_rest_api.Controllers
             return Ok("Login Success");
         }
  
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll()
         {

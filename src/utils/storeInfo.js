@@ -8,7 +8,9 @@ export const getStoreInfo = (id) => {
             return 'Square Store';
         case 3:
             return 'Bashundhara Store';
-        default:
+        case 999:
             return 'Super Admin';
+        default:
+            return '';
     }
 }

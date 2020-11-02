@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {Drawer} from '@material-ui/core';
+import {Collapse, Drawer, ListItem, ListItemText, Menu, MenuItem, Select} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -24,9 +24,11 @@ import Badge from '@material-ui/core/Badge';
 import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
 import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
 import { Link } from 'react-router-dom';
-import { AppContextConsumer } from '../../context/appContext';
+import AppContext, { AppContextConsumer } from '../../context/appContext';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
 import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
+import { AccountCircle, ExpandLess, ExpandMore } from '@material-ui/icons';
+import { useCookies } from 'react-cookie';
 
 const drawerWidth = 200;
 
@@ -100,6 +102,14 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "auto",
     marginRight: 30
   },
+  menu: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
 export default function AppDrawer() {
@@ -107,6 +117,28 @@ export default function AppDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const open = useSelector(state => state.isSideBarExtend);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const [switchStore, setSwitchStore] = React.useState(false);
+	const {  setUserLoginStatus  } = React.useContext(AppContext);
+  const [ cookies, setCookie, removeCookie] = useCookies(['user-info']);
+
+  const handleSwitchStore = () => {
+    setSwitchStore(!switchStore);
+  };
+
+  const handleLogout = () => {
+    removeCookie("user-info");
+    setUserLoginStatus(false);
+  }
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   const dispatch = useDispatch();
 
   const handleDrawerOpen = () => {
@@ -187,7 +219,68 @@ export default function AppDrawer() {
                           </AppContextConsumer>
                         </IconButton>
                       </Link>
-                     
+                      <Link style={{textDecoration: "none",color:"#fff"}}   >
+                        <IconButton
+                          aria-label="account of current user"
+                          aria-controls="menu-appbar"
+                          aria-haspopup="true"
+                          onClick={handleMenu}
+                          color="inherit"
+                        >
+                          <AccountCircle />
+                        </IconButton>
+                        <Menu
+                          id="menu-appbar"
+                          anchorEl={anchorEl}
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                          }}
+                          keepMounted
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                          }}
+                          open={openMenu}
+                          onClose={handleMenuClose}
+                        >
+                          <MenuItem>
+                            <List
+                              component="nav"
+                              aria-labelledby="nested-list-subheader"
+
+                              className={classes.menu}
+                            >
+                              <ListItem button>
+                                <ListItemText primary={<span>Bipul Mandol - <span style={{fontSize : 10}}>matrivandr</span> </span>} />
+                              </ListItem>
+                              <ListItem button onClick={handleSwitchStore}>
+                                <ListItemText primary="Matrivandar" />
+                                {switchStore ? <ExpandLess /> : <ExpandMore />}
+                              </ListItem>
+                              <Collapse in={switchStore} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                  <ListItem button className={classes.nested}>
+                                    <ListItemText primary="Matrivandar Store" />
+                                  </ListItem>
+                                  <ListItem button className={classes.nested}>
+                                    <ListItemText primary="Matrivandar Store" />
+                                  </ListItem>
+                                  <ListItem button className={classes.nested}>
+                                    <ListItemText primary="Starred" />
+                                  </ListItem>
+                                  <ListItem button className={classes.nested}>
+                                    <ListItemText primary="Starred" />
+                                  </ListItem>
+                                </List>
+                              </Collapse>
+                              <ListItem button onClick={handleLogout}>
+                                <ListItemText primary="Logout" />
+                              </ListItem>
+                            </List>
+                          </MenuItem>
+                        </Menu>
+                      </Link>
                     </section>
 
                 </Toolbar>
