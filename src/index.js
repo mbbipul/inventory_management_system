@@ -7,6 +7,7 @@ import {createStore} from 'redux';
 import reducers from './reducers';
 import {Provider} from 'react-redux';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import SignInSide from './layouts/MainLayout/signin';
 
 const store = createStore(
   reducers,
@@ -22,7 +23,8 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={Theme('light')}>
-        <App />
+        {/* <App /> */}
+        <SignInSide />
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,

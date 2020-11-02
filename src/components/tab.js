@@ -69,7 +69,7 @@ export default function FullWidthTabs(props) {
 
   useEffect(() => {
     setValue(props.default ? props.default : 0);
-  },[props]);
+  },[props.default]);
 
   return (
     <div className={classes.root}>

@@ -49,6 +49,7 @@ function App() {
   const [purPaymentDue,setPurPaymentDue] = useState(0);
   const [salesDueProd,setSalesDueProd] = useState(0);
   const [salesPaymentDue,setSalesPaymentDue] = useState(0);
+  const [isUserLoggedIn,setUserLoginStatus] = useState(false);
 
   const fetchPurDueProducts = () => {
     submitForm("purchases/total-purchase-due-products","GET","",(res) => setPurDueProd(res));
@@ -66,6 +67,8 @@ function App() {
   const fetchSalesPaymentDue = () => {
     submitForm("sales/total-sales-payment-due","GET","",(res) => setSalesPaymentDue(res));
   }
+
+  
 
   useEffect(() => {
     fetchPurDueProducts();
@@ -87,19 +90,22 @@ function App() {
     }
   }
 
-  const dueProducts = {
+  const appContextValue = {
     purDueNumber : purDueProd,
     salesDueNumber : salesDueProd,
     purPaymentDue : purPaymentDue,
     salesPaymentDue : salesPaymentDue,
+    isUserLoggedIn : isUserLoggedIn,
+
     setSalesDueNumber : fetchSalDueProducts,
     setProNumber : fetchPurDueProducts,
     setPurPaymentDue : fetchPurPaymentDue,
     setSalesPaymentDue : fetchSalesPaymentDue,
+    setUserLoginStatus : setUserLoginStatus
   }
   
   return (
-    <AppContextProvider value={dueProducts}>
+    <AppContextProvider value={appContextValue}>
       <Router>
         <AppDrawer />
         <main style={content}  >

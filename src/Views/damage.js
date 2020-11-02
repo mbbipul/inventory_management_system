@@ -488,11 +488,19 @@ function Damage () {
         damage.damageRetComProQuantityDueStatus = damageRetComProQuantityDueStatus;
         damage.damgeReturnCompanyDuePaymentStatus = damgeReturnCompanyDuePaymentStatus;
 
+        let damgeDeliveryHis = {
+            damageId : damage.damageId,
+            deliveryDate : new Date().getTime().toString(),
+            deliverProductQuantity : damage.damageRetComProQuantity
+        };
+
         submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
-            setSnackText('Successfully Damage Mark As Damage Return From Company');
-            setSnackSeverity('success');
-            setOpenSnackbar(true);
-            FetchData('sentToCompany');
+            submitForm("DamageDeliveryHistories","POST",damgeDeliveryHis,() => {
+                setSnackText('Successfully Damage Mark As Damage Return From Company');
+                setSnackSeverity('success');
+                setOpenSnackbar(true);
+                FetchData('sentToCompany');
+            });
         });
 
     };
@@ -636,7 +644,7 @@ function Damage () {
                     <AddDamage />
                 </Route>
                 <Route exact path="/damage/manage-damage">
-                    <FullWidthTabs tabs={tabs} onChangeTab={(value) => setTab(value)}/>
+                    <FullWidthTabs default={0} tabs={tabs} onChangeTab={(value) => setTab(value)}/>
                    
                 </Route>
             </Switch>
