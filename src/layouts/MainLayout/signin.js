@@ -145,7 +145,7 @@ export default function SignInSide() {
 			setProgress((oldProgress) => {
 			  if (oldProgress === 100) {
 				setUserLoginStatus(true);
-				setUser();
+				setUser(true);
 				return 0;
 			  }
 			  const diff = Math.random() * 10;

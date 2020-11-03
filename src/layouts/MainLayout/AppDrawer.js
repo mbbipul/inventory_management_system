@@ -29,6 +29,7 @@ import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceW
 import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
 import { AccountCircle, ExpandLess, ExpandMore } from '@material-ui/icons';
 import { useCookies } from 'react-cookie';
+import { allStores, getStoreInfo } from '../../utils/storeInfo';
 
 const drawerWidth = 200;
 
@@ -252,7 +253,13 @@ export default function AppDrawer() {
                               className={classes.menu}
                             >
                               <ListItem button>
-                                <ListItemText primary={<span>Bipul Mandol - <span style={{fontSize : 10}}>matrivandr</span> </span>} />
+                                <AppContextConsumer >
+                                  {({user}) =>  {
+                                    if (user === null )
+                                      return '';
+                                    return <ListItemText primary={<span>{user.FirstName+" "+user.LastName} - <span style={{fontSize : 10}}>{getStoreInfo(user.AdminRole)}</span> </span>} />
+                                  }}
+                                </AppContextConsumer>
                               </ListItem>
                               <ListItem button onClick={handleSwitchStore}>
                                 <ListItemText primary="Matrivandar" />
@@ -260,18 +267,13 @@ export default function AppDrawer() {
                               </ListItem>
                               <Collapse in={switchStore} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding>
-                                  <ListItem button className={classes.nested}>
-                                    <ListItemText primary="Matrivandar Store" />
-                                  </ListItem>
-                                  <ListItem button className={classes.nested}>
-                                    <ListItemText primary="Matrivandar Store" />
-                                  </ListItem>
-                                  <ListItem button className={classes.nested}>
-                                    <ListItemText primary="Starred" />
-                                  </ListItem>
-                                  <ListItem button className={classes.nested}>
-                                    <ListItemText primary="Starred" />
-                                  </ListItem>
+                                  {
+                                    allStores.map((store,i) => (
+                                      <ListItem key={i} button className={classes.nested}>
+                                        <ListItemText  primary={store} />
+                                      </ListItem>
+                                    ))
+                                  }
                                 </List>
                               </Collapse>
                               <ListItem button onClick={handleLogout}>

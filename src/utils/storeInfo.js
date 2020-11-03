@@ -13,4 +13,6 @@ export const getStoreInfo = (id) => {
         default:
             return '';
     }
-}
+};
+
+export const allStores = ['Matrivandar Store','Radhuni Store','Square Store','Bashundhara Store'];

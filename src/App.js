@@ -70,17 +70,16 @@ function App() {
 		return null;
 	}
 
-	const getCurrentUsers = () => {
+	const getCurrentUsers = (state) => {
 
-		if (!isUserLoggedIn )
-			return null;
-
-		const userCookies = getCookie('user-info');
-		if(userCookies !== null ){
-			const user = JSON.parse(decode(userCookies));
-			return user;
+		if (!isUserLoggedIn || !state ){
+			const userCookies = getCookie('user-info');
+			if(userCookies !== null ){
+				const user = JSON.parse(decode(userCookies));
+				return user;
+			}
 		}
-
+		
 		return null;
 	}
 
@@ -105,8 +104,8 @@ function App() {
 		setUserLoginStatus(state);
 	}
 
-	const setLoginUserInfo = () => {
-		let user = getCurrentUsers();
+	const setLoginUserInfo = (state) => {
+		let user = getCurrentUsers(state);
 		console.log(user);
 		setUser(user);
 	}
@@ -230,6 +229,9 @@ function App() {
 				) : (
 					<Router>
 						<Switch>
+							<Route path="/">
+									<SignInSide />
+								</Route>
 							<Route exact path="/">
 								<SignInSide />
 							</Route>
