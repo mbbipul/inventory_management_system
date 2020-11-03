@@ -96,16 +96,56 @@ namespace inventory_rest_api.Controllers
                                     d.DamgeReturnCompanyDueAmount,
                                     d.DamgeReturnCompanyDuePaymentStatus,
                                     d.DamgeReturnCompanyDueDate,
-                                    DelDamProQuantity = _context.DamageDeliveryHistories.Where(dh => dh.DamageId == d.DamageId).Sum(dh => dh.DeliverProductQuantity)
+                                    DelDamProQuantity = _context.DamageDeliveryHistories
+                                                            .Where(dh => dh.DamageId == d.DamageId)
+                                                            .Sum(dh => dh.DeliverProductQuantity),
+                                    RecepDamProQuantity = _context.DamageReceptionHistories
+                                                            .Where(dh => dh.DamageId == d.DamageId)
+                                                            .Sum(dh => dh.RecievedProductQuantity)
                                 }).AsEnumerable();
-            if (status == "addedWithSendings") {
+            // if (status == "addedWithSendings") {
+            //     return  query
+            //                 .Where( d => d.DamageSentToCompanyStatus == "sendingToCompany" || d.DamageSentToCompanyStatus == "added")
+            //                 .ToList();
+            // }
+            // if (status == "sendedWithSendings") {
+            //     return  query
+            //                 .Where( d => d.DamageSentToCompanyStatus == "sendingToCompany" || d.DamageSentToCompanyStatus == "sentToCompany" || d.DamageSentToCompanyStatus == "recievingFromCompany")
+            //                 .ToList();
+            // }
+            // if (status == "receivedWithSendings"){
+            //     return  query
+            //                 .Where( d => d.DamageSentToCompanyStatus == "recievingFromCompany" || d.DamageSentToCompanyStatus == "returnFromCompany")
+            //                 .ToList();
+            // }
+            if (status == "damageNewTab"){
                 return  query
-                            .Where( d => d.DamageSentToCompanyStatus == "sendingToCompany" || d.DamageSentToCompanyStatus == "added")
+                            .Where( d => 
+                                d.DamageSentToCompanyStatus == "added" || 
+                                d.DamageSentToCompanyStatus == "sendingToCompany" ||
+                                d.DamageSentToCompanyStatus == "recievingFromCompanyWithSendings" 
+                            )
                             .ToList();
             }
-            if (status == "sendedWithSendings") {
+            if (status == "damageSendToCompanyTab"){
                 return  query
-                            .Where( d => d.DamageSentToCompanyStatus == "sendingToCompany" || d.DamageSentToCompanyStatus == "sentToCompany")
+                            .Where( d => 
+                                d.DamageSentToCompanyStatus == "sentToCompany" || 
+                                d.DamageSentToCompanyStatus == "sendingToCompany" ||
+                                d.DamageSentToCompanyStatus == "recievingFromCompany"  ||
+                                d.DamageSentToCompanyStatus == "recievingFromCompanyWithSendings" 
+
+                            )
+                            .ToList();
+            }
+            if (status == "damageReturnFromCompanyTab"){
+                return  query
+                            .Where( d => 
+                                d.DamageSentToCompanyStatus == "returnFromCompany" || 
+                                d.DamageSentToCompanyStatus == "recievingFromCompany"  ||
+                                d.DamageSentToCompanyStatus == "recievingFromCompanyWithSendings" 
+
+                            )
                             .ToList();
             }
             return   query
@@ -269,6 +309,52 @@ namespace inventory_rest_api.Controllers
                 return BadRequest();
             }
 
+            if(damage.ProductQuantity == damage.DamageRetComProQuantity){
+                damage.DamageRetComProQuantityDueStatus = true;
+            }
+            _context.Entry(damage).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DamageExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        [HttpPut("receiveFromCompany/{id}")]
+        public async Task<IActionResult> PutDamageToReception(long id, Damage damage)
+        {
+            if (id != damage.DamageId)
+            {
+                return BadRequest();
+            }
+
+            // int damageDeliveryProQuan = _context.DamageDeliveryHistories.Where( dh => dh.DamageId == damage.DamageId ).Sum(dh => dh.DeliverProductQuantity); 
+            int damageReceptionProQuan = _context.DamageReceptionHistories.Where( dh => dh.DamageId == damage.DamageId ).Sum(dh => dh.RecievedProductQuantity);
+
+            if (damage.ProductQuantity == damageReceptionProQuan){
+                damage.DamageSentToCompanyStatus = "returnFromCompany";
+            }
+             if(damage.ProductQuantity == damage.DamageRetComProQuantity){
+                damage.DamageRetComProQuantityDueStatus = true;
+            }
+
+            Console.WriteLine(damage.DamageSentToCompanyStatus);
+            // if (damage.ProductQuantity == damageDeliveryProQuan){
+            //     damage.DamageSentToCompanyStatus = "returnFromCompany";
+            // }
             _context.Entry(damage).State = EntityState.Modified;
 
             try
@@ -300,9 +386,16 @@ namespace inventory_rest_api.Controllers
 
             int damageDeliveryProQuan = _context.DamageDeliveryHistories.Where( dh => dh.DamageId == damage.DamageId ).Sum(dh => dh.DeliverProductQuantity);
 
-            if (damage.ProductQuantity == damageDeliveryProQuan){
-                damage.DamageSentToCompanyStatus = "sentToCompany";
+            if(damage.ProductQuantity == damageDeliveryProQuan){
+                if (damage.DamageSentToCompanyStatus != "recievingFromCompanyWithSendings"){
+                    damage.DamageSentToCompanyStatus = "sentToCompany";
+                }
             }
+            
+            if(damage.ProductQuantity == damage.DamageRetComProQuantity){
+                damage.DamageRetComProQuantityDueStatus = true;
+            }
+
             _context.Entry(damage).State = EntityState.Modified;
 
             try
@@ -330,6 +423,9 @@ namespace inventory_rest_api.Controllers
         [HttpPost]
         public async Task<ActionResult<Damage>> PostDamage(Damage damage)
         {
+            if(damage.ProductQuantity == damage.DamageRetComProQuantity){
+                damage.DamageRetComProQuantityDueStatus = true;
+            }
             _context.Damages.Add(damage);
             await _context.SaveChangesAsync();
 

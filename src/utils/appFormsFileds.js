@@ -789,18 +789,10 @@ const addDamageFormFields = [
 const addReturnDamageFormFileds = [
 
     {
-        label : "Damage Return From Company Date",
-        placeholder : "12-12-2021",
-        type : 6,
-        required : false,
-        disabled : false,
-        validation : [999]
-    },
-    {
         label : "Damage Return From Company Amount",
         placeholder : "500.00 tk",
         type : 0,
-        required : true,
+        required : false,
         disabled : false,
         validation : [999]
     },
@@ -808,7 +800,7 @@ const addReturnDamageFormFileds = [
         label : "Damage Return From Company Product Quantity",
         placeholder : "1",
         type : 0,
-        required : true,
+        required : false,
         disabled : false,
         validation : [0]
     },

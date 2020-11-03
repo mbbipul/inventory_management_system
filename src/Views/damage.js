@@ -58,7 +58,6 @@ function Damage () {
     }
 
     const markAsRetrunFromCom = (rowData) => {
-        rowData['damageSentToCompanyStatus'] = 'returnFromCompany';
         setDamage(rowData);
         setOpenDialog(true);
         // submitForm('Damages/'+rowData.damageId,"PUT",rowData,() => FetchData('returnFromCompany'));
@@ -95,6 +94,10 @@ function Damage () {
                 return 'Damage Sent To company';
             case 'returnFromCompany':
                 return 'Damage Return From company';
+            case 'recievingFromCompany':
+                return '...Damage Returning From company';
+            case 'recievingFromCompanyWithSendings' :
+                return '...Damage Sending and Returning - company ...';
             default:
                 return ;
         }
@@ -163,6 +166,14 @@ function Damage () {
                                     clickable />
         },
         { 
+            title: 'Recieved Damage Product Quantity' , 
+            field: 'recepDamProQuantity',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.recepDamProQuantity}
+                                    clickable />
+        },
+        { 
             title: 'Damage Status' , 
             field: 'damageSentToCompanyStatus',
             render : rowData => <Chip 
@@ -176,6 +187,21 @@ function Damage () {
             render: rowData => <Button onClick={() => markAsSentToCom(rowData)}>
                 {rowData.markAsDamage}
             </Button>
+        },
+        {
+            title: 'Damage Return From Company Product Due Status' , 
+            field: 'damageRetComProQuantityDueStatus',
+            render: rowData => rowData.damageRetComProQuantityDueStatus ? 
+                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                                    <CloseIcon color='error' />
+        },
+        {
+            title: 'Damage Return From Company Product Payment Due Status' , 
+            field: 'damgeReturnCompanyDuePaymentStatus',
+            render: rowData => rowData.damgeReturnCompanyDuePaymentStatus ? 
+                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                                    <CloseIcon color='error' />
+           
         }
     );
 
@@ -187,6 +213,14 @@ function Damage () {
             render : rowData => <Chip 
                                     color="primary"
                                     label={rowData.delDamProQuantity}
+                                    clickable />
+        },
+        { 
+            title: 'Recieved Damage Product Quantity' , 
+            field: 'recepDamProQuantity',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.recepDamProQuantity}
                                     clickable />
         },
         { 
@@ -208,6 +242,22 @@ function Damage () {
 
     const damageReturnFromComCol = [...columns];
     damageReturnFromComCol.push(
+        { 
+            title: 'Deliverd Damage Product Quantity' , 
+            field: 'delDamProQuantity',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.delDamProQuantity}
+                                    clickable />
+        },
+        { 
+            title: 'Recieved Damage Product Quantity' , 
+            field: 'recepDamProQuantity',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.recepDamProQuantity}
+                                    clickable />
+        },
         {
             title: 'Damage Return From Company Product Due Quantity' , 
             field: 'damageRetComProQuantity',
@@ -227,18 +277,14 @@ function Damage () {
             field: 'damageRetComProQuantityDueStatus',
             render: rowData => rowData.damageRetComProQuantityDueStatus ? 
                                     <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
-                                    <Button onClick={() => updateDamageReturnFromProDue(rowData)} >
-                                        <CloseIcon color='error' />
-                                    </Button>
+                                    <CloseIcon color='error' />
         },
         {
             title: 'Damage Return From Company Product Payment Due Status' , 
             field: 'damgeReturnCompanyDuePaymentStatus',
             render: rowData => rowData.damgeReturnCompanyDuePaymentStatus ? 
                                     <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
-                                    <Button onClick={() => updateDamageReturnFromProAmountDue(rowData)} >
-                                        <CloseIcon color='error' />
-                                    </Button>
+                                    <CloseIcon color='error' />
            
         }
     );
@@ -273,13 +319,13 @@ function Damage () {
     useEffect(() => {
         switch (damageManageTab) {
             case 0:
-                FetchData('addedWithSendings');
+                FetchData('damageNewTab');
                 break;
             case 1:
-                FetchData('sendedWithSendings');
+                FetchData('damageSendToCompanyTab');
                 break;
             case 2:
-                FetchData('returnFromCompany');
+                FetchData('damageReturnFromCompanyTab');
                 break;
             default:
                 break;
@@ -298,7 +344,7 @@ function Damage () {
 
     useEffect(() => {
         if(headersubtitle==='manage-damage'){
-            FetchData('addedWithSendings');
+            FetchData('damageNewTab');
             setHisVis(false);
         }else if(headersubtitle==='add-damage'){
             setHisVis(false);
@@ -385,10 +431,10 @@ function Damage () {
                                 apiInfo="Damages" 
                                 uniqueKey="damageId" 
                                 uniqueName="damageId" 
-                                apiUrl="Damages/filter/added/" 
+                                apiUrl="Damages/filter/damageNewTab/" 
                                 editable={false}
                                 hideDelete={true}
-                                onChangeData={() => FetchData('addedWithSendings')} 
+                                onChangeData={() => FetchData('damageNewTab')} 
                                 data={data} 
                                 columns={newDamages}
                                 
@@ -404,10 +450,10 @@ function Damage () {
                                 apiInfo="Damages" 
                                 uniqueKey="damageId" 
                                 uniqueName="damageId" 
-                                apiUrl="Damages/filter/sentToCompany/" 
+                                apiUrl="Damages/filter/damageSendToCompanyTab/" 
                                 editable={false}
                                 hideDelete={true}
-                                onChangeData={() => FetchData('sendedWithSendings')} 
+                                onChangeData={() => FetchData('damageSendToCompanyTab')} 
                                 data={data} 
                                 columns={damagesSentToCom}
                                 
@@ -423,9 +469,9 @@ function Damage () {
                                 apiInfo="Damages" 
                                 uniqueKey="damageId" 
                                 uniqueName="damageId" 
-                                apiUrl="Damages/filter/returnFromCompany/" 
+                                apiUrl="Damages/filter/damageReturnFromCompanyTab/" 
                                 editable={true}
-                                onChangeData={() => FetchData('returnFromCompany')} 
+                                onChangeData={() => FetchData('damageReturnFromCompanyTab')} 
                                 data={data} 
                                 columns={damageReturnFromComCol}
                                 
@@ -455,43 +501,17 @@ function Damage () {
 
             damage['damageSentToCompanyStatus'] = 'sendingToCompany';
             damage['damageSentToCompanyDate'] = new Date().getTime().toString();
-
+            
             submitForm('Damages/sentToCompany/'+damage.damageId,"PUT",damage,() => {
-                setSnackText("Successfully Damage Delivery Product Quantity !");
+                setSnackText("Successfully Damage Delivery Product Quantity Updated!");
                 setSnackSeverity('success');
                 setOpenSnackbar(true);
                 setDamageDeliveryUpdate(false);
-                FetchData('addedWithSendings');
+                FetchData('damageNewTab');
             });
         });
     }
-    const updateDamageProQuantity = (state) => {
-
-        if(parseInt(state.DamageReturnFromCompanyProductQuantity) > damage.productQuantity-damage.damageRetComProQuantity  ){
-            setSnackText("Damage Return From Company Product Due Quantity cannot larger than Actual Damage Product Quantity");
-            setSnackSeverity('error');
-            setOpenSnackbar(true);
-            return ;
-        }
-
-        let damageRetComProQuantityDueStatus = false;
-
-
-        if (parseInt(state.DamageReturnFromCompanyProductQuantity) === damage.productQuantity-damage.damageRetComProQuantity){
-            damageRetComProQuantityDueStatus = true;
-        }
-
-        damage['damageRetComProQuantity'] = damage.damageRetComProQuantity + parseInt(state.DamageReturnFromCompanyProductQuantity);
-        damage.damageRetComProQuantityDueStatus = damageRetComProQuantityDueStatus;
-
-        submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
-            setSnackText('Successfully Update Return Damage Product Quantity');
-            setSnackSeverity('success');
-            setOpenSnackbar(true);
-            FetchData('returnFromCompany');
-        });
-    }
-
+   
     const updateDamageProAmount = (state) => {
         if(parseInt(state.DamageReturnFromCompanyAmount) > damage.damageProductAmount - parseFloat(damage.damageRetFromComAmount)  ){
             setSnackText("Damage Return From Company Product Due Amount cannot larger than Actual Damage Product Amount");
@@ -515,13 +535,19 @@ function Damage () {
             setSnackText('Successfully Update Return Damage Product Amount');
             setSnackSeverity('success');
             setOpenSnackbar(true);
-            FetchData('returnFromCompany');
+            FetchData('damageReturnFromCompanyTab');
         });
     }
 
     const markAsDamageReturnFromCompany = (state) => {
-        if(parseInt(state.DamageReturnFromCompanyProductQuantity) > damage.productQuantity  ){
-            setSnackText("Damage Return From Company Product Quantity cannot larger than Actual Damage Product Quantity");
+        let checkProductQuan = damage.delDamProQuantity;
+
+        if(damage.damageSentToCompanyStatus === "recievingFromCompanyWithSendings" || damage.damageSentToCompanyStatus === "recievingFromCompany" || damage.damageSentToCompanyStatus === "sentToCompany" ){
+            checkProductQuan = damage.delDamProQuantity-damage.recepDamProQuantity;
+        }
+        
+        if(parseInt(state.DamageReturnFromCompanyProductQuantity) > checkProductQuan  ){
+            setSnackText("Damage Return From Company Product Quantity cannot larger than Delivered Damage Product Quantity");
             setSnackSeverity('error');
             setOpenSnackbar(true);
             return ;
@@ -545,27 +571,36 @@ function Damage () {
             damgeReturnCompanyDuePaymentStatus = true;
         }
 
-        damage['damageRetFromCompanyDate'] = state.DamageReturnFromCompanyDate.toString();
+        damage['damageRetFromCompanyDate'] = new Date().getTime().toString();
         damage['damageRetFromComAmount'] = parseFloat(state.DamageReturnFromCompanyAmount);
-        damage['damageRetComProQuantity'] = parseInt(state.DamageReturnFromCompanyProductQuantity);
         damage['damgeReturnCompanyDueDate'] = state.DamageReturnFromCompanyDueDate.toString();
         damage.damageRetComProQuantityDueStatus = damageRetComProQuantityDueStatus;
         damage.damgeReturnCompanyDuePaymentStatus = damgeReturnCompanyDuePaymentStatus;
+        damage.damageRetFromComAmount = 0;
 
-        let damgeDeliveryHis = {
+        let damgeRecieveHis = {
             damageId : damage.damageId,
-            deliveryDate : new Date().getTime().toString(),
-            deliverProductQuantity : damage.damageRetComProQuantity
+            receptionDate : damage.damageRetFromCompanyDate,
+            recievedProductQuantity : parseInt(state.DamageReturnFromCompanyProductQuantity)
         };
 
-        submitForm('Damages/'+damage.damageId,"PUT",damage,() => {
-            submitForm("DamageDeliveryHistories","POST",damgeDeliveryHis,() => {
+        submitForm('DamageReceptionHistories',"POST",damgeRecieveHis,(res) => {
+
+            // let dmageDelPro = JSON.parse(res);
+            // let damageAfterRec = JSON.parse(JSON.stringify(damage));
+
+            damage['damageSentToCompanyStatus'] = 'recievingFromCompanyWithSendings';
+            damage.damageRetComProQuantity += damgeRecieveHis.recievedProductQuantity
+            console.log(damage);
+            submitForm('Damages/receiveFromCompany/'+damage.damageId,"PUT",damage,() => {
                 setSnackText('Successfully Damage Mark As Damage Return From Company');
                 setSnackSeverity('success');
                 setOpenSnackbar(true);
-                FetchData('sendedWithSendings');
+                setOpenDialog(false);
+                FetchData('damageSendToCompanyTab');
             });
         });
+
 
     };
 
@@ -646,25 +681,6 @@ function Damage () {
                 }
                 changOpenProps={()=> setOpenDialog(false)}
                 open={openDialog} 
-            />
-
-            <CustomizedDialogs 
-                title="Update Return Damage Product Quantity"
-                dialogContent={
-                    <Form 
-                        onSubmit={updateDamageProQuantity} 
-                        submitButton="Update Product Quantity" 
-                        fields={[{
-                        label : "Damage Return From Company Product Quantity",
-                        placeholder : "1",
-                        type : 0,
-                        required : true,
-                        disabled : false,
-                        validation : [0]
-                    }]}/>
-                }
-                changOpenProps={()=> setUpdateQuanDialog(false)}
-                open={openUpdateProductQuantity} 
             />
 
             <CustomizedDialogs 
