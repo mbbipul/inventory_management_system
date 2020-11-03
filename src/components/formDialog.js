@@ -68,11 +68,11 @@ export default function CustomizedDialogs(props) {
         <DialogContent dividers>
             {props.dialogContent}
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button autoFocus onClick={handleClose} color="primary">
             Save changes
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </div>
   );

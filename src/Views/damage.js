@@ -34,6 +34,10 @@ function Damage () {
     const [snackSeverity,setSnackSeverity] = useState('success');
     const [openUpdateProductQuantity,setUpdateQuanDialog] = useState(false);
     const [openUpdateProductAmount,setUpdateAmoDialog] = useState(false);
+
+    const [openUpdateDamageProductDelivery,setDamageDeliveryUpdate] = useState(false);
+    const [damageDeliveryProduct,setDamageDeliveryProduct] = useState(null);
+
     const [reportTabs,setReportTabs] = useState(0);
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
@@ -49,9 +53,8 @@ function Damage () {
     }, [location]);
 
     const markAsSentToCom = (rowData) => {
-        rowData['damageSentToCompanyStatus'] = 'sentToCompany';
-        rowData['damageSentToCompanyDate'] = new Date().getTime().toString();
-        submitForm('Damages/'+rowData.damageId,"PUT",rowData,() => FetchData('added'));
+        setDamageDeliveryProduct(rowData);
+        setDamageDeliveryUpdate(true);
     }
 
     const markAsRetrunFromCom = (rowData) => {
@@ -86,16 +89,14 @@ function Damage () {
         switch (status) {
             case 'added':
                 return 'New Damage ';
-                break;
+            case 'sendingToCompany':
+                return 'Sending To Company...';
             case 'sentToCompany':
                 return 'Damage Sent To company';
-                break;
             case 'returnFromCompany':
                 return 'Damage Return From company';
-                break;
             default:
                 return ;
-                break;
         }
     }
     const damagesCol = [...columns];
@@ -151,24 +152,59 @@ function Damage () {
 
     )
     const newDamages = [...columns];
-    newDamages.push( { 
-        title: 'Mark As Damage Product Sent To Company' , 
-        field: 'markAsDamage',
-        render: rowData => <Button onClick={() => markAsSentToCom(rowData)}>
-            {rowData.markAsDamage}
-        </Button>
 
-    });
+    newDamages.push( 
+        { 
+            title: 'Deliverd Damage Product Quantity' , 
+            field: 'delDamProQuantity',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.delDamProQuantity}
+                                    clickable />
+        },
+        { 
+            title: 'Damage Status' , 
+            field: 'damageSentToCompanyStatus',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={renderDSentComStatus(rowData.damageSentToCompanyStatus)}
+                                    clickable />
+        },
+        { 
+            title: 'Mark As Damage Product Sent To Company' , 
+            field: 'markAsDamage',
+            render: rowData => <Button onClick={() => markAsSentToCom(rowData)}>
+                {rowData.markAsDamage}
+            </Button>
+        }
+    );
 
     const damagesSentToCom = [...columns];
-    damagesSentToCom.push( { 
-        title: 'Mark As Damage Product Return From Company' , 
-        field: 'markAsReturn',
-        render: rowData => <Button onClick={() => markAsRetrunFromCom(rowData)}>
-            {rowData.markAsReturn}
-        </Button>
-
-    })
+    damagesSentToCom.push( 
+        { 
+            title: 'Deliverd Damage Product Quantity' , 
+            field: 'delDamProQuantity',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.delDamProQuantity}
+                                    clickable />
+        },
+        { 
+            title: 'Damage Status' , 
+            field: 'damageSentToCompanyStatus',
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={renderDSentComStatus(rowData.damageSentToCompanyStatus)}
+                                    clickable />
+        },
+        { 
+            title: 'Mark As Damage Product Return From Company' , 
+            field: 'markAsReturn',
+            render: rowData => <Button onClick={() => markAsRetrunFromCom(rowData)}>
+                {rowData.markAsReturn}
+            </Button>
+        }
+    );
 
     const damageReturnFromComCol = [...columns];
     damageReturnFromComCol.push(
@@ -237,10 +273,10 @@ function Damage () {
     useEffect(() => {
         switch (damageManageTab) {
             case 0:
-                FetchData('added');
+                FetchData('addedWithSendings');
                 break;
             case 1:
-                FetchData('sentToCompany');
+                FetchData('sendedWithSendings');
                 break;
             case 2:
                 FetchData('returnFromCompany');
@@ -262,7 +298,7 @@ function Damage () {
 
     useEffect(() => {
         if(headersubtitle==='manage-damage'){
-            FetchData('added');
+            FetchData('addedWithSendings');
             setHisVis(false);
         }else if(headersubtitle==='add-damage'){
             setHisVis(false);
@@ -352,7 +388,7 @@ function Damage () {
                                 apiUrl="Damages/filter/added/" 
                                 editable={false}
                                 hideDelete={true}
-                                onChangeData={() => FetchData('added')} 
+                                onChangeData={() => FetchData('addedWithSendings')} 
                                 data={data} 
                                 columns={newDamages}
                                 
@@ -371,7 +407,7 @@ function Damage () {
                                 apiUrl="Damages/filter/sentToCompany/" 
                                 editable={false}
                                 hideDelete={true}
-                                onChangeData={() => FetchData('sentToCompany')} 
+                                onChangeData={() => FetchData('sendedWithSendings')} 
                                 data={data} 
                                 columns={damagesSentToCom}
                                 
@@ -399,6 +435,36 @@ function Damage () {
     
     ];
 
+    const updateDamageProductDelivery = (state) => {
+        if(parseInt(state.DamageDelivertoCompanyProductQuantity) > damageDeliveryProduct.productQuantity - damageDeliveryProduct.delDamProQuantity  ){
+            setSnackText("Damage Delivery Product Quantity cannot larger than Actual Damage Product Quantity");
+            setSnackSeverity('error');
+            setOpenSnackbar(true);
+            return ;
+        }
+        let damageDeliver = {
+            damageId : damageDeliveryProduct.damageId,
+            deliveryDate : new Date().getTime().toString(),
+            deliverProductQuantity : parseInt(state.DamageDelivertoCompanyProductQuantity)
+        }
+
+        submitForm('DamageDeliveryHistories',"POST",damageDeliver,(res) => {
+
+            // let dmageDelPro = JSON.parse(res);
+            let damage = JSON.parse(JSON.stringify(damageDeliveryProduct));
+
+            damage['damageSentToCompanyStatus'] = 'sendingToCompany';
+            damage['damageSentToCompanyDate'] = new Date().getTime().toString();
+
+            submitForm('Damages/sentToCompany/'+damage.damageId,"PUT",damage,() => {
+                setSnackText("Successfully Damage Delivery Product Quantity !");
+                setSnackSeverity('success');
+                setOpenSnackbar(true);
+                setDamageDeliveryUpdate(false);
+                FetchData('addedWithSendings');
+            });
+        });
+    }
     const updateDamageProQuantity = (state) => {
 
         if(parseInt(state.DamageReturnFromCompanyProductQuantity) > damage.productQuantity-damage.damageRetComProQuantity  ){
@@ -407,8 +473,6 @@ function Damage () {
             setOpenSnackbar(true);
             return ;
         }
-
-        
 
         let damageRetComProQuantityDueStatus = false;
 
@@ -499,7 +563,7 @@ function Damage () {
                 setSnackText('Successfully Damage Mark As Damage Return From Company');
                 setSnackSeverity('success');
                 setOpenSnackbar(true);
-                FetchData('sentToCompany');
+                FetchData('sendedWithSendings');
             });
         });
 
@@ -601,6 +665,26 @@ function Damage () {
                 }
                 changOpenProps={()=> setUpdateQuanDialog(false)}
                 open={openUpdateProductQuantity} 
+            />
+
+            <CustomizedDialogs 
+                style={{width : 300}}
+                title="Update Damage Product Send To Company"
+                dialogContent={
+                    <Form 
+                        onSubmit={updateDamageProductDelivery} 
+                        submitButton="Delivery Product Quantity" 
+                        fields={[{
+                            label : "Damage Deliver to Company Product Quantity",
+                            placeholder : "1",
+                            type : 0,
+                            required : true,
+                            disabled : false,
+                            validation : [0]
+                    }]}/>
+                }
+                changOpenProps={()=> setDamageDeliveryUpdate(false)}
+                open={openUpdateDamageProductDelivery} 
             />
 
             <CustomizedDialogs 

@@ -62,9 +62,9 @@ namespace inventory_rest_api.Controllers
 
         // GET: api/Damages
         [HttpGet("filter/{status}")]
-        public async Task<ActionResult<IEnumerable>> GetDamages(string status)
+        public ActionResult<IEnumerable> GetDamages(string status)
         {
-            return await _context.Damages
+            var query =   _context.Damages
                                 .Include(d => d.Product)
                                 .Include(d => d.Customer)
                                 .Include(d => d.Supplier)
@@ -95,10 +95,22 @@ namespace inventory_rest_api.Controllers
                                     d.DamageRetComProQuantityDueStatus,
                                     d.DamgeReturnCompanyDueAmount,
                                     d.DamgeReturnCompanyDuePaymentStatus,
-                                    d.DamgeReturnCompanyDueDate
-                                })
-                                .Where( d => d.DamageSentToCompanyStatus == status)
-                                .ToListAsync();
+                                    d.DamgeReturnCompanyDueDate,
+                                    DelDamProQuantity = _context.DamageDeliveryHistories.Where(dh => dh.DamageId == d.DamageId).Sum(dh => dh.DeliverProductQuantity)
+                                }).AsEnumerable();
+            if (status == "addedWithSendings") {
+                return  query
+                            .Where( d => d.DamageSentToCompanyStatus == "sendingToCompany" || d.DamageSentToCompanyStatus == "added")
+                            .ToList();
+            }
+            if (status == "sendedWithSendings") {
+                return  query
+                            .Where( d => d.DamageSentToCompanyStatus == "sendingToCompany" || d.DamageSentToCompanyStatus == "sentToCompany")
+                            .ToList();
+            }
+            return   query
+                        .Where( d => d.DamageSentToCompanyStatus == status)
+                        .ToList();
         }
 
         // GET: api/Damages/5
@@ -257,6 +269,40 @@ namespace inventory_rest_api.Controllers
                 return BadRequest();
             }
 
+            _context.Entry(damage).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DamageExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        [HttpPut("sentToCompany/{id}")]
+        public async Task<IActionResult> PutDamageToDeliver(long id, Damage damage)
+        {
+            if (id != damage.DamageId)
+            {
+                return BadRequest();
+            }
+
+            int damageDeliveryProQuan = _context.DamageDeliveryHistories.Where( dh => dh.DamageId == damage.DamageId ).Sum(dh => dh.DeliverProductQuantity);
+
+            if (damage.ProductQuantity == damageDeliveryProQuan){
+                damage.DamageSentToCompanyStatus = "sentToCompany";
+            }
             _context.Entry(damage).State = EntityState.Modified;
 
             try
