@@ -47,6 +47,70 @@ namespace inventory_rest_api.Controllers
 
         }
 
+        [HttpGet("credit-customer")]
+        public ActionResult<IEnumerable> GetCreditCustomers(long id)
+        {
+            var query = from sales in _context.Sales
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        where sales.SalesPaidStatus == false 
+                        select new {
+                            customer.CustomerId,
+                            customer.CustomerName,
+                            customer.CustomerAddress,
+                            customer.CustomerContact,
+                            sales.SalesPrice,
+                            sales.SalesPaymentAmount,
+                            CustomerDueAmount = sales.SalesPrice - sales.SalesPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable().GroupBy(
+                s => s.CustomerId,
+                (key,g) => new {
+                        
+                        g.First().CustomerName,
+                        g.First().CustomerAddress,
+                        g.First().CustomerContact,
+                        SalesPrice = g.Sum( s => s.SalesPrice),
+                        SalesPaymentAmount = g.Sum(s => s.SalesPaymentAmount),
+                        CustomerDueAmount = g.Sum( s => s.CustomerDueAmount)
+                        
+                }
+            ).ToList();
+        }
+
+        [HttpGet("paid-customer")]
+        public ActionResult<IEnumerable> GetPaidCustomers(long id)
+        {
+            var query = from sales in _context.Sales
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        where sales.SalesPaidStatus == true 
+                        select new {
+                            customer.CustomerId,
+                            customer.CustomerName,
+                            customer.CustomerAddress,
+                            customer.CustomerContact,
+                            sales.SalesPrice,
+                            sales.SalesPaymentAmount,
+                            CustomerDueAmount = sales.SalesPrice - sales.SalesPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable().GroupBy(
+                s => s.CustomerId,
+                (key,g) => new {
+                        
+                        g.First().CustomerName,
+                        g.First().CustomerAddress,
+                        g.First().CustomerContact,
+                        SalesPrice = g.Sum( s => s.SalesPrice),
+                        SalesPaymentAmount = g.Sum(s => s.SalesPaymentAmount),
+                        CustomerDueAmount = g.Sum( s => s.CustomerDueAmount)
+                        
+                }
+            ).ToList();
+        }
+
         // PUT: api/Customers/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomers(long id, Customer customer)

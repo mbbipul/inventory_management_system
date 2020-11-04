@@ -150,6 +150,21 @@ function Damage () {
             render: rowData => rowData.damgeReturnCompanyDueDate !== null &&  new Date(parseInt(rowData.damgeReturnCompanyDueDate)).toDateString()
            
 
+        },
+        {
+            title: 'Damage Return From Company Product Due Status' , 
+            field: 'damageRetComProQuantityDueStatus',
+            render: rowData => rowData.damageRetComProQuantityDueStatus ? 
+                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                                    <CloseIcon color='error' />
+        },
+        {
+            title: 'Damage Return From Company Product Payment Due Status' , 
+            field: 'damgeReturnCompanyDuePaymentStatus',
+            render: rowData => rowData.damgeReturnCompanyDuePaymentStatus ? 
+                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                                    <CloseIcon color='error' />
+           
         }
 
 
@@ -187,21 +202,6 @@ function Damage () {
             render: rowData => <Button onClick={() => markAsSentToCom(rowData)}>
                 {rowData.markAsDamage}
             </Button>
-        },
-        {
-            title: 'Damage Return From Company Product Due Status' , 
-            field: 'damageRetComProQuantityDueStatus',
-            render: rowData => rowData.damageRetComProQuantityDueStatus ? 
-                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
-                                    <CloseIcon color='error' />
-        },
-        {
-            title: 'Damage Return From Company Product Payment Due Status' , 
-            field: 'damgeReturnCompanyDuePaymentStatus',
-            render: rowData => rowData.damgeReturnCompanyDuePaymentStatus ? 
-                                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
-                                    <CloseIcon color='error' />
-           
         }
     );
 

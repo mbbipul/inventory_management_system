@@ -9,6 +9,7 @@ import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddCustomer from "./addCustomer";
+import { Chip } from "@material-ui/core";
 
 function Customer() {
     let location = useLocation().pathname.split("/");
@@ -27,6 +28,29 @@ function Customer() {
         }
 
     ]);
+
+    const creditCustomerColumns = [
+        { title: 'Customer Name', field: 'customerName' },
+        { title: 'Address', field: 'customerAddress' },
+        { title: 'Contact Number', field: 'customerContact' },
+        { 
+            title : 'Total Sales Amount' ,
+            field : 'salesPrice' ,
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.salesPrice}
+                                    clickable /> 
+        },
+        { 
+            title: 'Total Due Amount', 
+            field: 'customerDueAmount' ,
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.customerDueAmount}
+                                    clickable /> 
+        },
+
+    ]
     const [data,setData] = useState([]);
 
     useEffect(() => {
@@ -96,7 +120,25 @@ function Customer() {
                                 
                             />
                         </div>
-                    </Route>
+                </Route>
+
+                <Route exact path="/customer/credit-customer">
+                 <div style={{margin:20}}>
+                        <ProductTable 
+                            title="All Customers"
+                            apiUrl="Customers/credit-customer" 
+                            data={{ columns : creditCustomerColumns , data : []}}/>
+                    </div>
+                </Route>
+
+                <Route exact path="/customer/paid-customer">
+                 <div style={{margin:20}}>
+                        <ProductTable 
+                            title="All Customers"
+                            apiUrl="Customers/paid-customer" 
+                            data={{ columns : creditCustomerColumns.slice(0,-1) , data : []}}/>
+                    </div>
+                </Route>
             </Switch>
         </div>                        
     )

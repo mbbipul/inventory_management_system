@@ -116,6 +116,14 @@ const sideBarItems = [
             {
                 name : "Manage Customer",
                 ref : "customer/manage-customer"
+            },
+            {
+                name : "Credit Customer",
+                ref : "customer/credit-customer"
+            },
+            {
+                name : "Paid Customer",
+                ref : "customer/paid-customer"
             }
         ]
     },
