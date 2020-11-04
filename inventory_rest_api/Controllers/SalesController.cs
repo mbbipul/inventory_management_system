@@ -24,19 +24,19 @@ namespace inventory_rest_api.Controllers
         [HttpGet("salesIds")]
         public async Task<ActionResult<IEnumerable>> GetSales () {
             return await _context.Sales
-                            .Select(s => new { SalesId = s.SalesId.ToString() })
+                            .Select(s => s.SalesId)
                             .ToListAsync();
         }
 
-        [HttpGet("sales-product-info/{id}")]
-        public ActionResult<Object> GetSalesWithProInfo (long id) {
+        [HttpPost("sales-product-info")]
+        public ActionResult<Object> GetSalesWithProInfo (List<long> ids) {
 
             var query = from sales in _context.Sales
                         join product in _context.Products
                             on sales.ProductId equals product.ProductId
                         join customer in _context.Customers
                             on sales.CustomerId equals customer.CustomerId
-                        where sales.SalesId == id
+                        where ids.Any( id => id == sales.SalesId)
                         select new {
                             sales.SalesId,
                             customer.CustomerContact,
@@ -44,10 +44,26 @@ namespace inventory_rest_api.Controllers
                             customer.CustomerAddress,
                             product.ProductName,
                             sales.ProductQuantity,
-                            sales.SalesPrice
+                            sales.SalesPrice,
+                            sales.SalesPaymentAmount,
+                            sales.SalesDueAmount,
+                            DueProductQuantity = sales.SalesDueProduct.ProductQuantity,
+                            product.ProductId,
+                            sales.SalesDate
                         };
-            return query.AsEnumerable()
-                        .First();
+            var queryEnum = query.AsEnumerable();
+            return new {
+                Data = queryEnum.ToList(),
+                ToTalProduct = queryEnum.Select(s => s.ProductId).Distinct().Count(),
+                TotalProductQuantity = queryEnum.Sum(s => s.ProductQuantity),
+                TotalSalesPrice = queryEnum.Sum(s => s.SalesPrice),
+                TotalSalesPaymentAmount = queryEnum.Sum(s => s.SalesPaymentAmount),
+                TotalDueProductQuantity = queryEnum.Sum(s => s.DueProductQuantity),
+                queryEnum.First().CustomerName,
+                queryEnum.First().CustomerAddress,
+                queryEnum.First().CustomerContact,
+
+            };
         }
 
         // GET: api/Sales

@@ -46,6 +46,8 @@ namespace inventory_rest_api.Models
         public DbSet<DamageReceptionHistory> DamageReceptionHistories { get; set; }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<SalesMemo> SalesMemos { get; set; }
+        public DbSet<MemoWithSales> MemoWithSales { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -181,7 +183,18 @@ namespace inventory_rest_api.Models
                 .WithOne(c => c.Order)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-
+            
+            modelBuilder.Entity<MemoWithSales>()
+                .HasOne(m => m.SalesMemo)
+                .WithMany(sm => sm.MemoWithSales)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Sales>()
+                .HasOne(m => m.MemoWithSales)
+                .WithOne(s => s.Sales)
+                .IsRequired()
+                .HasForeignKey<MemoWithSales>(s => s.SalesId);
         }
 
     }

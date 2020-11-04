@@ -202,6 +202,9 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("DamageId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("RecievedProductAmount")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("RecievedProductQuantity")
                         .HasColumnType("int");
 
@@ -245,6 +248,29 @@ namespace inventory_rest_api.Migrations
                     b.HasKey("EmployeeId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.MemoWithSales", b =>
+                {
+                    b.Property<long>("MemoWithSalesId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("SalesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SalesMemoId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("MemoWithSalesId");
+
+                    b.HasIndex("SalesId")
+                        .IsUnique();
+
+                    b.HasIndex("SalesMemoId");
+
+                    b.ToTable("MemoWithSales");
                 });
 
             modelBuilder.Entity("inventory_rest_api.Models.Order", b =>
@@ -625,6 +651,21 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("SalesHistories");
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.SalesMemo", b =>
+                {
+                    b.Property<long>("SalesMemoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("MemoDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SalesMemoId");
+
+                    b.ToTable("SalesMemos");
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
                 {
                     b.Property<long>("SupplierId")
@@ -732,6 +773,21 @@ namespace inventory_rest_api.Migrations
                         .WithMany("DamageReceptionHistories")
                         .HasForeignKey("DamageId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.MemoWithSales", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.Sales", "Sales")
+                        .WithOne("MemoWithSales")
+                        .HasForeignKey("inventory_rest_api.Models.MemoWithSales", "SalesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("inventory_rest_api.Models.SalesMemo", "SalesMemo")
+                        .WithMany("MemoWithSales")
+                        .HasForeignKey("SalesMemoId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

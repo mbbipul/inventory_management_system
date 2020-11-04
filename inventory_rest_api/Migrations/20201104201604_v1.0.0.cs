@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class v1 : Migration
+    public partial class v100 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -84,6 +85,38 @@ namespace inventory_rest_api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductCategories", x => x.ProductCategoryId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SalesMemos",
+                columns: table => new
+                {
+                    SalesMemoId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MemoDate = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SalesMemos", x => x.SalesMemoId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    UserEmail = table.Column<string>(nullable: true),
+                    AdminRole = table.Column<int>(nullable: false),
+                    HasSuperAdminRole = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<byte[]>(nullable: true),
+                    PasswordSalt = table.Column<byte[]>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -282,7 +315,8 @@ namespace inventory_rest_api.Migrations
                     DamageReceptionHistoryId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DamageId = table.Column<long>(nullable: false),
-                    RecievedProductQuantity = table.Column<int>(nullable: false)
+                    RecievedProductQuantity = table.Column<int>(nullable: false),
+                    RecievedProductAmount = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -389,6 +423,31 @@ namespace inventory_rest_api.Migrations
                         principalTable: "Purchases",
                         principalColumn: "PurchaseId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MemoWithSales",
+                columns: table => new
+                {
+                    MemoWithSalesId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SalesId = table.Column<long>(nullable: false),
+                    SalesMemoId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemoWithSales", x => x.MemoWithSalesId);
+                    table.ForeignKey(
+                        name: "FK_MemoWithSales_Sales_SalesId",
+                        column: x => x.SalesId,
+                        principalTable: "Sales",
+                        principalColumn: "SalesId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MemoWithSales_SalesMemos_SalesMemoId",
+                        column: x => x.SalesMemoId,
+                        principalTable: "SalesMemos",
+                        principalColumn: "SalesMemoId");
                 });
 
             migrationBuilder.CreateTable(
@@ -519,6 +578,17 @@ namespace inventory_rest_api.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MemoWithSales_SalesId",
+                table: "MemoWithSales",
+                column: "SalesId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemoWithSales_SalesMemoId",
+                table: "MemoWithSales",
+                column: "SalesMemoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
@@ -614,6 +684,9 @@ namespace inventory_rest_api.Migrations
                 name: "DamageReceptionHistories");
 
             migrationBuilder.DropTable(
+                name: "MemoWithSales");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
@@ -638,7 +711,13 @@ namespace inventory_rest_api.Migrations
                 name: "SalesHistories");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "Damages");
+
+            migrationBuilder.DropTable(
+                name: "SalesMemos");
 
             migrationBuilder.DropTable(
                 name: "Purchases");

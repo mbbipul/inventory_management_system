@@ -15,6 +15,9 @@ namespace inventory_rest_api.Models
         [Required]
         public int RecievedProductQuantity { get; set; }
 
+        [Required]
+        public long RecievedProductAmount { get; set; }
+        
         [JsonIgnore]
         public Damage Damage { get; set; }
 

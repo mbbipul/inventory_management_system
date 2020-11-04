@@ -57,6 +57,9 @@ namespace inventory_rest_api.Models
         [JsonIgnore]
         public List<PaymentSales> PaymentSales { get; set; }
         public List<SalesHistory> SalesHistories { get; set; }
+        
 
+        [JsonIgnore]
+        public MemoWithSales MemoWithSales { get; set; }
     }
 }
