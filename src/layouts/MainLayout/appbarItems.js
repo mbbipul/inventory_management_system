@@ -63,8 +63,8 @@ const sideBarItems = [
                 name : "Manage Sales",
                 ref : "sales/manage-sales"
             },{
-                name : "POS Sales",
-                ref : "sales/pos-sales"
+                name : "Sales Memo",
+                ref : "sales/sales-memo"
             }
         ]
     },

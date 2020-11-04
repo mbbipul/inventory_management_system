@@ -853,6 +853,18 @@ const addOrderFormFields = [
 
 const memoFormFields =  [
     {
+        label : "Sales Id",
+        placeholder : "মিঃ রয় ",
+        type : 3,
+        dialogFormContent : null,
+        fetchUrl : apiUrl+"Sales/salesIds",
+        selectName : "salesId",
+        selectKey : "salesId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+    },
+    {
         label : "কাষ্টমারের নাম",
         placeholder : "মিঃ রয় ",
         type : 3,

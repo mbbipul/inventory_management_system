@@ -118,22 +118,24 @@ export default function AsyncAutoComplete(props) {
               )
             }}
           />
-         { showButton && 
+         { showButton &&  props.dialogContent !== null ? 
             <Button 
               size="small" 
               style={{marginTop:"-28%",marginLeft:"105%"}} 
               onClick={handleButtonClick}
               variant="outlined" color="primary">
               Add
-            </Button>
+            </Button> : null
           }
         </div>
       )}
     />
 
-    <CustomizedDialogs 
-      dialogContent={props.dialogContent}
-      changOpenProps={()=> setOpenDialog(false)} open={openDialog} />
+    {   props.dialogContent !== null &&
+          <CustomizedDialogs 
+              dialogContent={props.dialogContent}
+              changOpenProps={()=> setOpenDialog(false)} open={openDialog} />
+    }
 
     </div>
   );

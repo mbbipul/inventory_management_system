@@ -22,6 +22,7 @@ import SalesMemo from "./memo";
 function Sales () {
 
     const [reportTabs,setReportTabs] = useState(0);
+    const [showHistoryVisual,setShowHistoryVisual] = useState(true);
     const [data,setData] = useState([]);
     const [unchangeData,setUnchangeData] = useState([]);
 
@@ -137,7 +138,11 @@ function Sales () {
         setHeaderSubtitile(location[2]);
         if(location.length <= 2){
             setHeaderSubtitile(location[1]);
-
+        }
+        if(location[2] === "sales-memo"){
+            setShowHistoryVisual(false);
+        }else{
+            setShowHistoryVisual(true);
         }
     }, [location]);
 
@@ -423,7 +428,10 @@ function Sales () {
         return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-                <HistoryVisual hasTabPanel={true} handleTabs={setReportTabs} tabs={tabs}/>
+                {
+                    showHistoryVisual && 
+                        <HistoryVisual hasTabPanel={true} handleTabs={setReportTabs} tabs={tabs}/>
+                }
                 <Switch>
                     <Route exact path="/sales">
                         <div style={{margin:20}}>
@@ -454,7 +462,7 @@ function Sales () {
                             />
                         </div>
                     </Route>
-                    <Route exact path="/sales/pos-sales">
+                    <Route exact path="/sales/sales-memo">
                         <SalesMemo />
                     </Route>
                 </Switch>

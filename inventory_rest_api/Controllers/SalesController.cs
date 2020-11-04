@@ -21,8 +21,37 @@ namespace inventory_rest_api.Controllers
             _context = context;
         }
 
+        [HttpGet("salesIds")]
+        public async Task<ActionResult<IEnumerable>> GetSales () {
+            return await _context.Sales
+                            .Select(s => new { SalesId = s.SalesId.ToString() })
+                            .ToListAsync();
+        }
+
+        [HttpGet("sales-product-info/{id}")]
+        public ActionResult<Object> GetSalesWithProInfo (long id) {
+
+            var query = from sales in _context.Sales
+                        join product in _context.Products
+                            on sales.ProductId equals product.ProductId
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        where sales.SalesId == id
+                        select new {
+                            sales.SalesId,
+                            customer.CustomerContact,
+                            customer.CustomerName,
+                            customer.CustomerAddress,
+                            product.ProductName,
+                            sales.ProductQuantity,
+                            sales.SalesPrice
+                        };
+            return query.AsEnumerable()
+                        .First();
+        }
+
         // GET: api/Sales
-         [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetSalesProductCustomers(){
             var query = from sales in _context.Sales
                         join product in _context.Products
