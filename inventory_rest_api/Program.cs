@@ -13,6 +13,8 @@ namespace inventory_rest_api
 {
     public class Program
     {
+        private static string HOSTNG_URL = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+        
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -24,7 +26,7 @@ namespace inventory_rest_api
                     logging.ClearProviders();
                     logging.AddConsole();
                 })
-                .UseUrls("https://localhost:5001")
+                .UseUrls(HOSTNG_URL)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>();

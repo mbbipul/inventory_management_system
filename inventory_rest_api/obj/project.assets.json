@@ -8553,11 +8553,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "g:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
+      "projectUniqueName": "G:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
       "projectName": "inventory_rest_api",
-      "projectPath": "g:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
+      "projectPath": "G:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\inventory_rest_api.csproj",
       "packagesPath": "C:\\Users\\Talking Glass\\.nuget\\packages\\",
-      "outputPath": "g:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\obj\\",
+      "outputPath": "G:\\projects_bipul\\inventory_management_system\\inventory_rest_api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Talking Glass\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -7,6 +7,8 @@ G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netco
 G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\inventory_rest_api.runtimeconfig.dev.json
 G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\inventory_rest_api.dll
 G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\inventory_rest_api.pdb
+G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\AutoMapper.dll
+G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Razor.Language.dll
 G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
@@ -132,5 +134,3 @@ G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netco
 G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netcoreapp3.1\inventory_rest_api.dll
 G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netcoreapp3.1\inventory_rest_api.pdb
 G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netcoreapp3.1\inventory_rest_api.genruntimeconfig.cache
-G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\AutoMapper.dll
-G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

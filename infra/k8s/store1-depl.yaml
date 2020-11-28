@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store1-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store1
+  template:
+    metadata:
+      labels:
+        app: store1
+    spec:
+      containers:
+        - name: store1
+          image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api
+          env:
+          - name: ASPNETCORE_URLS
+            value: "http://0.0.0.0:80"
+          - name: ConnectionString
+            value: "Server=sql.freeasphost.net\\MSSQL2016;Database=multidimensional_inventory_db;uid=multidimensional;pwd=1Secure*Password1;"
+          - name: CLIENT_APP
+            value: "http://40.119.2.157"
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: store1-serv
+spec:
+  selector:
+    app: store1
+  ports:
+    - name: store1
+      protocol: TCP
+      port: 5001
+      targetPort: 80

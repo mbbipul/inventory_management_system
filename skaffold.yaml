@@ -1,0 +1,20 @@
+apiVersion: skaffold/v2beta8
+kind: Config
+metadata:
+  name: inventory-management-system
+build:
+  artifacts:
+  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_client
+    context: inventory_client
+  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api
+    context: inventory_rest_api
+deploy:
+  kubectl:
+    manifests:
+    - infra/k8s/client1-depl.yaml
+    - infra/k8s/client2-depl.yaml
+    - infra/k8s/client3-depl.yaml
+    - infra/k8s/ingress-serv.yaml
+    - infra/k8s/store1-depl.yaml
+    - infra/k8s/store2-depl.yaml
+    - infra/k8s/store3-depl.yaml

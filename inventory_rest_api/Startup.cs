@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using AutoMapper;
 using inventory_rest_api.Helpers;
@@ -18,10 +19,15 @@ namespace inventory_rest_api
     public class Startup
     {
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        
+        private string CLIENT_APP = Environment.GetEnvironmentVariable("CLIENT_APP");
+        private string SQL_SERVER_CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTIONSTRING");
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+    
+            Console.WriteLine(Configuration.GetConnectionString("inventoryDb"));
         }
 
         public IConfiguration Configuration { get; }
@@ -34,8 +40,7 @@ namespace inventory_rest_api
                         options.AddPolicy(name: MyAllowSpecificOrigins,
                                         builder =>
                                         {
-                                            builder.WithOrigins("http://localhost:3000",
-                                                                "http://localhost:3001")
+                                            builder.WithOrigins(CLIENT_APP)
                                                                 .AllowAnyHeader()
                                                   .AllowAnyMethod()
                                                   .AllowCredentials();
