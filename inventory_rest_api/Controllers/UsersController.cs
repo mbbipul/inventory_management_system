@@ -102,6 +102,39 @@ namespace inventory_rest_api.Controllers
                 }
             );
 
+            if(user.HasSuperAdminRole == true){
+                Response.Cookies.Append(
+                    "Bashundhara",
+                    loginCookies,
+                    new CookieOptions{
+                        Expires = DateTimeOffset.Now.AddMinutes(30)
+                    }
+                );
+                Response.Cookies.Append(
+                    "Matrivandar",
+                    loginCookies,
+                    new CookieOptions{
+                        Expires = DateTimeOffset.Now.AddMinutes(30)
+                    }
+                );
+                Response.Cookies.Append(
+                    "Radhuni_Square",
+                    loginCookies,
+                    new CookieOptions{
+                        Expires = DateTimeOffset.Now.AddMinutes(30)
+                    }
+                );
+            }
+            else{
+                Response.Cookies.Append(
+                    getStoreName(user.AdminRole),
+                    loginCookies,
+                    new CookieOptions{
+                        Expires = DateTimeOffset.Now.AddMinutes(30)
+                    }
+                );
+            }
+            
             // return basic user info (without password) and token to store client side
             return Ok("Login Success");
         }
@@ -153,6 +186,20 @@ namespace inventory_rest_api.Controllers
         public static string Base64Encode(string plainText) {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public string getStoreName(int id){
+            switch (id)
+            {
+                case 0:
+                    return "Matrivandar";
+                case 1:
+                    return "Radhuni_Square";
+                case 2:
+                    return "Bashundhara";
+                default:
+                    return "";
+            }
         }
     }
 }

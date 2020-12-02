@@ -7,13 +7,15 @@ const AppContext = React.createContext({
     salesPaymentDue : 0,
     isUserLoggedIn : false,
     user : {},
+    appInfo : {},
 
     setSalesDueNumber : () => {},
     setProNumber : () => {},
     setPurPaymentDue : () => {},
     setSalesPaymentDue : () => {},
     setUserLoginStatus : () => {},
-    setUser : () => {}
+    setUser : () => {},
+    setAppInfo : () => {}
 });
 
 export const AppContextProvider = AppContext.Provider;

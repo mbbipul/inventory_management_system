@@ -1,11 +1,13 @@
-import { Box, Button, Card, Chip, Grid, makeStyles, Paper, TextField, Typography, withStyles } from "@material-ui/core";
+import { Box, Button, Card, Chip, Grid, makeStyles, Paper, Snackbar, TextField, Typography, withStyles } from "@material-ui/core";
 import { green, grey, purple, yellow } from "@material-ui/core/colors";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
 import AsyncAutoComplete from "../components/asyncAutoComplete";
-import apiUrl from "../utils/apiInfo";
-import submitForm from "../utils/fetchApi";
+import apiUrl, { supportAPiUrl } from "../utils/apiInfo";
+import submitForm, { submitFormWithAddress } from "../utils/fetchApi";
 import DeleteALert from '../components/deleteALert';
+import AppContext from "../context/appContext";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
     root : {
@@ -57,6 +59,299 @@ const ColorButton = withStyles((theme) => ({
     },
 }))(Button);
 
+function Memo(props){
+    const classes = props.classes;
+    const sales = props.sales;
+    const memoComponentRef = useRef();
+    const setMemoSave = props.setMemoSave;
+    
+    const salesIdField =  {
+        label : "Sales Id",
+        placeholder : "XXXX ",
+        type : 3,
+        dialogFormContent : null,
+        fetchUrl : apiUrl+"Sales/salesIds",
+        selectName : "salesId",
+        selectKey : "salesId",
+        required : true,
+        disabled : false,
+        validation : [9999]
+    };
+
+    return (
+        <Paper className={classes.memoBox}>
+            <Box className={classes.memo} ref={memoComponentRef}>
+                <h1 style={{marginTop : -55,marginLeft: 180,fontStyle : 'italic'}}>Matrivander</h1>
+                <h1 style={{marginTop : 30}}>ক্রেতার নাম  ঃ  <span>{sales.customerName}</span></h1>
+                <h1>মোবাইল নম্বর  ঃ <span>{sales.customerContact}</span></h1>
+                <h1>ঠিকানা  ঃ <span>{sales.customerAddress}</span></h1>
+                <Box style={{borderTop : '2px dotted black',marginTop : 40,paddingTop: 20}}>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={4}
+                    >   
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item >পণ্যের নাম </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item >{v.productName}</Grid>
+                                ))
+                            }
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>পণ্যের পরিমাণ </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item >{v.productQuantity}</Grid>
+                                ))
+                            }
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>ক্রয়মূল্য প্রতি পণ্যের </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{(v.salesPrice / v.productQuantity).toPrecision(3)}</Grid>
+                                ))
+                            }
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>পণ্যের মূল্য </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{v.salesPrice}</Grid>
+                                ))
+                            }
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={4}
+                        className = {classes.dotBorderTop}
+                    >   
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>প্রদত্ত পণ্যের পরিমাণ </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{v.productQuantity-v.dueProductQuantity}</Grid>
+                                ))
+                            }
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>বকেয়া পণ্যের পরিমাণ </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{v.dueProductQuantity}</Grid>
+                                ))
+                            }
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item> পণ্যের প্রদত্ত অর্থের পরিমাণ</Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{v.salesPaymentAmount}</Grid>
+                                ))
+                            }
+                        </Grid>
+                       
+                    </Grid>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={4}
+                        className = {classes.dotBorderTop}
+                    >   
+                       <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>পণ্যের বকেয়া অর্থের পরিমাণ</Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{v.salesPrice-v.salesPaymentAmount}</Grid>
+                                ))
+                            }
+                        </Grid>
+
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>পণ্য ক্রয়ের তারিখ </Grid>
+                            {
+                                sales.data.map(v => (
+                                    <Grid item>{new Date(parseFloat(v.salesDate)).toLocaleString("bn-BD")}</Grid>
+                                ))
+                            }
+                        </Grid>
+
+                    </Grid>
+                    
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={4}
+                        style={{borderTop : '5px solid black',marginTop: 20,paddingTop : 20}}
+                    >   
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item >মোট পণ্যে </Grid>
+                            <Grid item >{sales.toTalProduct}</Grid>
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>মোট পণ্যের পরিমাণ </Grid>
+                            <Grid item >{sales.totalProductQuantity}</Grid>
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>ক্রয়মূল্য প্রতি পণ্যের - গড়  </Grid>
+                            <Grid item >{(sales.totalSalesPrice / sales.totalProductQuantity).toPrecision(3)}</Grid>
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>পণ্যের মূল্য </Grid>
+                            <Grid item >{sales.totalSalesPrice}</Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={4}
+                        className = {classes.dotBorderTop}
+                    >   
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>প্রদত্ত পণ্যের পরিমাণ </Grid>
+                            <Grid item>{sales.totalProductQuantity-sales.totalDueProductQuantity}</Grid>
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>বকেয়া পণ্যের পরিমাণ </Grid>
+                            <Grid item>{sales.totalDueProductQuantity}</Grid>
+                        </Grid>
+                        <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item> পণ্যের প্রদত্ত অর্থের পরিমাণ</Grid>
+                            <Grid item>{sales.totalSalesPaymentAmount}</Grid>
+                        </Grid>
+                       
+                    </Grid>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={4}
+                        className = {classes.dotBorderTop}
+                    >   
+                       <Grid
+                            item
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item>পণ্যের বকেয়া অর্থের পরিমাণ</Grid>
+                            <Grid item>{sales.totalSalesPrice-sales.totalSalesPaymentAmount}</Grid>
+                        </Grid>
+
+                    </Grid>
+                </Box>
+
+                <h2 className={classes.memoSignature} > 
+                    ইস্যু কারীর নাম ঃ 
+                    <strong style={{fontFamily : 'Snell Roundhand, cursive',paddingLeft: 5,fontSize:15}}> Bipul Mandol </strong>- <span style={{fontSize : 8,fontWeight : 100}}>Matrivandar</span>
+                    <br /><span style={{fontSize : 10,fontWeight : 50}}>{ new Date().toLocaleString("bn-BD")}</span>
+                </h2>
+            </Box>
+            <ReactToPrint
+                onAfterPrint={(res) => setMemoSave(true) }
+                trigger={() => <ColorButton style={{float : 'right',marginTop: 30}}>Print Sales memo</ColorButton>}
+                content={() => memoComponentRef.current}
+            />
+            
+        </Paper>
+    )
+}
+
 function SalesMemo(){
     const classes = useStyles();
     const [salesIds,setSalesIds] = useState([]);
@@ -64,8 +359,9 @@ function SalesMemo(){
     const [sales,setSales] = useState([]);
     const [customerId,setCustomerId] = useState(null);
     const [showCashMemo,setShowMemo] = useState(false);
-    const memoComponentRef = useRef();
     const [openMemoSave,setMemoSave] = useState(false);
+    const {user} = useContext(AppContext);
+    let [showSnackbar, setShowSnackbar] = useState(false);
 
     const addSalesIdForMemo = (value) => { 
         let tmp = [...salesIdsForMemo];
@@ -83,19 +379,7 @@ function SalesMemo(){
         }
         return false;
     }
-    const salesIdField =  {
-        label : "Sales Id",
-        placeholder : "XXXX ",
-        type : 3,
-        dialogFormContent : null,
-        fetchUrl : apiUrl+"Sales/salesIds",
-        selectName : "salesId",
-        selectKey : "salesId",
-        required : true,
-        disabled : false,
-        validation : [9999]
-    };
-
+    
     const customerIdField =  {
         label : "Customer Name",
         placeholder : "মিঃ রয় ",
@@ -138,11 +422,27 @@ function SalesMemo(){
     },[customerId]);
 
     const handleMemoSubmit = () => {
-        
+        let salesMemo = {
+            memoIssueDate : new Date().getTime().toString(),
+            issuedBy : user.FirstName+" "+user.LastName,
+            customerName : sales.customerName,
+            salesIds : salesIdsForMemo.toString(),
+            memoDigitalPrint : "memoDigitalPrint",
+
+        }
+
+        submitFormWithAddress(supportAPiUrl+"/memos/create","POST",salesMemo,(res) => {
+            setShowSnackbar(true);
+        })
+        console.log(salesMemo)
     }
     return (
         <Card className={classes.root}>
-        
+         <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={() => setShowSnackbar(false)}>
+                <Alert variant="filled" onClose={() => setShowSnackbar(false)} severity="success">
+                    Successfully save memo !
+                </Alert>
+        </Snackbar>
         <DeleteALert 
                 message="Make sure that you already give memo to customer "
                 title=" Are you successfully print memo ?" 
@@ -206,276 +506,7 @@ function SalesMemo(){
             </Grid>
             {
                 sales.data !== null &&  showCashMemo && (
-                    <Paper className={classes.memoBox}>
-                        <Box className={classes.memo} ref={memoComponentRef}>
-                            <h1 style={{marginTop : -55,marginLeft: 180,fontStyle : 'italic'}}>Matrivander</h1>
-                            <h1 style={{marginTop : 30}}>ক্রেতার নাম  ঃ  <span>{sales.customerName}</span></h1>
-                            <h1>মোবাইল নম্বর  ঃ <span>{sales.customerContact}</span></h1>
-                            <h1>ঠিকানা  ঃ <span>{sales.customerAddress}</span></h1>
-                            <Box style={{borderTop : '2px dotted black',marginTop : 40,paddingTop: 20}}>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={4}
-                                >   
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item >পণ্যের নাম </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item >{v.productName}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>পণ্যের পরিমাণ </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item >{v.productQuantity}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>ক্রয়মূল্য প্রতি পণ্যের </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{(v.salesPrice / v.productQuantity).toPrecision(3)}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>পণ্যের মূল্য </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{v.salesPrice}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                </Grid>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={4}
-                                    className = {classes.dotBorderTop}
-                                >   
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>প্রদত্ত পণ্যের পরিমাণ </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{v.productQuantity-v.dueProductQuantity}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>বকেয়া পণ্যের পরিমাণ </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{v.dueProductQuantity}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item> পণ্যের প্রদত্ত অর্থের পরিমাণ</Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{v.salesPaymentAmount}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-                                   
-                                </Grid>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={4}
-                                    className = {classes.dotBorderTop}
-                                >   
-                                   <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>পণ্যের বকেয়া অর্থের পরিমাণ</Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{v.salesPrice-v.salesPaymentAmount}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>পণ্য ক্রয়ের তারিখ </Grid>
-                                        {
-                                            sales.data.map(v => (
-                                                <Grid item>{new Date(parseFloat(v.salesDate)).toLocaleString("bn-BD")}</Grid>
-                                            ))
-                                        }
-                                    </Grid>
-
-                                </Grid>
-                                
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={4}
-                                    style={{borderTop : '5px solid black',marginTop: 20,paddingTop : 20}}
-                                >   
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item >মোট পণ্যে </Grid>
-                                        <Grid item >{sales.toTalProduct}</Grid>
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>মোট পণ্যের পরিমাণ </Grid>
-                                        <Grid item >{sales.totalProductQuantity}</Grid>
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>ক্রয়মূল্য প্রতি পণ্যের - গড়  </Grid>
-                                        <Grid item >{(sales.totalSalesPrice / sales.totalProductQuantity).toPrecision(3)}</Grid>
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>পণ্যের মূল্য </Grid>
-                                        <Grid item >{sales.totalSalesPrice}</Grid>
-                                    </Grid>
-                                </Grid>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={4}
-                                    className = {classes.dotBorderTop}
-                                >   
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>প্রদত্ত পণ্যের পরিমাণ </Grid>
-                                        <Grid item>{sales.totalProductQuantity-sales.totalDueProductQuantity}</Grid>
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>বকেয়া পণ্যের পরিমাণ </Grid>
-                                        <Grid item>{sales.totalDueProductQuantity}</Grid>
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item> পণ্যের প্রদত্ত অর্থের পরিমাণ</Grid>
-                                        <Grid item>{sales.totalSalesPaymentAmount}</Grid>
-                                    </Grid>
-                                   
-                                </Grid>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={4}
-                                    className = {classes.dotBorderTop}
-                                >   
-                                   <Grid
-                                        item
-                                        direction="column"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>পণ্যের বকেয়া অর্থের পরিমাণ</Grid>
-                                        <Grid item>{sales.totalSalesPrice-sales.totalSalesPaymentAmount}</Grid>
-                                    </Grid>
-
-                                </Grid>
-                            </Box>
-
-                            <h2 className={classes.memoSignature} > 
-                                ইস্যু কারীর নাম ঃ 
-                                <strong style={{fontFamily : 'Snell Roundhand, cursive',paddingLeft: 5,fontSize:15}}> Bipul Mandol </strong>- <span style={{fontSize : 8,fontWeight : 100}}>Matrivandar</span>
-                                <br /><span style={{fontSize : 10,fontWeight : 50}}>{ new Date().toLocaleString("bn-BD")}</span>
-                            </h2>
-                        </Box>
-                        <ReactToPrint
-                            onAfterPrint={(res) => setMemoSave(true) }
-                            trigger={() => <ColorButton style={{float : 'right',marginTop: 30}}>Print Sales memo</ColorButton>}
-                            content={() => memoComponentRef.current}
-                        />
-                        
-                    </Paper>
+                    <Memo sales={sales} classes={classes} setMemoSave={setMemoSave}/>
                 )
             }
         </Card>

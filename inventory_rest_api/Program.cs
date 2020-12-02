@@ -32,3 +32,4 @@ namespace inventory_rest_api
                 .UseStartup<Startup>();
     }
 }
+//    "inventoryDb": "Server=tcp:bbbipulinventory.database.windows.net,1433;Initial Catalog=inventory_store1;Persist Security Info=False;User ID=bbbipul;Password=1Secure*Password1Bipul;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" ,

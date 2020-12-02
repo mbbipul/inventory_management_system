@@ -28,6 +28,14 @@ namespace inventory_rest_api.Controllers
                             .ToListAsync();
         }
 
+        [HttpPost("sales-memo-history")]
+        public async Task<ActionResult<string>> PostSalesMemoHistory(SalesMemoHistory salesMemoHistory)
+        {
+            _context.SalesMemoHistories.Add(salesMemoHistory);
+            await _context.SaveChangesAsync();
+
+            return "ok";
+        }
         [HttpPost("sales-product-info")]
         public ActionResult<Object> GetSalesWithProInfo (List<long> ids) {
 
@@ -39,6 +47,7 @@ namespace inventory_rest_api.Controllers
                         where ids.Any( id => id == sales.SalesId)
                         select new {
                             sales.SalesId,
+                            customer.CustomerId,
                             customer.CustomerContact,
                             customer.CustomerName,
                             customer.CustomerAddress,
@@ -62,6 +71,7 @@ namespace inventory_rest_api.Controllers
                 queryEnum.First().CustomerName,
                 queryEnum.First().CustomerAddress,
                 queryEnum.First().CustomerContact,
+                queryEnum.First().CustomerId
 
             };
         }
@@ -108,6 +118,8 @@ namespace inventory_rest_api.Controllers
                                 pph.PerProductPurchasePrice,
                                 pph.PerProductSalesPrice
                             };
+
+            Response.Headers.Append("Access-Control-Allow-Origin","http://localhost:3000");
             return await query.ToListAsync();
 
         }

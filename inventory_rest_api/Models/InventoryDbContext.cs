@@ -49,6 +49,7 @@ namespace inventory_rest_api.Models
         public DbSet<SalesMemo> SalesMemos { get; set; }
         public DbSet<MemoWithSales> MemoWithSales { get; set; }
 
+        public DbSet<SalesMemoHistory> SalesMemoHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -195,6 +196,12 @@ namespace inventory_rest_api.Models
                 .WithOne(s => s.Sales)
                 .IsRequired()
                 .HasForeignKey<MemoWithSales>(s => s.SalesId);
+            
+            modelBuilder.Entity<SalesMemoHistory>()
+                .HasOne(sm => sm.User)
+                .WithMany(u => u.SalesMemoHistories)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
     }

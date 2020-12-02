@@ -8,13 +8,19 @@ build:
     context: inventory_client
   - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api
     context: inventory_rest_api
+  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api2
+    context: inventory_rest_api2
+  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api3
+    context: inventory_rest_api3
+  - image: inventorymanagementsystem.azurecr.io/inventory/supportapi
+    context: support_api
 deploy:
   kubectl:
     manifests:
-    - infra/k8s/client1-depl.yaml
-    - infra/k8s/client2-depl.yaml
-    - infra/k8s/client3-depl.yaml
+    - infra/k8s/client-depl.yaml
     - infra/k8s/ingress-serv.yaml
+    - infra/k8s/mongo.yaml
     - infra/k8s/store1-depl.yaml
     - infra/k8s/store2-depl.yaml
     - infra/k8s/store3-depl.yaml
+    - infra/k8s/support_api.yaml

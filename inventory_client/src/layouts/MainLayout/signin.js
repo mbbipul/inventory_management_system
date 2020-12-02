@@ -22,9 +22,10 @@ import { green, grey, purple, yellow } from '@material-ui/core/colors';
 import signInSuccessImage from '../../assets/signin_success.jpg';
 import breakImage from '../../assets/break.png';
 import { decode } from 'js-base64';
-import { getStoreInfo } from '../../utils/storeInfo';
+import { allStores, getStoreInfo } from '../../utils/storeInfo';
 import AppContext from '../../context/appContext';
 import submitForm from '../../utils/fetchApi';
+import { getCookie, getFullName, removeCookie, setCookie } from '../../utils/apiInfo';
 
 function Copyright() {
   return (
@@ -126,7 +127,7 @@ export default function SignInSide() {
 	const [currentUser,setUserInfo] = useState(null);
 	const [userFullName,setUserFullName] = useState('');
 
-	const {  setUserLoginStatus , setUser } = React.useContext(AppContext);
+	const {  setUserLoginStatus , setUser ,setAppInfo} = React.useContext(AppContext);
 	const [progress, setProgress] = React.useState(0);
 
 	const retryLogin = () => {
@@ -145,6 +146,7 @@ export default function SignInSide() {
 			setProgress((oldProgress) => {
 			  if (oldProgress === 100) {
 				setUserLoginStatus(true);
+				setAppInfo(-1);
 				setUser(true);
 				return 0;
 			  }
@@ -251,27 +253,10 @@ export default function SignInSide() {
 		}
 	}
 	
-	function getCookie(cname) {
-		var name = cname + "=";
-		var decodedCookie = decodeURIComponent(document.cookie);
-		var ca = decodedCookie.split(';');
-		for(var i = 0; i <ca.length; i++) {
-		  var c = ca[i];
-		  while (c.charAt(0) == ' ') {
-			c = c.substring(1);
-		  }
-		  if (c.indexOf(name) == 0) {
-			return c.substring(name.length, c.length);
-		  }
-		}
-		return null;
-	}
 
 	const getCurrentUsers = () => {
-
 		if (!isSignInSuccess )
 			return null;
-
 		const userCookies = getCookie('user-info');
 		if(userCookies !== null ){
 			const user = JSON.parse(decode(userCookies));
@@ -281,12 +266,6 @@ export default function SignInSide() {
 		return null;
 	} 
 
-	const getFullName = (user) => {
-		if (user === null ){
-			return "";
-		}
-		return user.FirstName + " " + user.LastName;
-	}
 
 	useEffect(() => {
 		if(isSignInSuccess){
@@ -501,10 +480,9 @@ export default function SignInSide() {
 													label="Select Store - Account Controll"
 													onChange={(event) => handleSelectChange(event)}
 												>
-													<MenuItem value={0}>Matrivandar Store</MenuItem>
-													<MenuItem value={1}>Radhuni Store</MenuItem>
-													<MenuItem value={2}>Square Store</MenuItem>
-													<MenuItem value={3}>Bashundhara Store</MenuItem>
+													<MenuItem value={0}>{allStores[0]}</MenuItem>
+													<MenuItem value={1}>{allStores[1]}</MenuItem>
+													<MenuItem value={2}>{allStores[2]}</MenuItem>
 												</Select>
 											</FormControl>
 											<FormControlLabel

@@ -28,6 +28,8 @@ import Order from './Views/order';
 import Payment from './Views/payment';
 import SignInSide from './layouts/MainLayout/signin';
 import { decode } from 'js-base64';
+import { getCookie, parseCookie, setCookie } from './utils/apiInfo';
+import { getStoreInfo } from './utils/storeInfo';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -53,31 +55,14 @@ function App() {
     const [salesPaymentDue,setSalesPaymentDue] = useState(0);
     const [isUserLoggedIn,setUserLoginStatus] = useState(false);
 	const [user,setUser] = useState({});
-
-	function getCookie(cname) {
-		var name = cname + "=";
-		var decodedCookie = decodeURIComponent(document.cookie);
-		var ca = decodedCookie.split(';');
-		for(var i = 0; i <ca.length; i++) {
-		  var c = ca[i];
-		  while (c.charAt(0) == ' ') {
-			c = c.substring(1);
-		  }
-		  if (c.indexOf(name) == 0) {
-			return c.substring(name.length, c.length);
-		  }
-		}
-		return null;
-	}
-
+	const [appInfo,setAppInfo] = useState({});
+	
 	const getCurrentUsers = (state) => {
 
-		if (!isUserLoggedIn || !state ){
-			const userCookies = getCookie('user-info');
-			if(userCookies !== null ){
-				const user = JSON.parse(decode(userCookies));
-				return user;
-			}
+		const userCookies = getCookie('user-info');
+		if(userCookies !== null ){
+			const user = JSON.parse(decode(userCookies));
+			return user;
 		}
 		
 		return null;
@@ -106,8 +91,30 @@ function App() {
 
 	const setLoginUserInfo = (state) => {
 		let user = getCurrentUsers(state);
-		console.log(user);
 		setUser(user);
+		console.log({
+			p : 1,
+			user
+		})
+	}
+
+	const fetchAppInfo = (id) => {
+		let user = parseCookie(getCookie('user-info'));
+		console.log({
+			user,
+			id,
+			store : getStoreInfo(id)
+		});
+		if(user == null){
+			setAppInfo({});
+			return;
+		}
+		if(id===-1){
+			id = user.AdminRole;
+		}
+		setAppInfo({
+			appName : getStoreInfo(id)
+		})
 	}
 
     const checkUserLoggedInCredentialsValid = () => {
@@ -119,6 +126,7 @@ function App() {
 		if(user !== null ){
 			setUserLoginStatus(true);
 			setUser(user);
+			setAppInfo(-1);
 		}
 	}
 
@@ -128,7 +136,7 @@ function App() {
       fetchPurPaymentDue();
 	  fetchSalesPaymentDue();
 	  checkUserLoggedInCredentialsValid();
-
+	  fetchAppInfo(-1);
     },[])
 
     var content = {
@@ -150,7 +158,8 @@ function App() {
       purPaymentDue : purPaymentDue,
       salesPaymentDue : salesPaymentDue,
       isUserLoggedIn : isUserLoggedIn,
-      user : user,
+	  user : user,
+	  appInfo : appInfo,
 
       setSalesDueNumber : fetchSalDueProducts,
       setProNumber : fetchPurDueProducts,
@@ -158,6 +167,7 @@ function App() {
       setSalesPaymentDue : fetchSalesPaymentDue,
 	  setUserLoginStatus : setUserLoginStatusContext,
 	  setUser : setLoginUserInfo,
+	  setAppInfo : fetchAppInfo,
     }
 
     return (

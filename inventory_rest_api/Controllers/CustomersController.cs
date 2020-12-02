@@ -111,6 +111,123 @@ namespace inventory_rest_api.Controllers
             ).ToList();
         }
 
+        [HttpGet("credit-customer/by-date/{date}")]
+        public ActionResult<IEnumerable> GetCreditCustomersByDate(string date)
+        {
+            var query = from sales in _context.Sales
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        where sales.SalesPaidStatus == false 
+                        select new {
+                            customer.CustomerId,
+                            customer.CustomerName,
+                            customer.CustomerAddress,
+                            customer.CustomerContact,
+                            sales.SalesPrice,
+                            sales.SalesPaymentAmount,
+                            sales.SalesDuePaymentDate,
+                            CustomerDueAmount = sales.SalesPrice - sales.SalesPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable()
+            .Where( s => AppUtils.DateTime(s.SalesDuePaymentDate).ToShortDateString() == AppUtils.DateTime(date).ToShortDateString())
+            .GroupBy(
+                s => s.CustomerId,
+                (key,g) => new {
+                        
+                        g.First().CustomerName,
+                        g.First().CustomerAddress,
+                        g.First().CustomerContact,
+                        SalesPrice = g.Sum( s => s.SalesPrice),
+                        SalesPaymentAmount = g.Sum(s => s.SalesPaymentAmount),
+                        CustomerDueAmount = g.Sum( s => s.CustomerDueAmount)
+                        
+                }
+            ).ToList();
+        }
+
+        [HttpGet("credit-customer/by-days/{days}")]
+        public ActionResult<IEnumerable> GetCreditCustomersByDays(int days)
+        {
+            List<String> valDate = new List<string>();
+            for (int i = 0; i < days; i++)
+            {
+                long milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+                string dateTime =  AppUtils.DateTime(milliseconds-86400000*i ).ToShortDateString();
+                valDate.Add(dateTime);
+            }
+            var query = from sales in _context.Sales
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        where sales.SalesPaidStatus == false 
+                        select new {
+                            customer.CustomerId,
+                            customer.CustomerName,
+                            customer.CustomerAddress,
+                            customer.CustomerContact,
+                            sales.SalesPrice,
+                            sales.SalesPaymentAmount,
+                            sales.SalesDuePaymentDate,
+                            CustomerDueAmount = sales.SalesPrice - sales.SalesPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable()
+            .Where( s => valDate.Contains( AppUtils.DateTime(s.SalesDuePaymentDate).ToShortDateString()) )
+            .GroupBy(
+                s => s.CustomerId,
+                (key,g) => new {
+                        
+                        g.First().CustomerName,
+                        g.First().CustomerAddress,
+                        g.First().CustomerContact,
+                        SalesPrice = g.Sum( s => s.SalesPrice),
+                        SalesPaymentAmount = g.Sum(s => s.SalesPaymentAmount),
+                        CustomerDueAmount = g.Sum( s => s.CustomerDueAmount)
+                        
+                }
+            ).ToList();
+        }
+
+        [HttpGet("credit-customer/by-date-range/{date1}-{date2}")]
+        public ActionResult<IEnumerable> GetCreditCustomersByDateRange(string date1,string date2)
+        {
+            double d1 = double.Parse(date1);
+            double d2 = double.Parse(date2);
+
+            var query = from sales in _context.Sales
+                        join customer in _context.Customers
+                            on sales.CustomerId equals customer.CustomerId
+                        where sales.SalesPaidStatus == false 
+                        select new {
+                            customer.CustomerId,
+                            customer.CustomerName,
+                            customer.CustomerAddress,
+                            customer.CustomerContact,
+                            sales.SalesPrice,
+                            sales.SalesPaymentAmount,
+                            SalesDuePaymentDate = double.Parse(sales.SalesDuePaymentDate),
+                            CustomerDueAmount = sales.SalesPrice - sales.SalesPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable()
+            .Where( s => s.SalesDuePaymentDate >= d1 && s.SalesDuePaymentDate < d2 )
+
+            .GroupBy(
+                s => s.CustomerId,
+                (key,g) => new {
+                        
+                        g.First().CustomerName,
+                        g.First().CustomerAddress,
+                        g.First().CustomerContact,
+                        SalesPrice = g.Sum( s => s.SalesPrice),
+                        SalesPaymentAmount = g.Sum(s => s.SalesPaymentAmount),
+                        CustomerDueAmount = g.Sum( s => s.CustomerDueAmount)
+                        
+                }
+            ).ToList();
+        }
+
         // PUT: api/Customers/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomers(long id, Customer customer)

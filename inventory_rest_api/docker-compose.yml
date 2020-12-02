@@ -4,7 +4,7 @@ services:
         build: .
         environment:
           - ASPNETCORE_URLS=http://0.0.0.0:80
-          - ConnectionStringsInventoryDb=Server=sql.freeasphost.net\\MSSQL2016;Database=multidimensional_inventory_db;uid=multidimensional;pwd=1Secure*Password1;
+          - CSTRING=Server=sql.freeasphost.net\\MSSQL2016;Database=multidimensional_inventory_db;uid=multidimensional;pwd=1Secure*Password1;
           - CLIENT_APP=http://40.119.2.157
         ports:
             - "5101:80"

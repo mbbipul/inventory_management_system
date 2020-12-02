@@ -20,14 +20,11 @@ namespace inventory_rest_api
     {
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         
-        private string CLIENT_APP = Environment.GetEnvironmentVariable("CLIENT_APP");
-        private string SQL_SERVER_CONNECTION_STRING = Environment.GetEnvironmentVariable("CONNECTIONSTRING");
+        // private string CLIENT_APP = Environment.GetEnvironmentVariable("CLIENT_APP");
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-    
-            Console.WriteLine(Configuration.GetConnectionString("inventoryDb"));
         }
 
         public IConfiguration Configuration { get; }
@@ -40,7 +37,7 @@ namespace inventory_rest_api
                         options.AddPolicy(name: MyAllowSpecificOrigins,
                                         builder =>
                                         {
-                                            builder.WithOrigins(CLIENT_APP)
+                                            builder.WithOrigins("http://localhost:3000")
                                                                 .AllowAnyHeader()
                                                   .AllowAnyMethod()
                                                   .AllowCredentials();
@@ -102,10 +99,10 @@ namespace inventory_rest_api
                 endpoints.MapControllers();
             });
 
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetService<InventoryDbContext>().Database.Migrate();
-            }
+            // using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            // {
+            //     scope.ServiceProvider.GetService<InventoryDbContext>().Database.Migrate();
+            // }
         //   SeedData.EnsurePopulated(app);
         }
     }

@@ -13,6 +13,10 @@ spec:
   - http:
       paths:
       - backend:
+          serviceName: supportapi-serv
+          servicePort: 5004
+        path: /memos/(.*)
+      - backend:
           serviceName: store1-serv
           servicePort: 5001
         path: /store1/(.*)
@@ -25,16 +29,8 @@ spec:
           servicePort: 5003
         path: /store3/(.*)
       - backend:
-          serviceName: client1-serv
-          servicePort: 3001
-        path: /app1(/|$)(.*)
-      - backend:
-          serviceName: client2-serv
-          servicePort: 3002
-        path: /app2(/|$)(.*)
-      - backend:
-          serviceName: client3-serv
-          servicePort: 3003
+          serviceName: client-serv
+          servicePort: 3000
         path: /(.*)
       
       

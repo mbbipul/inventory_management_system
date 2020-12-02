@@ -666,6 +666,38 @@ namespace inventory_rest_api.Migrations
                     b.ToTable("SalesMemos");
                 });
 
+            modelBuilder.Entity("inventory_rest_api.Models.SalesMemoHistory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("MemoDigitalPrint")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MemoIssueDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SalesIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("SalesMemoHistoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SalesMemoHistories");
+                });
+
             modelBuilder.Entity("inventory_rest_api.Models.Supplier", b =>
                 {
                     b.Property<long>("SupplierId")
@@ -914,6 +946,15 @@ namespace inventory_rest_api.Migrations
                         .WithMany("SalesHistories")
                         .HasForeignKey("SalesId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("inventory_rest_api.Models.SalesMemoHistory", b =>
+                {
+                    b.HasOne("inventory_rest_api.Models.User", "User")
+                        .WithMany("SalesMemoHistories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

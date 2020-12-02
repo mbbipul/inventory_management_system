@@ -23,19 +23,19 @@ import {extendAppDrawerSideBar,collapseAppDrawerSideBar} from '../../actions';
 import Badge from '@material-ui/core/Badge';
 import ShopTwoOutlinedIcon from '@material-ui/icons/ShopTwoOutlined';
 import ShoppingBasketOutlinedIcon from '@material-ui/icons/ShoppingBasketOutlined';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import AppContext, { AppContextConsumer } from '../../context/appContext';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
 import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
 import { AccountCircle, ExpandLess, ExpandMore } from '@material-ui/icons';
 import { useCookies } from 'react-cookie';
-import { allStores, getStoreInfo } from '../../utils/storeInfo';
-import { app_name } from '../../utils/apiInfo';
+import { allStores, getStoreInfo,getStoreApiPath } from '../../utils/storeInfo';
+import { clientApi, getCookie, parseCookie, removeCookie, setCookie } from '../../utils/apiInfo';
+
 
 const drawerWidth = 200;
 
 const appComfigs = {
-  appName : app_name,
   appBarBackground : "#000",
 }
 const useStyles = makeStyles((theme) => ({
@@ -122,14 +122,26 @@ export default function AppDrawer() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const [switchStore, setSwitchStore] = React.useState(false);
-	const {  setUserLoginStatus  } = React.useContext(AppContext);
-  const [ cookies, setCookie, removeCookie] = useCookies(['user-info']);
+  const [redirect,setRedirect] = useState(false);
 
+  const {  setUserLoginStatus , setUser ,setAppInfo} = React.useContext(AppContext);
+  
   const handleSwitchStore = () => {
     setSwitchStore(!switchStore);
   };
 
   const handleLogout = () => {
+    let user = parseCookie(getCookie("user-info"));
+    if (user === null ){
+      window.location.replace('/');
+    }
+    if(user.AdminRole === 999){
+      removeCookie(getStoreInfo(0));
+      removeCookie(getStoreInfo(1));
+      removeCookie(getStoreInfo(2));
+    }else{
+      removeCookie(getStoreInfo(user.AdminRole));
+    }
     removeCookie("user-info");
     setUserLoginStatus(false);
   }
@@ -151,8 +163,38 @@ export default function AppDrawer() {
     dispatch(collapseAppDrawerSideBar());
   };
 
+
+  const switchStoreClientApp = (id) => {
+    let c_user = parseCookie(getCookie('user-info'));
+    let switch_user = parseCookie(getCookie(getStoreInfo(id)));
+    console.log({
+      c_user,
+      switch_user
+    });
+    if (switch_user !== null){
+      if(c_user.UserEmail == switch_user.UserEmail ){
+        setCookie('user-info',getCookie(getStoreInfo(id)),3);
+        setCookie('api-path',getStoreApiPath(id),3);
+        setUser(true);
+        setAppInfo(id);
+      }else{
+        removeCookie('user-info');
+        window.location.replace('/');
+      }
+    }else{
+      removeCookie('user-info');
+    }
+    setRedirect(true);
+  }
+
+  useEffect(() => {
+    setRedirect(false);
+  },[redirect]);
   return (
     <div className={classes.root}>
+      {
+        redirect && <Redirect push to="/" />
+      }
       <CssBaseline />
       <AppBar
                 position="fixed"
@@ -173,7 +215,11 @@ export default function AppDrawer() {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.flexGrow }>
-                      {appComfigs.appName}
+                         <AppContextConsumer >
+                            {({appInfo}) => (
+                              <b>{appInfo.appName}</b>
+                            )}
+                          </AppContextConsumer>
                     </Typography>
 
                     <section className={classes.rightToolbar}>
@@ -255,22 +301,27 @@ export default function AppDrawer() {
                             >
                               <ListItem button>
                                 <AppContextConsumer >
-                                  {({user}) =>  {
+                                  {({user,appInfo}) =>  {
                                     if (user === null )
                                       return '';
-                                    return <ListItemText primary={<span>{user.FirstName+" "+user.LastName} - <span style={{fontSize : 10}}>{getStoreInfo(user.AdminRole)}</span> </span>} />
+                                    return <ListItemText primary={<span>{user.FirstName+" "+user.LastName} - <span style={{fontSize : 10}}>{appInfo.appName}</span> </span>} />
                                   }}
                                 </AppContextConsumer>
                               </ListItem>
                               <ListItem button onClick={handleSwitchStore}>
-                                <ListItemText primary="Matrivandar Store" />
+                                  <AppContextConsumer >
+                                  {({appInfo}) => (
+                                    <ListItemText primary={appInfo.appName} />
+                                  )}
+                                </AppContextConsumer>
+                                
                                 {switchStore ? <ExpandLess /> : <ExpandMore />}
                               </ListItem>
                               <Collapse in={switchStore} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding>
                                   {
-                                    allStores.map((store,i) => (
-                                      <ListItem key={i} button className={classes.nested}>
+                                    allStores.slice(0,-1).map((store,i) => (
+                                      <ListItem key={i} onClick={() => switchStoreClientApp(i)} button className={classes.nested}>
                                         <ListItemText  primary={store} />
                                       </ListItem>
                                     ))

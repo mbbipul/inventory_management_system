@@ -18,6 +18,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Grid } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import SalesMemo from "./memo";
+import SalesMemoHistory from "./salesMemoHistory";
 
 function Sales () {
 
@@ -464,6 +465,9 @@ function Sales () {
                     </Route>
                     <Route exact path="/sales/sales-memo">
                         <SalesMemo />
+                    </Route>
+                    <Route exact path="/sales/sales-memo-history">
+                        <SalesMemoHistory />
                     </Route>
                 </Switch>
             </div>                        

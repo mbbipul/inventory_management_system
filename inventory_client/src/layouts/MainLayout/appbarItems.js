@@ -65,6 +65,10 @@ const sideBarItems = [
             },{
                 name : "Sales Memo",
                 ref : "sales/sales-memo"
+            },
+            {
+                name : "Sales Memo History",
+                ref : "sales/sales-memo-history"
             }
         ]
     },

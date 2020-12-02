@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace inventory_rest_api.Models
 {
     public class User
@@ -10,5 +12,7 @@ namespace inventory_rest_api.Models
         public bool HasSuperAdminRole { get; set; } 
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+
+        public List<SalesMemoHistory> SalesMemoHistories { get; set; }
     }
 }
