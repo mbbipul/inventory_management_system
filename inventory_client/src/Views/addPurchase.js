@@ -4,7 +4,6 @@ import Form from '../components/form';
 import { addPurchaseFormFields } from '../utils/appFormsFileds';
 import submitForm from '../utils/fetchApi';
 import Alert from '@material-ui/lab/Alert';
-import HistoryVisual from '../components/historyWithVisualization';
 import AppContext from '../context/appContext';
 
 class AddPurchase extends React.Component {
@@ -35,8 +34,7 @@ class AddPurchase extends React.Component {
         })
     }
 
-    submitPurchaseForm = (state) => {       
-        const context = this.context;
+    submitPurchaseForm = (state) => {     
         let exactPurchasePrice = parseFloat(state.PurchasePrice)-parseFloat(state.PurchaseDiscount);
 
         let paid = exactPurchasePrice - parseFloat(state.PurchasePaymentAmount) ;

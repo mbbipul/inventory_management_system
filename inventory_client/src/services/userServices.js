@@ -1,6 +1,8 @@
-import apiUrl from "../utils/apiInfo";
+import apiUrl, { clientApi } from "../utils/apiInfo";
 import { authHeader } from "../utils/authHeader";
+import { getStoreApiPath, getStoreInfo } from "../utils/storeInfo";
 
+const userControllerAPi = clientApi + 'store1/api/users/';
 export const userService = {
     login,
     logout,
@@ -10,7 +12,27 @@ export const userService = {
     update,
     delete: _delete
 };
- 
+
+const getDrawerStyle = (store) => {
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    switch (store) {
+        case 'store2':
+            style.innerHTML = '.MuiDrawer-paper{ background-color: #E15F07!important; color: aliceblue!important;}';
+            break;
+        case 'store3':
+            style.innerHTML = '.MuiDrawer-paper{ background-color: #065f15!important; color: aliceblue!important;}';
+            break;
+        case 'store1':
+            style.innerHTML = '.MuiDrawer-paper{ background-color: #080c41!important; color: aliceblue!important;}';
+            break;
+        default:
+            break;
+    }
+    
+    document.getElementsByTagName('head')[0].appendChild(style);
+}
+
 function login(user) {
     const requestOptions = {
         method: 'POST',
@@ -19,13 +41,14 @@ function login(user) {
         credentials: 'include'
     };
  
-    return fetch(apiUrl + 'users/authenticate', requestOptions)
+    return fetch(userControllerAPi+'authenticate', requestOptions)
         .then(handleResponse, handleError)
         .then(userInfo => {
             // login successful if there's a jwt token in the response
             if (userInfo && userInfo.token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
+                getDrawerStyle(getStoreApiPath(userInfo.adminRole));
             }
  
             return user;
@@ -43,7 +66,7 @@ function getAll() {
         headers: authHeader()
     };
  
-    return fetch(apiUrl + 'users', requestOptions).then(handleResponse, handleError);
+    return fetch(userControllerAPi, requestOptions).then(handleResponse, handleError);
 }
  
 function getById(id) {
@@ -52,7 +75,7 @@ function getById(id) {
         headers: authHeader()
     };
  
-    return fetch(apiUrl + 'users/' + id, requestOptions).then(handleResponse, handleError);
+    return fetch(userControllerAPi + id, requestOptions).then(handleResponse, handleError);
 }
  
 function registerUser(user) {
@@ -62,7 +85,7 @@ function registerUser(user) {
         body: JSON.stringify(user)
     };
  
-    return fetch(apiUrl + 'users/register', requestOptions).then(handleResponse, handleError);
+    return fetch(userControllerAPi+'register', requestOptions).then(handleResponse, handleError);
 }
  
 function update(user) {
@@ -72,7 +95,7 @@ function update(user) {
         body: JSON.stringify(user)
     };
  
-    return fetch(apiUrl + 'users/' + user.id, requestOptions).then(handleResponse, handleError);
+    return fetch(userControllerAPi + user.id, requestOptions).then(handleResponse, handleError);
 }
  
 // prefixed function name with underscore because delete is a reserved word in javascript
@@ -82,7 +105,7 @@ function _delete(id) {
         headers: authHeader()
     };
  
-    return fetch(apiUrl + 'users/' + id, requestOptions).then(handleResponse, handleError);
+    return fetch(userControllerAPi + id, requestOptions).then(handleResponse, handleError);
 }
  
 function handleResponse(response) {

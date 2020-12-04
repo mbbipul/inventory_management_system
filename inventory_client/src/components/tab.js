@@ -65,7 +65,7 @@ export default function FullWidthTabs(props) {
     if (props.onChangeTab){
       props.onChangeTab(value);
     }
-  },[value]);
+  },[props,value]);
 
   useEffect(() => {
     setValue(props.default ? props.default : 0);

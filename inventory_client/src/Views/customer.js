@@ -17,6 +17,14 @@ import HistoryVisual from "../components/historyWithVisualization";
 function Customer() {
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
+    const [data,setData] = useState([]);
+    const [creditCustomer,setCreditCustomer] = useState([]);
+    const [paidCustomer,setPaidCustomer] = useState([]);
+    const [showHistoryVisual,setShowHisVisual] = useState(false);
+    const [reportTabs,setReportTabs] = useState(0);
+
+    const [fromDate,setFromDate] = useState("");
+    const [toDate,setToDate] = useState("");
     const [columns,] = useState([
         { title: 'Customer Name', field: 'customerName' },
         { title: 'Address', field: 'customerAddress' },
@@ -53,15 +61,7 @@ function Customer() {
                                     clickable /> 
         },
 
-    ]
-    const [data,setData] = useState([]);
-    const [creditCustomer,setCreditCustomer] = useState([]);
-    const [paidCustomer,setPaidCustomer] = useState([]);
-    const [showHistoryVisual,setShowHisVisual] = useState(false);
-    const [reportTabs,setReportTabs] = useState(0);
-
-    const [fromDate,setFromDate] = useState("");
-    const [toDate,setToDate] = useState("");
+    ];
 
     let hisTabs = [
         {

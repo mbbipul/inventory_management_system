@@ -5,7 +5,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
-import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddDamage from "./addDamage";
@@ -32,7 +31,7 @@ function Damage () {
     const [openSnackbar,setOpenSnackbar] = useState(false);
     const [snackText,setSnackText] = useState('');
     const [snackSeverity,setSnackSeverity] = useState('success');
-    const [openUpdateProductQuantity,setUpdateQuanDialog] = useState(false);
+    const [,setUpdateQuanDialog] = useState(false);
     const [openUpdateProductAmount,setUpdateAmoDialog] = useState(false);
 
     const [openUpdateDamageProductDelivery,setDamageDeliveryUpdate] = useState(false);
@@ -63,15 +62,6 @@ function Damage () {
         // submitForm('Damages/'+rowData.damageId,"PUT",rowData,() => FetchData('returnFromCompany'));
     }
 
-    const updateDamageReturnFromProDue = (rowData) => {
-        setDamage(rowData);
-        setUpdateQuanDialog(true);
-    }
-
-    const updateDamageReturnFromProAmountDue = (rowData) => {
-        setDamage(rowData);
-        setUpdateAmoDialog(true);
-    }
     
     const columns = [
                         { title: 'Damage Id', field: 'damageId' },
@@ -312,10 +302,6 @@ function Damage () {
     }
     
 
-    const FetchDataByKeys = () => {
-        
-    }
-
     useEffect(() => {
         switch (damageManageTab) {
             case 0:
@@ -376,9 +362,6 @@ function Damage () {
                 FetchDataByDays(30);
                 break;
             case 6:
-                if(fromDate > toDate){
-                    alert("Starting date cannot larger than Last Date");
-                }
 
                 break;
             default:
@@ -394,17 +377,17 @@ function Damage () {
                 submitForm("Damages/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
             }    
         }
-    },[fromDate]);
+    },[fromDate,toDate]);
 
-    useEffect(() => {
-        if( reportTabs === 6){
-            if(fromDate > toDate){
-                alert("Starting date cannot larger than Last Date");
-            }else{
-                submitForm("Damages/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
-            }    
-        }
-    },[toDate]);
+    // useEffect(() => {
+    //     if( reportTabs === 6){
+    //         if(fromDate > toDate){
+    //             alert("Starting date cannot larger than Last Date");
+    //         }else{
+    //             submitForm("Damages/by-date-range/"+fromDate+"-"+toDate,"GET","",(res) => setData(JSON.parse(res)));
+    //         }    
+    //     }
+    // },[toDate]);
 
     const CustomTableColoumn = () => {
 

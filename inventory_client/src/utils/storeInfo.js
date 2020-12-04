@@ -16,6 +16,19 @@ export const getStoreInfo = (id) => {
     }
 };
 
+export const getStoreInfoByName = (name) => {
+    switch (name) {
+        case storeApis[0]:
+            return allStores[0];
+        case storeApis[1]:
+            return allStores[1];
+        case storeApis[2]:
+            return allStores[2];
+        default:
+            return storeApis[0];
+    }
+};
+
 export const getStoreApiPath = (id) => {
     switch (id) {
         case 0:

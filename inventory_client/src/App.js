@@ -29,7 +29,8 @@ import Payment from './Views/payment';
 import SignInSide from './layouts/MainLayout/signin';
 import { decode } from 'js-base64';
 import { getCookie, parseCookie, setCookie } from './utils/apiInfo';
-import { getStoreInfo } from './utils/storeInfo';
+import { getStoreInfo, getStoreInfoByName } from './utils/storeInfo';
+import AccountSetting from './Views/account-setting';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -98,22 +99,14 @@ function App() {
 		})
 	}
 
-	const fetchAppInfo = (id) => {
-		let user = parseCookie(getCookie('user-info'));
-		console.log({
-			user,
-			id,
-			store : getStoreInfo(id)
-		});
-		if(user == null){
+	const fetchAppInfo = () => {
+		let store = getCookie('store-info');
+		if(store == null){
 			setAppInfo({});
 			return;
 		}
-		if(id===-1){
-			id = user.AdminRole;
-		}
 		setAppInfo({
-			appName : getStoreInfo(id)
+			appName : getStoreInfoByName(store)
 		})
 	}
 
@@ -127,16 +120,37 @@ function App() {
 			setUserLoginStatus(true);
 			setUser(user);
 			setAppInfo(-1);
+			getDrawerStyle(getCookie('store-info'));
 		}
 	}
 
+	const getDrawerStyle = (store) => {
+		var style = document.createElement('style');
+		style.type = 'text/css';
+		switch (store) {
+			case 'store2':
+				style.innerHTML = '.MuiDrawer-paper{ background-color: #E15F07!important; color: aliceblue!important;}';
+				break;
+			case 'store3':
+				style.innerHTML = '.MuiDrawer-paper{ background-color: #065f15!important; color: aliceblue!important;}';
+				break;
+			case 'store1':
+				style.innerHTML = '.MuiDrawer-paper{ background-color: #080c41!important; color: aliceblue!important;}';
+				break;
+			default:
+				break;
+		}
+		
+		document.getElementsByTagName('head')[0].appendChild(style);
+	}
     useEffect(() => {
-      fetchPurDueProducts();
-      fetchSalDueProducts();
-      fetchPurPaymentDue();
-	  fetchSalesPaymentDue();
-	  checkUserLoggedInCredentialsValid();
-	  fetchAppInfo(-1);
+		fetchPurDueProducts();
+		fetchSalDueProducts();
+		fetchPurPaymentDue();
+		fetchSalesPaymentDue();
+		checkUserLoggedInCredentialsValid();
+		fetchAppInfo(-1);
+	  
     },[])
 
     var content = {
@@ -181,6 +195,9 @@ function App() {
 							<Switch>
 								<Route exact path="/">
 									<DashBoard />
+								</Route>
+								<Route exact path="/account-setting">
+									<AccountSetting />
 								</Route>
 								<Route exact path="/dashboard">
 									<DashBoard />

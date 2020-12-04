@@ -3,7 +3,6 @@ import IconCard from './iconCard';
 import { Grid } from '@material-ui/core';
 import CanvasJSReact from '../assets/canvasjs.react';
 
-var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 function TodaysReport (props){

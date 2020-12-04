@@ -5,7 +5,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
-import ProductTable from '../components/productTable';
 import AddProduct from "./addProduct";
 import Category from "./category";
 import apiUrl from "../utils/apiInfo";
@@ -101,7 +100,7 @@ function Product() {
 
         let profit = 0;
 
-        if (totalSalesPrice == 0) {
+        if (totalSalesPrice === 0) {
             profit = "Not sale yet";
         }else{
             profit = totalSalesPrice - totalPurchasePrice;

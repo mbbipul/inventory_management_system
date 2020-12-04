@@ -5,7 +5,7 @@ const submitForm = (path,method,data,onSuccess) => {
     var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Access-Control-Allow-Origin",'http://localhost:3000');
-      //  myHeaders.append("Authorization",'Bearer '+getBarrier());
+        myHeaders.append("Authorization",'Bearer '+getBarrier());
         var raw = JSON.stringify(data);
 
         var requestOptions = {
@@ -34,7 +34,7 @@ export const submitFormWithAddress = (path,method,data,onSuccess) => {
     var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Access-Control-Allow-Origin",'http://localhost:3000');
-      //  myHeaders.append("Authorization",'Bearer '+getBarrier());
+        myHeaders.append("Authorization",'Bearer '+getBarrier());
         var raw = JSON.stringify(data);
 
         var requestOptions = {

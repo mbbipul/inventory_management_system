@@ -58,6 +58,21 @@ namespace inventory_rest_api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [AllowAnonymous]
+        [HttpGet("switch-store/{store}")]
+        public IActionResult SwithcStore(int store)
+        {
+            // map dto to entity
+            Response.Cookies.Append(
+                "store-info",
+                getStoreUrl(store),
+                new CookieOptions{
+                    Expires = DateTimeOffset.Now.AddMinutes(30)
+                }
+            );
+            return Ok();
+        }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
@@ -97,6 +112,14 @@ namespace inventory_rest_api.Controllers
             Response.Cookies.Append(
                 "user-info",
                 loginCookies,
+                new CookieOptions{
+                    Expires = DateTimeOffset.Now.AddMinutes(30)
+                }
+            );
+
+            Response.Cookies.Append(
+                "store-info",
+                getStoreUrl(user.AdminRole),
                 new CookieOptions{
                     Expires = DateTimeOffset.Now.AddMinutes(30)
                 }
@@ -148,6 +171,7 @@ namespace inventory_rest_api.Controllers
             return Ok(userDtos);
         }
  
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -155,7 +179,8 @@ namespace inventory_rest_api.Controllers
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
         }
- 
+
+        [AllowAnonymous]
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
@@ -176,6 +201,7 @@ namespace inventory_rest_api.Controllers
             }
         }
  
+        [AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -199,6 +225,22 @@ namespace inventory_rest_api.Controllers
                     return "Bashundhara";
                 default:
                     return "";
+            }
+        }
+
+        public string getStoreUrl(int id){
+            switch (id)
+            {
+                case 0:
+                    return "store1";
+                case 1:
+                    return "store2";
+                case 2:
+                    return "store3";
+                case 999:
+                    return "store1";
+                default:
+                    return "store1";
             }
         }
     }

@@ -6,8 +6,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import { Badge, Paper } from '@material-ui/core';
 import { getStoreInfo } from '../utils/storeInfo';
 
@@ -64,7 +62,7 @@ export default function ProfileList(props) {
         
             {
                 props.users.map((user,i) => (
-                    <Badge color="secondary" badgeContent={user.adminRole === 999 ? 'Admin' : null} key={i}>
+                    <Badge color="secondary" badgeContent={user.hasSuperAdminRole ? 'Admin' : null} key={i}>
                         <Paper  className={classes.paper} onClick={() => props.onProfileClick(user)}>
                             <ListItem>
                                 <ListItemAvatar>

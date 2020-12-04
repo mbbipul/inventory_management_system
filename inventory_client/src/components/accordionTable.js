@@ -5,9 +5,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { green, grey } from '@material-ui/core/colors';
 import { Card, createMuiTheme, Grid, ThemeProvider } from '@material-ui/core';
-import ProductTable from '../components/productTable';
 import MaterialTable from 'material-table';
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +50,7 @@ export default function AccordionsTable(props) {
                 {
                     props.headers.map((h,i) => (
                         <Grid item xs>
-                            <Typography className={i == 0 ? classes.heading : classes.secondaryHeading}>{h}</Typography>
+                            <Typography className={i === 0 ? classes.heading : classes.secondaryHeading}>{h}</Typography>
                         </Grid>
                     ))
                 }
@@ -71,7 +69,7 @@ export default function AccordionsTable(props) {
                         >
                         {
                             acc.headers.map((h,i) => (
-                                <Typography className={i == 0 ? classes.heading : classes.secondaryHeading}>{h}</Typography>
+                                <Typography className={i === 0 ? classes.heading : classes.secondaryHeading}>{h}</Typography>
                             ))
                         }
 

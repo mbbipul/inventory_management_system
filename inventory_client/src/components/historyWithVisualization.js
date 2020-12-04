@@ -68,7 +68,7 @@ export default function HistoryVisual(props) {
 
   useEffect(() => {
     props.handleTabs(value);
-  },[value]);
+  },[props,value]);
 
   return (
     <div className={classes.root}>

@@ -24,8 +24,8 @@ import breakImage from '../../assets/break.png';
 import { decode } from 'js-base64';
 import { allStores, getStoreInfo } from '../../utils/storeInfo';
 import AppContext from '../../context/appContext';
-import submitForm from '../../utils/fetchApi';
-import { getCookie, getFullName, removeCookie, setCookie } from '../../utils/apiInfo';
+import submitForm, { submitFormWithAddress } from '../../utils/fetchApi';
+import { clientApi, getCookie, getFullName, removeCookie, setCookie } from '../../utils/apiInfo';
 
 function Copyright() {
   return (
@@ -135,7 +135,7 @@ export default function SignInSide() {
 		setSignInNotSuccess(!isSignInNotSuccess);
 	}
 	const switchSignInUp = () => {
-		setSwitchForm(!switchForm);
+		// setSwitchForm(!switchForm);
 	};
 
 	const switchSignInSuceess = () => {
@@ -287,7 +287,7 @@ export default function SignInSide() {
 	}))(Button);
 
 	useEffect(() => {
-		submitForm("users","GET","", (res) => {
+		submitFormWithAddress(clientApi+"store1/api/users","GET","", (res) => {
 			setUsers(JSON.parse(res));
 		});
 	},[]);
@@ -397,11 +397,11 @@ export default function SignInSide() {
 															Forgot password?
 															</Link>
 														</Grid> */}
-														<Grid item>
+														{/* <Grid item>
 															<Link href="#" variant="body2" onClick={switchSignInUp}>
 															Don't have an account? Sign Up
 															</Link>
-														</Grid>
+														</Grid> */}
 														</Grid>
 														<Box mt={5}>
 														<Copyright />

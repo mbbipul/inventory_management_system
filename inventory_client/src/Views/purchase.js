@@ -293,7 +293,7 @@ function Purchase () {
         if(purchaseReport.purchaseRate){
             purchaseReport.purchaseRate.map( p => {
                 let label = "";
-                if (new Date().toLocaleDateString() == p.date){
+                if (new Date().toLocaleDateString() === p.date){
                     label = "Today's Purchase"
                 }
                 dataPoints.push({ label: p.date,  y: p.count  ,indexLabel : label});

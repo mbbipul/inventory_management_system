@@ -6,11 +6,7 @@ import {
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
 import ProductTable from '../components/productTable';
-import AddCompany from "./addCompany";
 import ManageTable from "../components/manageTable";
-import apiUrl from "../utils/apiInfo";
-import AddCost from "./addCost";
-import MaterialTable from "material-table";
 import AddEmployee from "./addEmployee";
 import submitForm from "../utils/fetchApi";
 

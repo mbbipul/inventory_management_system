@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {Collapse, Drawer, ListItem, ListItemText, Menu, MenuItem, Select} from '@material-ui/core';
+import {Collapse, Drawer, ListItem, ListItemText, Menu, MenuItem, Tooltip} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -28,9 +28,9 @@ import AppContext, { AppContextConsumer } from '../../context/appContext';
 import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
 import CreditCardOutlinedIcon from '@material-ui/icons/CreditCardOutlined';
 import { AccountCircle, ExpandLess, ExpandMore } from '@material-ui/icons';
-import { useCookies } from 'react-cookie';
-import { allStores, getStoreInfo,getStoreApiPath } from '../../utils/storeInfo';
+import { allStores, getStoreInfo } from '../../utils/storeInfo';
 import { clientApi, getCookie, parseCookie, removeCookie, setCookie } from '../../utils/apiInfo';
+import { submitFormWithAddress } from '../../utils/fetchApi';
 
 
 const drawerWidth = 200;
@@ -49,6 +49,19 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+  },
+  appBarstore1 : {
+    "background": "#000",
+  },
+  appBarstore2 : {
+    "background": "#654ea3",
+    "background": "-webkit-linear-gradient(to right, #654ea3, #eaafc8);", /* Chrome 10-25, Safari 5.1-6 */
+    "background": "linear-gradient(to right, #654ea3, #eaafc8);" 
+  },
+  appBarstore3 : {
+    "background": "#ffe000",
+    "background": "-webkit-linear-gradient(to right, #ffe000, #799f0c);", /* Chrome 10-25, Safari 5.1-6 */
+    "background": "linear-gradient(to right, #ffe000, #799f0c);" 
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -122,7 +135,7 @@ export default function AppDrawer() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const [switchStore, setSwitchStore] = React.useState(false);
-  const [redirect,setRedirect] = useState(false);
+  const [stForcss,setStoreForcss] = useState('store1');
 
   const {  setUserLoginStatus , setUser ,setAppInfo} = React.useContext(AppContext);
   
@@ -133,6 +146,7 @@ export default function AppDrawer() {
   const handleLogout = () => {
     let user = parseCookie(getCookie("user-info"));
     if (user === null ){
+      getDrawerStyle(0);
       window.location.replace('/');
     }
     if(user.AdminRole === 999){
@@ -143,6 +157,7 @@ export default function AppDrawer() {
       removeCookie(getStoreInfo(user.AdminRole));
     }
     removeCookie("user-info");
+    removeCookie("store-info");
     setUserLoginStatus(false);
   }
 
@@ -163,6 +178,25 @@ export default function AppDrawer() {
     dispatch(collapseAppDrawerSideBar());
   };
 
+  const getDrawerStyle = (store) => {
+		var style = document.createElement('style');
+		style.type = 'text/css';
+		switch (store) {
+			case 'store2':
+				style.innerHTML = '.MuiDrawer-paper{ background-color: #E15F07!important; color: aliceblue!important;}';
+				break;
+			case 'store3':
+				style.innerHTML = '.MuiDrawer-paper{ background-color: #065f15!important; color: aliceblue!important;}';
+				break;
+			case 'store1':
+				style.innerHTML = '.MuiDrawer-paper{ background-color: #080c41!important; color: aliceblue!important;}';
+				break;
+			default:
+				break;
+		}
+		
+		document.getElementsByTagName('head')[0].appendChild(style);
+	}
 
   const switchStoreClientApp = (id) => {
     let c_user = parseCookie(getCookie('user-info'));
@@ -172,29 +206,27 @@ export default function AppDrawer() {
       switch_user
     });
     if (switch_user !== null){
-      if(c_user.UserEmail == switch_user.UserEmail ){
+      if(c_user.UserEmail === switch_user.UserEmail ){
         setCookie('user-info',getCookie(getStoreInfo(id)),3);
-        setCookie('api-path',getStoreApiPath(id),3);
         setUser(true);
-        setAppInfo(id);
+        setAppInfo();
       }else{
         removeCookie('user-info');
-        window.location.replace('/');
       }
     }else{
       removeCookie('user-info');
     }
-    setRedirect(true);
+    submitFormWithAddress(clientApi+"store1/api/users/switch-store/"+id,"GET","",() => {
+      window.location.replace('/');
+    });
   }
 
   useEffect(() => {
-    setRedirect(false);
-  },[redirect]);
+    setStoreForcss(getCookie('store-info'));
+  },[]);
+
   return (
     <div className={classes.root}>
-      {
-        redirect && <Redirect push to="/" />
-      }
       <CssBaseline />
       <AppBar
                 position="fixed"
@@ -223,50 +255,58 @@ export default function AppDrawer() {
                     </Typography>
 
                     <section className={classes.rightToolbar}>
-                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-due-products"}  >
-                        <IconButton  aria-label="purchase due" color="inherit">
-                          <AppContextConsumer >
-                            {({purDueNumber}) => (
-                              <Badge badgeContent={purDueNumber} color="secondary">
-                                <ShopTwoOutlinedIcon />
-                              </Badge>
-                            )}
-                          </AppContextConsumer>
-                        </IconButton>
-                      </Link>
-                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-payment-due"}  >
-                        <IconButton  aria-label="purchase payment due" color="inherit">
-                          <AppContextConsumer >
-                            {({purPaymentDue}) => (
-                              <Badge badgeContent={purPaymentDue} color="secondary">
-                                <AccountBalanceWalletOutlinedIcon />
-                              </Badge>
-                            )}
-                          </AppContextConsumer>
-                        </IconButton>
-                      </Link>
-                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-due-products"}  >
-                        <IconButton  aria-label="sales due" color="inherit">
-                          <AppContextConsumer >
-                            {({salesDueNumber}) => (
-                              <Badge badgeContent={salesDueNumber} color="secondary">
-                                <ShoppingBasketOutlinedIcon />
-                              </Badge>
-                            )}
-                          </AppContextConsumer>
-                        </IconButton>
-                      </Link>
-                      <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-payment-due"}  >
-                        <IconButton  aria-label="sales payment due" color="inherit">
-                          <AppContextConsumer >
-                            {({salesPaymentDue}) => (
-                              <Badge badgeContent={salesPaymentDue} color="secondary">
-                                <CreditCardOutlinedIcon />
-                              </Badge>
-                            )}
-                          </AppContextConsumer>
-                        </IconButton>
-                      </Link>
+                      <Tooltip title="Purchase Due Products">
+                        <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-due-products"}  >
+                          <IconButton  aria-label="purchase due" color="inherit">
+                            <AppContextConsumer >
+                              {({purDueNumber}) => (
+                                <Badge badgeContent={purDueNumber} color="secondary">
+                                  <ShopTwoOutlinedIcon />
+                                </Badge>
+                              )}
+                            </AppContextConsumer>
+                          </IconButton>
+                        </Link>
+                      </Tooltip>
+                      <Tooltip title="Purchase Payment Dues">
+                        <Link style={{textDecoration: "none",color:"#fff"}} to={"/purchase/purchase-payment-due"}  >
+                          <IconButton  aria-label="purchase payment due" color="inherit">
+                            <AppContextConsumer >
+                              {({purPaymentDue}) => (
+                                <Badge badgeContent={purPaymentDue} color="secondary">
+                                  <AccountBalanceWalletOutlinedIcon />
+                                </Badge>
+                              )}
+                            </AppContextConsumer>
+                          </IconButton>
+                        </Link>
+                      </Tooltip>
+                      <Tooltip title="Sales Due Products">
+                        <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-due-products"}  >
+                          <IconButton  aria-label="sales due" color="inherit">
+                            <AppContextConsumer >
+                              {({salesDueNumber}) => (
+                                <Badge badgeContent={salesDueNumber} color="secondary">
+                                  <ShoppingBasketOutlinedIcon />
+                                </Badge>
+                              )}
+                            </AppContextConsumer>
+                          </IconButton>
+                        </Link>
+                      </Tooltip>
+                      <Tooltip title="Sales Payment Dues">
+                        <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-payment-due"}  >
+                          <IconButton  aria-label="sales payment due" color="inherit">
+                            <AppContextConsumer >
+                              {({salesPaymentDue}) => (
+                                <Badge badgeContent={salesPaymentDue} color="secondary">
+                                  <CreditCardOutlinedIcon />
+                                </Badge>
+                              )}
+                            </AppContextConsumer>
+                          </IconButton>
+                        </Link>
+                      </Tooltip>
                       <Link style={{textDecoration: "none",color:"#fff"}}   >
                         <IconButton
                           aria-label="account of current user"
@@ -305,6 +345,19 @@ export default function AppDrawer() {
                                     if (user === null )
                                       return '';
                                     return <ListItemText primary={<span>{user.FirstName+" "+user.LastName} - <span style={{fontSize : 10}}>{appInfo.appName}</span> </span>} />
+                                  }}
+                                </AppContextConsumer>
+                              </ListItem>
+                              <ListItem button>
+                                <AppContextConsumer >
+                                  {({user}) =>  {
+                                    if (user === null || user.HasSuperAdminRole === false)
+                                      return '';
+                                    if (user.AdminRole !== 999)
+                                      return '';
+                                    return  <Link style={{textDecoration: "none",color:"#000"}} to={"/account-setting"}  >
+                                              <ListItemText  primary="Account Setting" />
+                                            </Link>
                                   }}
                                 </AppContextConsumer>
                               </ListItem>
