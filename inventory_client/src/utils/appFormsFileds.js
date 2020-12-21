@@ -345,103 +345,62 @@ const newSalesFormFields = [
 
     },
     {
-        label : "Product Name",
-        placeholder : "Ice Cream",
-        type : 3,
-        dependOnThis : "Product purchase Details",
-        dialogFormContent : <Link style={{marginLeft:"30%"}} to="/product/add-product"  target="_blank">Please Click Here to Add new Product</Link>,
-        fetchUrl : apiUrl+"Products",
-        selectName : "productName",
-        selectKey : "productId",
-        required : false,
-        disabled : false,
-        validation : [9999]
+        label : "Customer NID",
+        dependsOn : "CustomerName",
+        type : 10,
+        selectValue : "customerNID"
     },
     {
-        label : "Product purchase Details",
-        type : 9,
-        dependsOn : "ProductName",
-        hasContentRoot : true,
-        content : [ {
-                        label : "Purchase Price (per)",
-                        postText : " tk",
-                        data : "perProductPurchasePrice"
+        label : "Customer Contact",
+        dependsOn : "CustomerName",
+        type : 10,
+        selectValue : "customerContact"
+    },
+    {
+        label : "Customer Address",
+        dependsOn : "CustomerName",
+        type : 10,
+        selectValue : "customerAddress"
+    },
+    {
+        label : "Product Info",
+        columns : [
+            { 
+                title: 'Product Name', 
+                field: 'productName',
+                editable: 'never' ,
+                fetchUrl : apiUrl+"Products",
+                selectName : "productName",
+                selectKey : "productId",
+            },
+            { title: "Product Quantity", field: 'productQuantity'},
+            { title: 'Product Price (per product)', field: 'productPrice'},
+            { title: 'Total Price', field: 'productPrice'}
 
-                    },
-                    {
-                        label : "Pre Sales price (per)",
-                        postText : " tk",
-                        data : "perProductSalesPrice"
-                    },
-                    {
-                        label : "Product Quantity In Stock",
-                        postText : "",
-                        data : "productQuantity"
-
-                    }]
+        ],
+        type : 11,
+        selectValue : "customerAddress"
     },
     {
-        label : "Product Quantity",
-        placeholder : "5",
-        type : 8,
-        dependsOn : {
-            field : ["Product Name","totalProductInStock"],
-            operation : 2
-        },
-        required : true,
-        disabled : false,
-        validation : [0]
-    },
-    {
-        label : "Sales Price",
-        labelExtra : " ( Per Product )",
-        placeholder : "700.00 tk",
-        type : 5,
-        required : true,
-        disabled : false,
-        validation : [0]
-    },
-    {
-        label : "Sales Discount",
-        placeholder : "200.00 tk",
-        type : 0,
-        required : true,
-        disabled : false,
-        validation : [0]
-    },
-    {
-        label : "Sales Price With Discount",
-        type : 8,
-        dependsOn : {
-            field : ["Sales Price","Product Quantity","Sales Discount"],
-            operation : 3
-        },
-    },
-    {
-        label : "",
-        disabled : false,
         type : 999,
+        label : ''
     },
     {
         label : "Sales Payment Amount",
-        placeholder : "500.00 tk",
-        type : 7,
-        dependsOn : {
-            field : ["Sales Price","Product Quantity","Sales Discount"],
-            operation : 6// multiply substruct operation with check this value is not larger
-        },
+        placeholder : "450.00 tk",
+        type : 0,
         required : true,
         disabled : false,
-        validation : [999]
+        validation : [0] 
     },
     {
-        label : "Sales Due Payment Date",
-        placeholder : "12-12-2021",
-        type : 6,
-        required : true,
-        disabled : false,
-        validation : [999]
-    }
+        label : "Sales Payment Due Amount",
+        type : 8,
+        dependsOn : {
+            field : ["Total Product Price","Sales Payment Amount"],
+            operation : 1
+        },
+    },
     
 ] ;
 

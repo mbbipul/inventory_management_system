@@ -1,0 +1,11 @@
+.form-table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+.form-table-th-td {
+    border: 1px solid #dddddd;
+    text-align: right;
+    padding: 10px;
+    display: table-cell;
+}

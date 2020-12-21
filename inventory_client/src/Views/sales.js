@@ -140,7 +140,7 @@ function Sales () {
         if(location.length <= 2){
             setHeaderSubtitile(location[1]);
         }
-        if(location[2] === "sales-memo"){
+        if(location[2] === "sales-memo" || location[2] === "new-sales"){
             setShowHistoryVisual(false);
         }else{
             setShowHistoryVisual(true);

@@ -53,13 +53,15 @@ export function removeCookie(name){
 }
 
 const getApiUrl = () => {
+    return "";
     const userCookies = getCookie('store-info');
 	if(userCookies !== null ){
         return userCookies;
     }
     return "store1";
 }
-export const supportAPiUrl = "http://40.119.2.157/memos/"+getApiUrl();
-const apiUrl = "http://40.119.2.157/"+getApiUrl()+"/api/";
-export const clientApi = "http://40.119.2.157/";
+
+export const clientApi = "https://localhost:5001";
+export const supportAPiUrl = clientApi+getApiUrl();
+const apiUrl = clientApi+getApiUrl()+"/api/";
 export default apiUrl;

@@ -28,8 +28,25 @@ const useStyles = makeStyles(theme => ({
 
 export default function ToggleButtons(props) {
 
+  const content = [ {
+    label : "Purchase Price (per)",
+    postText : " tk",
+    data : "perProductPurchasePrice"
 
-  const [toggle, setToggleAct] = React.useState(99999999);
+},
+{
+    label : "Pre Sales price (per)",
+    postText : " tk",
+    data : "perProductSalesPrice"
+},
+{
+    label : "Product Quantity In Stock",
+    postText : "",
+    data : "productQuantity"
+
+}];
+
+  const [toggle, setToggleAct] = React.useState(0);
   const [data, setData] = React.useState([]);
 
   const handleToggle = (event, act) => {
@@ -76,7 +93,8 @@ export default function ToggleButtons(props) {
                               value={i}
                           >
                               {
-                                props.title.productName+ " - "+ item.perProductPurchasePrice+"tk"
+                                67777
+                               // props.title.productName+ " - "+ item.perProductPurchasePrice+"tk"
                               }
                           </ToggleButton>
                 if (item.productQuantity <= 0){
@@ -94,7 +112,7 @@ export default function ToggleButtons(props) {
         </Box>
 
         {
-         props.field.content.map((c,i) => {
+         content.map((c,i) => {
               if ( toggle === 99999999){
                 return ;
               }

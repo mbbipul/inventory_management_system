@@ -1,10 +1,11 @@
 import React from 'react';
-import {TextField ,Grid , MenuItem , Divider , Button, Paper} from '@material-ui/core';
+import {TextField ,Grid , MenuItem , Divider , Button, Paper, Typography} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
 import ToggleButtons from './toggleButtonGroup';
 
+import { FormTable } from './formTable';
 
 class Form extends React.Component {
 
@@ -26,6 +27,13 @@ class Form extends React.Component {
         this.setState({
             hasAnyError : errorArray,
         });
+    }
+
+    handleFormTable = (field,value) => {
+        const name = field.label.replace(/\s/g, '');
+        this.setState({
+            [name]: value,
+          });
     }
     handleInputChange = (event,fieldIndex,field)  => {
         const target = event.target;
@@ -516,6 +524,32 @@ class Form extends React.Component {
                                     }
                                     
                                     break;
+                                case 10:
+                                    item =  <Grid key={i} item xs={6}>
+                                                <Grid
+                                                    style={{border: '1px solid black',padding:20,borderRadius : 5}}
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center">
+                                                    <Grid item xs={6}>
+                                                        <Typography>{field.label} : </Typography> 
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        {
+                                                            this.state[field.dependsOn] &&
+                                                                <Typography>{this.state[field.dependsOn][field.selectValue]}</Typography>
+                                                        }
+                                                    </Grid>                                               
+                                                </Grid>
+                                            </Grid>;
+                                    break;
+                                case 11://form table
+                                    item =  <Grid key={i} item xs={12}>
+                                                <FormTable onDataChange={(v) => this.handleFormTable(field,v)} field={field}/>
+                                            </Grid>;
+                                    break;
+
                                 case 999:// break line
                                     item = <Grid key={i} item xs={12}>
                                                 <br />
