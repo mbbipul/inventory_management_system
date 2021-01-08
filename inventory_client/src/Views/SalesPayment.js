@@ -7,7 +7,7 @@ export default function SalesPayment(){
     const [data,setData] = useState([]);
 
     const columns = [
-        { title: 'Product Name', field: 'productName' },
+        { title: 'Sales Id', field: 'salesId' },
         { title: 'Customer Name', field: 'customerName' },
         { title: 'Purchase Payment Amount', field: 'paymentAmount' },
         { 

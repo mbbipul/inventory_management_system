@@ -8,28 +8,32 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
 import MaterialUIPickers from '../components/datePicker';
 import DeleteALert from '../components/deleteALert';
+import FullWidthTabs from '../components/tab';
+import { Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 
   
 export default function SalesPaymentDue(props) {
 
     const [data,setData] = useState([]);
+    const [orderSales,setOrderSales] = useState([]);
+
     const [open,setOpen] = useState(false);
 
     const [fieldValue,setFieldValue] = useState("");
-    const [nextPaymentDueDate,setNextPaymentDueDate] = useState(new Date().getTime());
     const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
     const [tmpData,setTmpData] = useState({});
+    const [salesTab,setSalesTab] = useState(0);
+    const [openSnackbar,setOpenSnackbar] = useState(false);
 
     const [columns,] =  useState([
         { title: 'Sales Id   ', field: 'salesId' },
         { title: 'Customer Name', field: 'customerName' },
-        { title: 'Product Name', field: 'productName' },
         { title: 'Sales Payment Due Amount', field: 'salesPaymentDue' },
         { 
             title: 'Sales Date', 
@@ -37,13 +41,19 @@ export default function SalesPaymentDue(props) {
             render : rowData => new Date(parseInt(rowData.salesDate)).toDateString() 
 
         },
+
+    ]);
+
+    const [OrderSalesColumns,] =  useState([
+        { title: 'Order Sales Id   ', field: 'orderSalesId' },
+        { title: 'DSR (Employee) Name', field: 'employeeName' },
+        { title: 'Order Payment Due Amount', field: 'orderPaymentDue' },
         { 
-            title: 'Sales Due Payment Date', 
-            field: 'salesDuePaymentDate',
-            render : rowData => new Date(parseInt(rowData.salesDuePaymentDate)).toDateString() 
+            title: 'Sales Date', 
+            field: 'salesDate' ,
+            render : rowData => new Date(parseInt(rowData.orderDate)).toDateString() 
 
-         },
-
+        },
 
     ]);
 
@@ -52,14 +62,18 @@ export default function SalesPaymentDue(props) {
     const {  setSalesPaymentDue } = React.useContext(AppContext);
 
     const FetchData = async () => {
-
         submitForm("sales/sales-payment-due","GET","",(res) => setData(JSON.parse(res)))
         setSalesPaymentDue();
-        
     };
+
+    const FetchOrderData = () =>{
+        submitForm("orders/order-sales-payment-due","GET","",(res) => setOrderSales(JSON.parse(res)))
+        setSalesPaymentDue();
+    }
 
     useEffect(() => {
         FetchData();
+        FetchOrderData();
     },[]);
 
     const handleDialog = (data) => {
@@ -79,8 +93,9 @@ export default function SalesPaymentDue(props) {
             }
            
             submitForm("sales/sales-payment-due/"+ 
-                    salesWithDue.salesId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {
+                    salesWithDue.salesId+"-"+parseFloat(fieldValue),"PUT","",(res) => {
                         submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                            setOpenSnackbar(true);
                             FetchData();
                         });
                     });
@@ -101,29 +116,66 @@ export default function SalesPaymentDue(props) {
     }
 
     const handleDeleteALertAgree = () => {
-        if (tmpData === null) {
-            alert('Something Went wrong');
-            return ;
-        }
-
-        let paymentSaleseHis = {
-            salesId : tmpData.salesId,
-            paymentSalesDate : new Date().getTime().toString(),
-            paymentAmount : tmpData.salesPaymentDue,
-        }
-        submitForm("sales/sales-payment-due/"+ 
-            tmpData.salesId+"-"+tmpData.salesPaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {
-                submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
-                    FetchData();
+        if(salesTab===0){
+            if (tmpData === null) {
+                alert('Something Went wrong');
+                return ;
+            }
+    
+            let paymentSaleseHis = {
+                salesId : tmpData.salesId,
+                paymentSalesDate : new Date().getTime().toString(),
+                paymentAmount : tmpData.salesPaymentDue,
+            }
+            submitForm("sales/sales-payment-due/"+ 
+                tmpData.salesId+"-"+tmpData.salesPaymentDue,"PUT","",(res) => {
+                    submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                        setOpenSnackbar(true);
+                        FetchData();
+                    });
                 });
-            });
+    
+            setOpenDeleteAlert(false);
+        }else{
+            if (tmpData === null) {
+                alert('Something Went wrong');
+                return ;
+            }
+    
+            let paymentOrderSaleseHis = {
+                orderSalesId : tmpData.orderSalesId,
+                paymentOrderSalesDate : new Date().getTime().toString(),
+                paymentAmount : tmpData.orderPaymentDue,
+            }
+            submitForm("orders/order-sales-payment-due/"+ 
+                tmpData.orderSalesId+"-"+tmpData.orderPaymentDue,"PUT",paymentOrderSaleseHis,(res) => {
+                   // submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                    setOpenSnackbar(true);
+                    FetchOrderData();
+                    //});
+                });
+    
+            setOpenDeleteAlert(false);
+        }
 
-        setOpenDeleteAlert(false);
         setTmpData(null);
     }
+    const handleSalesTab = (v) => {
+        setSalesTab(v);
+    }
+
+    const tabsSales = [
+        {
+            tab : "Manage Sales Payment Due",
+            tabPanel :  ''
+        },
+        {
+            tab : "Manage Order Payment Due",
+            tabPanel :  ''
+        }];
 
     return(
-        <div>
+        <div style={{margin : 20}}>
             <DeleteALert 
                 message="Make sure that you Recieve all payment of this Sales . "
                 title=" Are you sure to Mark this Sales as Mark Sales payment Paid ?" 
@@ -145,11 +197,6 @@ export default function SalesPaymentDue(props) {
                         fullWidth
                     />
 
-                    <br/>
-                    <label>Next Sales Payment Due Date</label>
-                    <br/>
-                    <MaterialUIPickers onChange={(date) => setNextPaymentDueDate(date)} />
-
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">
@@ -160,28 +207,64 @@ export default function SalesPaymentDue(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <MaterialTable
-                title="Manage Sales Payment Due"
-                columns={columns}
-                data={data}
-                actions={[
-                    {
-                    icon: 'edit',
-                    tooltip: 'Pay Sales Payment Due ',
-                    onClick: (event, rowData) => handleDialog(rowData)
-                    },
-                    rowData => ({
-                    icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
-                    tooltip: 'Mark Sales payment due paid',
-                    onClick: (event, rowData) => markDOne(rowData),
-                    disabled: rowData.birthYear < 2000
-                    })
-                ]}
-             
-                options={{
-                    actionsColumnIndex: -1
-                }}
-            />
+            <FullWidthTabs onChangeTab={handleSalesTab} tabs={tabsSales}/>
+
+            {
+                salesTab === 0 ? (
+                    <MaterialTable
+                        title="Manage Sales Payment Due"
+                        columns={columns}
+                        data={data}
+                        actions={[
+                            {
+                            icon: 'edit',
+                            tooltip: 'Pay Sales Payment Due ',
+                            onClick: (event, rowData) => handleDialog(rowData)
+                            },
+                            rowData => ({
+                            icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
+                            tooltip: 'Mark Sales payment due paid',
+                            onClick: (event, rowData) => markDOne(rowData),
+                            })
+                        ]}
+                    
+                        options={{
+                            actionsColumnIndex: -1
+                        }}
+                    />
+                ) : (
+                    <MaterialTable
+                        title="Manage Order Sales Payment Due"
+                        columns={OrderSalesColumns}
+                        data={orderSales}
+                        actions={[
+                            {
+                            icon: 'edit',
+                            tooltip: 'Pay Sales Payment Due ',
+                            onClick: (event, rowData) => handleDialog(rowData)
+                            },
+                            rowData => ({
+                            icon: () =>  <DoneOutlineOutlinedIcon style={{ color: green[500] }}/>,
+                            tooltip: 'Mark Sales payment due paid',
+                            onClick: (event, rowData) => markDOne(rowData),
+                            })
+                        ]}
+                    
+                        options={{
+                            actionsColumnIndex: -1
+                        }}
+                    />
+                )
+            }
+            <Snackbar 
+                    open={openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={() => setOpenSnackbar(false)}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} variant="filled" severity="success">
+                        Succesfully Update Sales Due Payment !
+                    </Alert>
+            </Snackbar>
         </div>
         
     )

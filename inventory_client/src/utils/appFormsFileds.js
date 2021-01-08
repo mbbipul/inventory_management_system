@@ -64,14 +64,6 @@ const addSupplierFormFileds = [
         validation : [0]
     },
     {
-        label : "Supplier Email",
-        placeholder : "bb@gmail.com",
-        type : 0,
-        required : false,
-        disabled : false,
-        validation : [9999]
-    },
-    {
         label : "Supplier Company Name",
         placeholder : "Matrivandar store",
         type : 3,
@@ -100,19 +92,6 @@ const addProductFormFileds = [
         label : "Product Code",
         placeholder : "QT604T",
         type : 0,
-        required : true,
-        disabled : false,
-        validation : [9999]
-
-    },
-    {
-        label : "Product Type",
-        placeholder : "Please Select product Type",
-        type : 3,
-        dialogFormContent : <Category />,
-        fetchUrl : apiUrl+"ProductCategory",
-        selectName : "productCategoryName",
-        selectKey : "productCategoryId",
         required : true,
         disabled : false,
         validation : [9999]
@@ -207,14 +186,6 @@ const addProductFormFileds = [
         label : "Purchase Due Payment Date",
         placeholder : "12-12-2021",
         type : 6,
-        required : true,
-        disabled : false,
-        validation : [999]
-    },
-    {
-        label : "Details",
-        placeholder : "product details",
-        type : 2,
         required : true,
         disabled : false,
         validation : [999]
@@ -345,12 +316,6 @@ const newSalesFormFields = [
 
     },
     {
-        label : "Customer NID",
-        dependsOn : "CustomerName",
-        type : 10,
-        selectValue : "customerNID"
-    },
-    {
         label : "Customer Contact",
         dependsOn : "CustomerName",
         type : 10,
@@ -388,7 +353,11 @@ const newSalesFormFields = [
     {
         label : "Sales Payment Amount",
         placeholder : "450.00 tk",
-        type : 0,
+        type : 7,
+        dependsOn : {
+            field : ["total Products Price"],
+            operation : 7 //substruct operation with check this value is not larger
+        },
         required : true,
         disabled : false,
         validation : [0] 
@@ -397,10 +366,57 @@ const newSalesFormFields = [
         label : "Sales Payment Due Amount",
         type : 8,
         dependsOn : {
-            field : ["Total Product Price","Sales Payment Amount"],
+            field : ["totalProductsPrice","Sales Payment Amount"],
             operation : 1
         },
     },
+    
+] ;
+
+const updateSalesFormFields = [
+    {
+        label : "Customer Name",
+        object : "salesData",
+        select: 'customerName',
+        type : 13,
+
+    },
+    {
+        label : "Customer Contact",
+        object : "salesData",
+        select: 'customerContact',
+        type : 13,
+    },
+    {
+        label : "Customer Address",
+        object : "salesData",
+        select: 'customerAddress',
+        type : 13,
+    },
+    {
+        label : "Product Info",
+        columns : [
+            { 
+                title: 'Product Name', 
+                field: 'productName',
+                editable: 'never' ,
+                fetchUrl : apiUrl+"Products",
+                selectName : "productName",
+                selectKey : "productId",
+            },
+            { title: "Product Quantity", field: 'productQuantity'},
+            { title: 'Product Price (per product)', field: 'productPrice'},
+            { title: 'Total Price', field: 'productPrice'}
+
+        ],
+        type : 12,
+        selectValue : "customerAddress"
+    },
+    {
+        type : 999,
+        label : ''
+    },
+
     
 ] ;
 
@@ -552,22 +568,7 @@ const addCustomerFormFields = [
         disabled : false,
         validation : [0]
     },
-    {
-        label : "Customer Email",
-        placeholder : "bb@gmail.com",
-        type : 0,
-        required : false,
-        disabled : false,
-        validation : [9999]
-    },
-    {
-        label : "Customer NID",
-        placeholder : "75587784XXXXX",
-        type : 0,
-        required : true,
-        disabled : false,
-        validation : [9999]
-    },
+    
 ];
 
 const addCostFormFields = [
@@ -591,7 +592,7 @@ const addCostFormFields = [
         label : "Cost Description",
         placeholder : "bla bla bla",
         type : 2,
-        required : true,
+        required : false,
         disabled : false,
         validation : [9999]
     },
@@ -644,23 +645,7 @@ const addEmployeeFormFields = [
         required : true,
         disabled : false,
         validation : [0]
-    },
-    {
-        label : "Employee Email",
-        placeholder : "bb@gmail.com",
-        type : 0,
-        required : false,
-        disabled : false,
-        validation : [9999]
-    },
-    {
-        label : "Employee NID",
-        placeholder : "75587784XXXXX",
-        type : 0,
-        required : true,
-        disabled : false,
-        validation : [9999]
-    },
+    }
 ];
 
 const addDamageFormFields = [
@@ -894,5 +879,6 @@ export {
     addDamageFormFields,
     addReturnDamageFormFileds,
     addOrderFormFields,
-    memoFormFields
+    memoFormFields,
+    updateSalesFormFields
 };

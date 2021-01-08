@@ -13,7 +13,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import AppContext from '../context/appContext';
 import MaterialUIPickers from '../components/datePicker';
 import DeleteALert from '../components/deleteALert';
-
+import { Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
   
 export default function PurchasePaymentDue(props) {
@@ -25,14 +26,26 @@ export default function PurchasePaymentDue(props) {
     const [nextPaymentDueDate,setNextPaymentDueDate] = useState(new Date().getTime());
     const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
     const [tmpData,setTmpData] = useState({});
+    const [openSnackbar,setOpenSnackbar] = useState(false);
 
     const [columns,] =  useState([
         { title: 'Purchase Id   ', field: 'purchaseId' },
         { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Product Name', field: 'productName' },
-        { title: 'Purchase Payment Due Amount', field: 'purchasePaymentDue' },
-        { title: 'Purchase Date', field: 'purchaseDate' },
-        { title: 'Purchase Due Payment Date', field: 'purchaseDuePaymentDate' },
+        { 
+            title: 'Purchase Payment Due Amount', 
+            field: 'purchasePaymentDue' 
+        },
+        { 
+            title: 'Purchase Date', 
+            field: 'purchaseDate' ,
+            render : rowData => new Date(parseFloat(rowData.purchaseDate)).toDateString()
+        },
+        { 
+            title: 'Purchase Due Payment Date', 
+            field: 'purchaseDuePaymentDate',
+            render : rowData => new Date(parseFloat(rowData.purchaseDuePaymentDate)).toDateString() 
+        },
 
 
     ]);
@@ -71,6 +84,7 @@ export default function PurchasePaymentDue(props) {
             submitForm("purchases/purchase-payment-due/"+ 
                     purchaseWithDue.purchaseId+"-"+parseFloat(fieldValue)+"-"+nextPaymentDueDate,"PUT","",(res) => {
                         submitForm("Paymentpurchase","POST",paymentPurchaseHis, (res) => {
+                            setOpenSnackbar(true);
                             FetchData();
                         });
                     });
@@ -104,6 +118,7 @@ export default function PurchasePaymentDue(props) {
         submitForm("purchases/purchase-payment-due/"+ 
             tmpData.purchaseId+"-"+tmpData.purchasePaymentDue+"-"+nextPaymentDueDate,"PUT","",(res) => {
                 submitForm("Paymentpurchase","POST",paymentPurchaseHis, (res) => {
+                    setOpenSnackbar(true);
                     FetchData();
                 });
             });
@@ -171,6 +186,15 @@ export default function PurchasePaymentDue(props) {
                     actionsColumnIndex: -1
                 }}
             />
+            <Snackbar 
+                    open={openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={() => setOpenSnackbar(false)}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} variant="filled" severity="success">
+                        Succesfully Update Product Due !
+                    </Alert>
+            </Snackbar>
         </div>
         
     )

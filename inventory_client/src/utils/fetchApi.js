@@ -23,11 +23,14 @@ const submitForm = (path,method,data,onSuccess) => {
                 redirect: 'follow'
             };
         }
-        console.log(apiUrl+path);
         fetch(apiUrl+path, requestOptions)
         .then(response => response.text())
         .then(result => onSuccess(result))
-        .catch(error => console.log('error', error));
+        .catch(error => {
+            console.log("FETCHERROR");
+            console.log(error);
+            // alert('Something Went Wrong! Please Try again')
+        });
 }
 
 export const submitFormWithAddress = (path,method,data,onSuccess) => {

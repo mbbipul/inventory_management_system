@@ -8,13 +8,17 @@ import RouteHeader from '../components/routeHeader';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddOrder from "./addOrder";
-import { Button, ButtonGroup, Chip, Grid, Paper } from "@material-ui/core";
+import {hip, Grid, Paper, Chip } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import HistoryVisual from "../components/historyWithVisualization";
 import MaterialTable from "material-table";
-import CustomizedDialogs from "../components/formDialog";
-import OrderSales from "./orderSales";
 import DeleteALert from '../components/deleteALert';
+import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
+import { green } from '@material-ui/core/colors';
+import CloseIcon from '@material-ui/icons/Close';
+import Alert from "@material-ui/lab/Alert";
+import ManageOrder from "./manage-order";
+
 
 function Order() {
     let location = useLocation().pathname.split("/");
@@ -26,7 +30,6 @@ function Order() {
     const [order,setOrder] = useState({});
     const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
     const [showHisVis,setHisVis] = useState(true);
-
 
     const completeOrder = (rowData) => {
         setOrder(rowData);
@@ -57,33 +60,65 @@ function Order() {
         setOrder(null);
     }
 
+    function CustomPaidStatus (props) {
+        return (
+            <div>
+                {
+                    props.status ? 
+                        <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                        <CloseIcon color='error' />
+                }
+            </div>
+        )
+    }
+
+    const level1NestedSum = (obj,targetKey) => {
+        let total = 0;
+        obj.data.map((d,i) => {
+            total += d.data.reduce(function(tot, arr) { 
+                        return tot + arr[targetKey];
+                    },0)
+        });
+        return total;
+    }
     const columns = [
-        { title: 'Order ID', field: 'orderId' },
-        { title: 'Order Customer Name', field: 'customerName' },
-        { title: 'Product Name', field: 'productName' },
-        { title: 'Order Product Quantity', field: 'orderProductQuantity' },
+        { 
+            title: 'Order Serial ', 
+            field: 'orderSalesId' ,
+            render: rowData => rowData.tableData.id + 1
+        },
+        // { title: 'DSR Name', field: 'employeeName' },
         { 
             title: 'Order Date', 
-            field: 'orderDate' ,
-            render: rowData =>  new Date(parseInt(rowData.orderDate)).toDateString()
+            field: 'orderDate',
+            render : rowData => new Date(rowData.date).toDateString()
         },
-        {
-            title : 'Order Status',
-            field : 'orderStaus',
-            render : rowData =>  rowData.orderStaus === 'orderComplete' ?
-                                    <Chip 
-                                        color="primary"
-                                        label={'Order Completed'}
-                                        clickable /> :
-                                    <Chip 
-                                        color="secondary"
-                                        label={'Complete Order Now'}
-                                        clickable
-                                        onClick={() => completeOrder(rowData)}
-                                    />
+        { 
+            title: 'Total Sales Price', 
+            field: 'totalSalesPrice' ,
+            type : 'numeric',
+            render : rowData => level1NestedSum(rowData,"orderTotalPrice")
 
-                                    
-        }
+        },
+        { 
+            title: 'Total Payment Amount', field: 'totalOrderPaymentAmount' ,type : 'numeric',
+            render : rowData => level1NestedSum(rowData,"orderPaymentAmount")
+        },
+        { 
+            title: 'Due Payment Amount', 
+            field: 'orderPaidStatus' ,
+            render : rowData => rowData.orderPaidStatus ?   (<Alert severity='success'>
+                                                                <Chip
+                                                                    color="primary"
+                                                                    label={"Paid"}
+                                                                    clickable />
+                                                            </Alert>)
+                                                        :   (<Chip 
+                                                                color='secondary'
+                                                                label={level1NestedSum(rowData,"orderTotalPrice")-level1NestedSum(rowData,"orderPaymentAmount")}
+                                                                clickable />)
+        },
+    
     ];
 
 
@@ -279,83 +314,49 @@ function Order() {
             }
 
             <Switch>
-                <Route exact path="/order">
+            <Route exact path="/order">
+                    <AddOrder />
+                </Route>
+                <Route exact path="/order/manage-order">
                     <div style={{margin:20}}>
                         <MaterialTable
                             title="All Orders"
                             columns={columns}
                             data={data} 
+                            // options={{
+                            //     selection: true
+                            // }}
+                            // actions={[
+                            //     {
+                            //     tooltip: 'Remove All Selected Users',
+                            //     icon: 'delete',
+                            //     onClick: (evt, data) => alert('You want to delete ' + data.length + ' rows')
+                            //     }
+                            // ]}
+                            // editable={{
+                            //     onRowDelete: oldData =>
+                            //     new Promise((resolve, reject) => {
+                            //         setTimeout(() => {
+                            //         const dataDelete = [...data];
+                            //         const index = oldData.tableData.id;
+                            //         dataDelete.splice(index, 1);
+                            //         setData([...dataDelete]);
+                                    
+                            //         resolve()
+                            //         }, 1000)
+                            //     }),
+                            // }}
                             detailPanel={rowData => {
                                 return (
-                                    <div>
-                                        {
-                                            rowData.orderStaus === 'orderComplete' && 
-                                            <Grid
-                                                container
-                                                direction="row"
-                                                justify="center"
-                                                alignItems="center"
-                                                style={{padding : 50}}
-                                                >
-                                                <Grid item xs >
-                                                    <Chip 
-                                                    color="primary"
-                                                    label={'Order Sales Product Quantity : '+rowData.productQuantity}
-                                                    clickable /> 
-                                                </Grid>
-                                                <Grid item xs >
-                                                    <Chip 
-                                                    color="primary"
-                                                    label={'Sales Rate : '+ (rowData.salesPrice/rowData.productQuantity).toFixed(2)+' tk'}
-                                                    clickable /> 
-                                                </Grid>
-                                                <Grid item xs >
-                                                    <Chip 
-                                                    color="primary"
-                                                    label={'Total Sales Amount : '+rowData.salesPrice+' tk'}
-                                                    clickable /> 
-                                                </Grid>
-                                                <Grid item xs >
-                                                    <Chip 
-                                                    color="primary"
-                                                    label={'Discount : '+rowData.salesDiscount+' tk'}
-                                                    clickable /> 
-                                                </Grid>
-                                                <Grid item xs >
-                                                    <Chip 
-                                                    color="primary"
-                                                    label={'Miscellaneous cost : '+rowData.miscellaneousCost+' tk'}
-                                                    clickable />
-                                                </Grid>
-                                            </Grid>
-                                        }
-                                    </div>
-                                   
+                                    <ManageOrder orderSaleses={rowData}/>
                                 )
                             }}
-                            />
+                        />
                     </div>
                 </Route>
                 <Route exact path="/order/add-order">
                     <AddOrder />
                 </Route>
-                <Route exact path="/order/manage-order">
-                        <div style={{margin:20}}>
-                            <ManageTable 
-                                title="Manage Order" 
-                                hasUnique={false}
-                                apiInfo="Order"
-                                uniqueKey="orderId" 
-                                uniqueName="customerName" 
-                                apiUrl="Orders/" 
-                                editable={false}
-                                onChangeData={FetchOrders} 
-                                data={data}
-                                columns={columns}
-                                
-                            />
-                        </div>
-                    </Route>
             </Switch>
             
             <DeleteALert 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextField ,Grid , MenuItem , Divider , Button, Paper, Typography} from '@material-ui/core';
+import {TextField ,Grid , MenuItem , Divider , Button, Paper, Typography, FormLabel} from '@material-ui/core';
 import AsyncAutoComplete from './asyncAutoComplete';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from './datePicker';
@@ -120,13 +120,13 @@ class Form extends React.Component {
     
     isNormalInteger = (str) =>{
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 0;
+        return n !== Infinity  && n >= 0;
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // e.target.reset();
+        e.target.reset();
         this.props.onSubmit(this.state);
     }
 
@@ -409,7 +409,35 @@ class Form extends React.Component {
                                             />  
 
                                             break;
+                                        case 7 : 
+                                            dependsValue = this.state[field.dependsOn.field[0].replace(/\s/g, '')] ;
+                                            dError = false;
+                                            if(this.state[field.label.replace(/\s/g, '')] > dependsValue ){
 
+                                                dError = true;
+                                                helperText = field.label + " Cannot greater than actual "+field.dependsOn.field[0];
+                                            }else{
+                                                dError = false;
+
+                                            }
+                                            textfield =  <TextField
+                                                disabled={field.disabled}
+                                                label={field.label}
+                                                name={field.label}
+                                                error={dError}
+                                                helperText={helperText}
+                                                fullWidth
+                                                placeholder={field.placeholder}
+                                                margin="normal"
+                                                required={field.required}
+                                                InputLabelProps={{
+                                                }}
+                                                variant="outlined"
+                                                onKeyUp={() => this.handleOnDependsError(dError,i)}
+                                                onChange={(event) => {this.handleInputChange(event,i,field);}}
+                                            />  
+
+                                            break;
                                         default:
                                             break;
                                     }
@@ -546,10 +574,46 @@ class Form extends React.Component {
                                     break;
                                 case 11://form table
                                     item =  <Grid key={i} item xs={12}>
-                                                <FormTable onDataChange={(v) => this.handleFormTable(field,v)} field={field}/>
+                                                <FormTable update={false} onTotalPriceChanges={(v) => this.setState({totalProductsPrice : v})} onDataChange={(v) => this.handleFormTable(field,v)} field={field}/>
                                             </Grid>;
                                     break;
-
+                                
+                                case 12://form table update
+                                    item =  <Grid key={i} item xs={12}>
+                                                <FormTable 
+                                                    update={true}
+                                                    salesId={this.props.salesData.salesId}
+                                                    onTotalPriceChanges={(v) => this.setState({totalProductsPrice : v})} 
+                                                    onDataChange={(v) => this.handleFormTable(field,v)} 
+                                                    field={field}/>
+                                            </Grid>;
+                                    break;
+                                case 13://form value props
+                                    item =  <Grid key={i} item xs={6}>
+                                                <Typography>{field.label} : {this.props[field.object][field.select]}</Typography>
+                                            </Grid>;
+                                    break;
+                                
+                                case 14:
+                                    item =  <Grid key={i} item xs={6}>
+                                                <TextField 
+                                                    label={field.label}
+                                                    onChange={(e) => {
+                                                        let value = parseFloat(e.target.value);
+                                                        if(value> parseFloat(this.props[field.object][field.dependsOn[0]]) - parseFloat(this.props[field.object][field.dependsOn[0]])){
+                                                            alert('Sales Payment Amount Cannot greater than Due AMount');
+                                                        }
+                                                        this.setState({[field.dependsOn[0]] : value});
+                                                    }}
+                                                />
+                                            </Grid>;
+                                    break;
+                                case 15://form value props
+                                    item =  <Grid key={i} item xs={6}>
+                                                <FormLabel>{field.label}</FormLabel>
+                                                <Typography>{this.props[field.object][field.select[0]]-this.props[field.object][field.select[0]]} tk</Typography>
+                                            </Grid>;
+                                    break;
                                 case 999:// break line
                                     item = <Grid key={i} item xs={12}>
                                                 <br />
@@ -564,9 +628,12 @@ class Form extends React.Component {
                     }        
                 </Grid>
                 <br />
-                <Button type="submit" disabled={this.state.hasAnyError.includes(true)} style={{float:"right"}} variant="contained" color="primary">
-                    {this.props.submitButton}
-                </Button>
+                {
+                    this.props.submitButton && 
+                                        <Button type="submit" disabled={this.state.hasAnyError.includes(true)} style={{float:"right"}} variant="contained" color="primary">
+                                            {this.props.submitButton}
+                                        </Button>
+                }
         </form>
         )
     }

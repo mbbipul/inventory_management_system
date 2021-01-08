@@ -15,6 +15,8 @@ import { Delete } from '@material-ui/icons';
 import DeleteALert from '../components/deleteALert';
 import ProductReception from './purProReceptionHistory';
 import FullWidthTabs from '../components/tab';
+import { Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
   
 export default function PurchaseProductDue(props) {
@@ -26,9 +28,10 @@ export default function PurchaseProductDue(props) {
     const [purchaseDueProduct,setPurchaseDueProduct] = useState("");
     const [openDeleteAlert,setOpenDeleteAlert] = useState(false);
     const [tmpData,setTmpData] = useState({});
+    const [openSnackbar,setOpenSnackbar] = useState(false);
 
     const [columns,] =  useState([
-        { title: 'Purchase Due Product Id   ', field: 'purchaseId' },
+        { title: 'Purchase Id   ', field: 'purchaseId' },
         { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Product Name', field: 'productName' },
         { title: 'Purchase Due Product Quantity', field: 'purchaseDueProductsQuantity' },
@@ -83,6 +86,7 @@ export default function PurchaseProductDue(props) {
             }
             submitForm("purchases/purchase/update-purchase-due/"+purchaseDueProduct.purchaseDueProductId,"POST",purchaseDue,() => {
                 submitForm("ProductReception","POST",purchaseHistory,() => {
+                    setOpenSnackbar(true);
                     FetchData();
                 });
             });
@@ -120,6 +124,7 @@ export default function PurchaseProductDue(props) {
         }
         submitForm("purchases/purchase/update-purchase-due/"+purchaseDue.purchaseDueProductId,"POST",purchaseDue,() => {
             submitForm("ProductReception","POST",purchaseHistory,() => {
+                setOpenSnackbar(true);
                 FetchData();
             });
         });
@@ -196,6 +201,15 @@ export default function PurchaseProductDue(props) {
                 </DialogActions>
             </Dialog>
             <FullWidthTabs tabs={tabs}/>
+            <Snackbar 
+                    open={openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={() => setOpenSnackbar(false)}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} variant="filled" severity="success">
+                        Succesfully Update Product Due !
+                    </Alert>
+            </Snackbar>
         </div>
         
     )

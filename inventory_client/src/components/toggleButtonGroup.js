@@ -93,8 +93,7 @@ export default function ToggleButtons(props) {
                               value={i}
                           >
                               {
-                                67777
-                               // props.title.productName+ " - "+ item.perProductPurchasePrice+"tk"
+                                item.perProductPurchasePrice+"tk"
                               }
                           </ToggleButton>
                 if (item.productQuantity <= 0){

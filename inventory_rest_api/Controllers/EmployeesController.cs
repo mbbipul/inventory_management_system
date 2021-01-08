@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using inventory_rest_api.Models;
+using System.Collections;
 
 namespace inventory_rest_api.Controllers
 {
@@ -25,6 +26,70 @@ namespace inventory_rest_api.Controllers
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
         {
             return await _context.Employees.ToListAsync();
+        }
+
+        [HttpGet("credit-employees")]
+        public ActionResult<IEnumerable> GetCreditEmployees(long id)
+        {
+            var query = from sales in _context.OrderSales
+                        join emp in _context.Employees
+                            on sales.EmployeeId equals emp.EmployeeId
+                        where sales.OrderPaidStatus == false 
+                        select new {
+                            sales.OrderSalesId,
+                            emp.EmployeeId,
+                            emp.EmployeeName,
+                            emp.EmployeeAddress,
+                            emp.EmployeeContact,
+                            sales.OrderTotalPrice,
+                            sales.OrderPaymentAmount,
+                            OrderDueAmount = sales.OrderTotalPrice - sales.OrderPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable().GroupBy(
+                s => s.EmployeeId,
+                (key,g) => new {
+                        g.First().EmployeeName,
+                        g.First().EmployeeAddress,
+                        g.First().EmployeeContact,
+                        OrderSalesPrice = g.Sum( s => s.OrderTotalPrice),
+                        OrderSalesPaymentAmount = g.Sum(s => s.OrderPaymentAmount),
+                        EmployeeDueAmount = g.Sum( s => s.OrderDueAmount),
+                        OrderSalesIds = g.Select(s => s.OrderSalesId).ToList()
+                }
+            ).ToList();
+        }
+
+        [HttpGet("paid-employees")]
+        public ActionResult<IEnumerable> GetPaidEmployees(long id)
+        {
+            var query = from sales in _context.OrderSales
+                        join emp in _context.Employees
+                            on sales.EmployeeId equals emp.EmployeeId
+                        where sales.OrderPaidStatus == true 
+                        select new {
+                            emp.EmployeeId,
+                            emp.EmployeeName,
+                            emp.EmployeeAddress,
+                            emp.EmployeeContact,
+                            sales.OrderTotalPrice,
+                            sales.OrderPaymentAmount,
+                            OrderDueAmount = sales.OrderTotalPrice - sales.OrderPaymentAmount,
+                        };
+ 
+            return query.AsEnumerable().GroupBy(
+                s => s.EmployeeId,
+                (key,g) => new {
+                        
+                        g.First().EmployeeName,
+                        g.First().EmployeeAddress,
+                        g.First().EmployeeContact,
+                        OrderSalesPrice = g.Sum( s => s.OrderTotalPrice),
+                        OrderSalesPaymentAmount = g.Sum(s => s.OrderPaymentAmount),
+                        EmployeeDueAmount = g.Sum( s => s.OrderDueAmount)
+                        
+                }
+            ).ToList();
         }
 
         // GET: api/Employees/5

@@ -9,13 +9,26 @@ import ProductTable from '../components/productTable';
 import ManageTable from "../components/manageTable";
 import AddEmployee from "./addEmployee";
 import submitForm from "../utils/fetchApi";
+import { Chip } from "@material-ui/core";
+import MaterialTable from "material-table";
 
 function Employee () {
+
+    const [data,setData] = useState([]);
+    const [creditEmployee,setCreditEMployee] = useState([]);
+    const [paidEmployee,setPaidEMployee] = useState([]);
 
     let location = useLocation().pathname.split("/");
     const [ headersubtitle , setHeaderSubtitile] = useState(location[1]);
     
-   useEffect(() => {
+    const FetchCreditCustomer = (path) => {
+        submitForm(path,"GET","",(result) => setCreditEMployee(JSON.parse(result)));
+    }
+    const FetchPaidCustomer = (path) => {
+        submitForm(path,"GET","",(result) => setPaidEMployee(JSON.parse(result)));
+    }
+
+    useEffect(() => {
         setHeaderSubtitile(location[2]);
         if(location.length <= 2){
             setHeaderSubtitile(location[1]);
@@ -27,14 +40,46 @@ function Employee () {
         { title: 'Employee Name', field: 'employeeName' },
         { title: 'Address', field: 'employeeAddress' },
         { title: 'Contact Number', field: 'employeeContact' },
-        { title: 'Employee Email', field: 'employeeEmail' },
-        { title: 'Employee NID', field: 'employeeNID' },
-        { title: 'Join Date', field: 'date' }
+        { 
+            title: 'Join Date', field: 'date' ,
+            render : rowData => new Date(parseFloat(rowData.date)).toDateString()
+        }
 
-    ]);
+    ]);    
 
-    const [data,setData] = useState([]);
-    
+    const creditEmployeeColumns = [
+        { title: 'Dsr (EMployee) Name', field: 'employeeName' },
+        { title: 'Address', field: 'employeeAddress' },
+        { title: 'Contact Number', field: 'employeeContact' },
+        { 
+            title : 'Total Sales Amount' ,
+            field : 'salesPrice' ,
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.orderSalesPrice}
+                                    clickable /> 
+        },
+        { 
+            title: 'Total Due Amount', 
+            field: 'employeeDueAmount' ,
+            render : rowData => <Chip 
+                                    color="primary"
+                                    label={rowData.employeeDueAmount}
+                                    clickable /> 
+        },
+        { 
+            title: 'Sales Ids ', 
+            field: 'orderSalesIds' ,
+            render : rowData => rowData.orderSalesIds.map((item,i) => (
+                <Chip 
+                    style={{marginRight : 2,marginBottom : 2}}
+                    color="primary"
+                    label={item}
+                    clickable /> 
+            ))
+        },
+
+    ];
     const FetchData =  () => {
         submitForm("Employees/","GET","",(res) => setData(JSON.parse(res)));
     };
@@ -60,7 +105,14 @@ function Employee () {
     },[]);
 
     useEffect(() => {
+        if(headersubtitle === "credit-employee"){
+            FetchCreditCustomer("employees/credit-employees");
+        }
+        if(headersubtitle === "paid-employee"){
+            FetchPaidCustomer("employees/paid-employees");
+        }
         FetchData();
+
     },[headersubtitle]);
 
     return(
@@ -93,6 +145,23 @@ function Employee () {
                             columns={columns}
                             
                         />
+                    </div>
+                </Route>
+                <Route exact path="/employee/credit-employee">
+                 <div style={{margin:20}}>
+                    <MaterialTable
+                        title="All Credit Employees"
+                        columns={creditEmployeeColumns}
+                        data={creditEmployee}/>
+                </div>
+                </Route>
+
+                <Route exact path="/employee/paid-employee">
+                 <div style={{margin:20}}>
+                        <MaterialTable 
+                            title="All Paid Employees"
+                            columns={creditEmployeeColumns.slice(0,-1)}
+                            data={paidEmployee}/>
                     </div>
                 </Route>
             </Switch>

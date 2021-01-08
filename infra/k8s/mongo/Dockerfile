@@ -1,1 +1,0 @@
-inventorymanagementsystem.azurecr.io/inventory/mongo

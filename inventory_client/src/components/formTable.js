@@ -6,10 +6,12 @@ import AsyncAutoComplete from "./asyncAutoComplete";
 import ToggleButtons from "./toggleButtonGroup";
 
 function FormTable(props) {
-    const [columns, setColumns] = useState(props.field.columns);
+	const [columns, setColumns] = useState(props.field.columns);
+	const [hasUpdate,] = useState(props.update);
 	const [productTableDatas,setProductTableDatas] = useState([]);
 	const [product,setProduct] = useState(null);
 	const [addedProductObjects,setAddedProductObjects] = useState({});
+	const [fetchProducts,setFetchProducts] = useState([]);
 
 	const [toggleProHisObj,setToggleProHisObj] = useState(null);
 	
@@ -27,12 +29,16 @@ function FormTable(props) {
 		props.onDataChange(Object.values(addedProductObjects));
 	},[addedProductObjects]);
 
+	useEffect(() => {
+		props.onTotalPriceChanges(totalProPrise);
+	},[totalProPrise]);
+
 	const CreateRow = (props) => {
 		const [productObj,setProductObj] = useState(null);
 		const [productQuantity,setProQuantity] = useState(0);
 		const [proSalesPrice,setProSalesPrice] = useState(0);
 		const [productPurHis,setProductPurHis] = useState(null);
-		
+
 		useEffect(() => {
 			const togObj = <ToggleButtons 
 								onChange={(val) => setProductPurHis(val)}
@@ -47,6 +53,7 @@ function FormTable(props) {
 			if(parseInt(productQuantity) > 0 && productPurHis !== null){
 				if( parseInt(productQuantity) > productPurHis.productQuantity){
 					alert('Enough product are not in stock');
+					setProQuantity(0);
 				}
 			}
 		},[productQuantity]);
@@ -79,6 +86,7 @@ function FormTable(props) {
 				</td>
 				<td className="form-table-th-td">
 					<TextField 
+						value={productQuantity}
 						onChange={(e) => setProQuantity(e.target.value)}
 					/>
 				</td>
@@ -104,6 +112,36 @@ function FormTable(props) {
 		setNeProIndex(newProIndex+1);
 	}
   
+	useEffect(() => {
+		if(hasUpdate){
+			submitForm('Sales/sale-products/'+props.salesId,'GET','',(res) => {
+				const data = JSON.parse(res);
+				const tableData = [];
+				let tPrice = 0;
+		
+				data.map((v,i) => {
+					tPrice += v.productQuantity*v.perProductPrice;
+					tableData.push(<tr>
+						<td className="form-table-th-td">
+							<Typography>{v.productName}</Typography>
+						</td>
+						<td className="form-table-th-td">
+							<Typography>{v.productQuantity}</Typography>
+						</td>
+						<td className="form-table-th-td">
+							<Typography>{v.perProductPrice}</Typography>
+						</td>
+						<td className="form-table-th-td">
+							<Typography>{v.productQuantity*v.perProductPrice}</Typography>
+						</td>
+					</tr>);
+				});
+				setTotalProductPrise(tPrice);
+				setFetchProducts(tableData);
+			});
+		}
+	},[hasUpdate]);
+
     return (
 		<Box component={Card}>
 			<table className="form-table">
@@ -133,22 +171,29 @@ function FormTable(props) {
 				</thead>
 				<tbody>
 					{
-						productTableDatas.map((item,i) => (
-							item
-						))
+						!hasUpdate ?
+									productTableDatas.map((item,i) => (
+										item
+									)) :
+
+									fetchProducts.map((item,i) => (
+										item
+									))
 					}
 				</tbody>
 				<tfoot>
-					<tr>
-						<td className="form-table-th-td"  colSpan={4}>
-							<Button 
-								onClick={addNewProduct}
-								variant="contained" 
-								color='primary'>
-								Add New Product
-							</Button>
-						</td>
-					</tr>
+					{
+						!hasUpdate && <tr>
+										<td className="form-table-th-td"  colSpan={4}>
+											<Button 
+												onClick={addNewProduct}
+												variant="contained" 
+												color='secondary'>
+												Add New Product
+											</Button>
+										</td>
+									</tr>
+					}
 					<tr>
 						<td style={{display:'table-cell',padding: 10,textAlign: 'center'}} colSpan={3}>
 							Total Product Price

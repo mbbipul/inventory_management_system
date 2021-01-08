@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import FullWidthTabs from '../components/tab';
+import OrderPayment from './orderPayment';
 import PurchasePayment from './purchasePayment';
 import SalesPayment from './SalesPayment';
 
@@ -11,7 +12,10 @@ export default function Payment() {
     useEffect(() => {
         if ( location[2] === "sales-payment"){
             setDefaultTab(1);
-        }else{
+        }else if(location[2] === "order-sales-payment"){
+            setDefaultTab(2);
+        }
+        else{
             setDefaultTab(0);
         }
     },[location]);
@@ -26,6 +30,12 @@ export default function Payment() {
             tab : "Sales Payments",
             tabPanel :  <div>
                <SalesPayment />
+            </div>
+        },
+        {
+            tab : "Order Sales Payments",
+            tabPanel :  <div>
+               <OrderPayment />
             </div>
         }
     ];

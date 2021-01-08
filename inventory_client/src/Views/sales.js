@@ -15,10 +15,27 @@ import submitForm from "../utils/fetchApi";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
-import { Grid } from "@material-ui/core";
+import { Box, Button, Chip, Grid, Snackbar, TextField, Typography } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import SalesMemo from "./memo";
 import SalesMemoHistory from "./salesMemoHistory";
+import MaterialTable from "material-table";
+import { updateSalesFormFields } from "../utils/appFormsFileds";
+import Form from "../components/form";
+import Alert from "@material-ui/lab/Alert";
+import FullWidthTabs from "../components/tab";
+
+function CustomPaidStatus (props) {
+    return (
+        <div>
+            {
+                props.status ? 
+                    <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
+                    <CloseIcon color='error' />
+            }
+        </div>
+    )
+}
 
 function Sales () {
 
@@ -35,18 +52,9 @@ function Sales () {
     const [salesReport,setSalesReport] = useState({});
     const [reportItems,setReportItems] = useState([]);
     const [reportOptions,setReportOptions] = useState({});
+    const [salesTab,setSalesTab] = useState(0);
+    const [openSnackbar,setOpenSnackbar] = useState(false);
 
-    function CustomPaidStatus (props) {
-        return (
-            <div>
-                {
-                    props.status ? 
-                        <DoneOutlineOutlinedIcon style={{ color: green[500] }}/> :
-                        <CloseIcon color='error' />
-                }
-            </div>
-        )
-    }
     useEffect(() => {
         let filterValue = [];
         switch (reportTabs) {
@@ -150,24 +158,32 @@ function Sales () {
     const [columns,] = useState([
                         { title: 'Sales ID', field: 'salesId', },
                         { title: 'Customer Name', field: 'customerName', },
-                        { title: 'Product Name', field: 'productName' },
-                        { title: 'Product Quantity', field: 'productQuantity' },
-                        { title: 'Sales Price', field: 'salesPrice' ,type : 'numeric'},
+                        { title: 'Total Sales Price', field: 'salesPrice' ,type : 'numeric'},
+                        { title: 'Total Payment Amount', field: 'salesPaymentAmount' ,type : 'numeric'},
                         { 
                             title: 'Sales Date', 
                             field: 'salesDate',
                             render : rowData => new Date(parseInt(rowData.salesDate)).toDateString()
                         },
                         // { title: 'Sales Payment Amount', field: 'salesPaymentAmount' },
+                        // { 
+                        //     title: 'Sales Product Due Status', 
+                        //     field: 'productDueStatus' , 
+                        //     render : rowData =>  <CustomPaidStatus status={rowData.productDueStatus===0 ? true : false}/>
+                        // },
                         { 
-                            title: 'Sales Product Due Status', 
-                            field: 'productDueStatus' , 
-                            render : rowData =>  <CustomPaidStatus status={rowData.productDueStatus===0 ? true : false}/>
-                        },
-                        { 
-                            title: 'Sales Paid Status', 
+                            title: 'Due Payment Amount', 
                             field: 'salesPaidStatusCustom' ,
-                            render : rowData => <CustomPaidStatus status={rowData.salesPaidStatus}/>
+                            render : rowData => rowData.salesPaidStatus ?   <Alert severity='success'>
+                                                                                <Chip 
+                                                                                    color="primary"
+                                                                                    label={"Paid"}
+                                                                                    clickable />
+                                                                            </Alert>
+                                                                        :   <Chip 
+                                                                                color='secondary'
+                                                                                label={rowData.salesPrice-rowData.salesPaymentAmount}
+                                                                                clickable />
                         },
                         
                     ]);
@@ -426,7 +442,23 @@ function Sales () {
         ];
         return overViewItems;
     }
-        return(
+
+    const tabsSales = [
+        {
+            tab : "All Customer Sales ",
+            tabPanel :  ''
+        },
+        // {
+        //     tab : "All Order Sales ",
+        //     tabPanel :  ''
+        // }
+    ];
+
+    const handleSalesTab = (v) => {
+        setSalesTab(v);
+    }
+
+    return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
                 {
@@ -434,42 +466,189 @@ function Sales () {
                         <HistoryVisual hasTabPanel={true} handleTabs={setReportTabs} tabs={tabs}/>
                 }
                 <Switch>
-                    <Route exact path="/sales">
-                        <div style={{margin:20}}>
-                            <DetailsTable 
-                                apiUrl="Sales/"  
-                                detailsPane={detailsPane}
-                                columns={columns} 
-                                data={data} />
-                        </div>
-                    </Route>
+
                     <Route exact path="/sales/new-sales">
                         <NewSales />
                     </Route>
-                    <Route exact path="/sales/manage-sales">
+                    <Route path="/sales">
+                        <FullWidthTabs onChangeTab={handleSalesTab} tabs={tabsSales}/>
                         <div style={{margin:20}}>
-                            <ManageTable 
-                                title="Manage Sales" 
-                                hasUnique={true}
-                                apiInfo="Sales"
-                                uniqueKey="salesId" 
-                                uniqueName="salesId" 
-                                apiUrl="Sales/" 
-                                editable={false}
-                                onChangeData={FetchAlls} 
-                                data={data}
-                                columns={columns}
-                                
-                            />
+                            {
+                                salesTab === 0 ? <MaterialTable
+                                                    title="Manage Customer Sales"
+                                                    columns={columns}
+                                                    data={data}
+                                                    detailPanel={rowData => {
+                                                        let payment = 0;
+                                                        let dueAmount = rowData.salesPrice - rowData.salesPaymentAmount;
+                                                        const handlePayment = (e) => {
+                                                            let value = parseFloat(e.target.value);
+                                                            if(value>dueAmount){
+                                                                payment = value;
+                                                                alert('Payment amount cannot larger than due amount');
+                                                                return;
+                                                            }
+                                                            payment = value;
+                                                        }
+                                                        const updatePayment = () => {
+                                                            if(parseFloat(payment)>dueAmount){
+                                                                payment = 0
+                                                                alert('Payment amount cannot larger than due amount');
+                                                                return;
+                                                            }
+                                                            let paymentSaleseHis = {
+                                                                salesId : rowData.salesId,
+                                                                paymentSalesDate : new Date().getTime().toString(),
+                                                                paymentAmount : parseFloat(payment),
+                                                            }
+                                                        
+                                                            submitForm("sales/sales-payment-due/"+ 
+                                                                rowData.salesId+"-"+payment,"PUT","",(res) => {
+                                                                    submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                                                                        setOpenSnackbar(true);
+                                                                        FetchData();
+                                                                    });
+                                                                }
+                                                            );
+                                                        }
+                                                        return (
+                                                            <Box style={{padding: 20}}>
+                                                                <Form salesData={rowData} onSubmit={() => console.log(3)}  fields={updateSalesFormFields}/>
+                                                                {
+                                                                    rowData.salesPaidStatus ? (
+                                                                        <Box style={{padding:20,marginLeft: 320,marginRight: 350}}>
+                                                                            <Alert severity="success">
+                                                                                <Typography variant={"h4"} style={{textAlign : 'center',color : green['A700']}}>Paid Customer</Typography>
+                                                                            </Alert>
+                                                                        </Box>
+                                                                    ) : (
+                                                                        <Grid
+                                                                            style={{margin:20,marginBottom : 20}}
+                                                                            container
+                                                                            direction='row'
+                                                                            justify='center'
+                                                                            >
+                                                                            <Grid item xs={6} spacing={3}>
+                                                                                <TextField
+                                                                                    onChange={handlePayment} 
+                                                                                    label="Due Sales Payment Amount"
+
+                                                                                />
+                                                                            </Grid>
+                                                                            <Grid item xs={6} style={{padding: 5}}>
+                                                                                <Typography>Payment Due : {dueAmount}</Typography>
+                                                        
+                                                                            </Grid>
+                                                                            <Grid item xs={10}>
+
+                                                                            </Grid>
+                                                                            <Grid item xs={2}>
+                                                                                <Button 
+                                                                                    onClick={updatePayment}
+                                                                                    variant='contained' 
+                                                                                    color='primary'>Make Payment</Button>
+                                                                            </Grid>
+                                                                        </Grid>
+                                                                    )
+                                                                }
+                                                            
+                                                            </Box>
+                                                        )
+                                                    }}
+                                                /> : (
+                                                    <MaterialTable
+                                                        title="Manage Order Sales"
+                                                        columns={columns}
+                                                        data={data}
+                                                        detailPanel={rowData => {
+                                                            let payment = 0;
+                                                            let dueAmount = rowData.salesPrice - rowData.salesPaymentAmount;
+                                                            const handlePayment = (e) => {
+                                                                let value = parseFloat(e.target.value);
+                                                                if(value>dueAmount){
+                                                                    payment = 0
+                                                                    alert('Payment amount cannot larger than due amount');
+                                                                    return;
+                                                                }
+                                                                payment = value;
+                                                            }
+                                                            const updatePayment = () => {
+                                                                let paymentSaleseHis = {
+                                                                    salesId : rowData.salesId,
+                                                                    paymentSalesDate : new Date().getTime().toString(),
+                                                                    paymentAmount : parseFloat(payment),
+                                                                }
+                                                            
+                                                                submitForm("sales/sales-payment-due/"+ 
+                                                                    rowData.salesId+"-"+payment,"PUT","",(res) => {
+                                                                        submitForm("Paymentsales","POST",paymentSaleseHis, (res) => {
+                                                                            alert('Update');
+                                                                            FetchData();
+                                                                        });
+                                                                    }
+                                                                );
+                                                            }
+                                                            return (
+                                                                <Box style={{padding: 20}}>
+                                                                    <Form salesData={rowData} onSubmit={() => console.log(3)}  fields={updateSalesFormFields}/>
+                                                                    {
+                                                                        rowData.salesPaidStatus ? (
+                                                                            <Box style={{padding:20,marginLeft: 320,marginRight: 350}}>
+                                                                                <Alert severity="success">
+                                                                                    <Typography variant={"h4"} style={{textAlign : 'center',color : green['A700']}}>Paid Customer</Typography>
+                                                                                </Alert>
+                                                                            </Box>
+                                                                        ) : (
+                                                                            <Grid
+                                                                                style={{margin:20,marginBottom : 20}}
+                                                                                container
+                                                                                direction='row'
+                                                                                justify='center'
+                                                                                >
+                                                                                <Grid item xs={6} spacing={3}>
+                                                                                    <TextField
+                                                                                        onChange={handlePayment} 
+                                                                                        label="Sales Payment Amount"
+
+                                                                                    />
+                                                                                </Grid>
+                                                                                <Grid item xs={6} style={{padding: 5}}>
+                                                                                    <Typography>Payment Due : {dueAmount}</Typography>
+                                                            
+                                                                                </Grid>
+                                                                                <Grid item xs={10}>
+
+                                                                                </Grid>
+                                                                                <Grid item xs={2}>
+                                                                                    <Button 
+                                                                                        onClick={updatePayment}
+                                                                                        variant='contained' 
+                                                                                        color='primary'>Make Payment</Button>
+                                                                                </Grid>
+                                                                            </Grid>
+                                                                        )
+                                                                    }
+                                                                
+                                                                </Box>
+                                                            )
+                                                        }}
+                                                        />
+                                                )
+                            }
+                            
                         </div>
                     </Route>
-                    <Route exact path="/sales/sales-memo">
-                        <SalesMemo />
-                    </Route>
-                    <Route exact path="/sales/sales-memo-history">
-                        <SalesMemoHistory />
-                    </Route>
                 </Switch>
+
+                <Snackbar 
+                    open={openSnackbar} 
+                    autoHideDuration={6000} 
+                    onClose={() => setOpenSnackbar(false)}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} variant="filled" severity="success">
+                        Succesfully Update Sales Payment !
+                    </Alert>
+                </Snackbar>
             </div>                        
         )
     

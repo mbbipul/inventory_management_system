@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import ColumnLineAreaChart from '../components/columnLineAreaChart';
 import PieChart from '../components/pieChart';
 import SimpleTable from '../components/table';
-import {Grid, Card, Chip} from '@material-ui/core';
+import {Grid, Card, Chip, Typography} from '@material-ui/core';
 import {Paper} from '@material-ui/core';
 import IconCard from '../components/iconCard';
 import RouteHeader from '../components/routeHeader';
 import HistoryVisual from '../components/historyWithVisualization';
 import submitForm from '../utils/fetchApi';
 import MaterialUIPickers from '../components/datePicker';
-
+import '../App.css';
+import { camelize } from '../utils/storeInfo';
+import { blue } from '@material-ui/core/colors';
 
 const DashBoard = () =>{
 
@@ -23,6 +25,11 @@ const DashBoard = () =>{
 
     const [fromDate,setFromDate] = useState("");
     const [toDate,setToDate] = useState("");
+
+    const [cusReportCard,setCusReportCard] = useState([]);
+    const [cusReportCardCol2,setCusReportCardCol2] = useState([]);
+
+    const [cusReportCardDetails,setCusReportCardDetails] = useState({});
 
     const [reportCardTitle,setreportCardTitle] = useState("All");
     useEffect(() => {
@@ -158,6 +165,7 @@ const DashBoard = () =>{
 
     useEffect(() => {
         FetchData(0,"all");
+        submitForm('report/snapshot-report','GET','',(res) => setCusReportCardDetails(JSON.parse(res)));
     },[]);
 
     useEffect(() => {
@@ -343,26 +351,135 @@ const DashBoard = () =>{
         },
 
     ];
-      
+
+    const stockReport = ["Godown Stock","Company Pending","Credit","Cash","Damage"];
+    const stockReportCol2 = ["Purchase Price","Total Payment","Total Cost","Total Salary","Total Commision"];
+
+    useEffect(() => {
+        let stoRep = [];
+        let stoRep2 = [];
+
+        stockReport.map((sr,i) => {
+            stoRep.push(
+                    <Grid item xs={4}>
+                        <Card style={{
+                            borderRadius : 10,padding : 20,
+                            backgroundColor : "#f2f74f",
+                            textAlign : 'center',
+                            width : 300
+                        }}>
+                            <Typography>{sr} : <strong>{cusReportCardDetails[camelize(sr)]}</strong> Taka</Typography>
+                        </Card>
+                    </Grid>);
+        });
+        stockReportCol2.map((sr,i) => {
+            stoRep2.push(
+                    <Grid item xs={4}>
+                        <Card style={{
+                            borderRadius : 10,padding : 20,
+                            backgroundColor : "#f2f74f",
+                            textAlign : 'center',
+                            width : 300
+                        }}>
+                            <Typography>{sr} : <strong>{cusReportCardDetails[camelize(sr)]}</strong> Taka</Typography>
+                        </Card>
+                    </Grid>);
+        });
+        setCusReportCard(stoRep);
+        setCusReportCardCol2(stoRep2);
+    },[cusReportCardDetails]);
+    
 	return (
-            <div>
+            <div style={{margin:20}}>
                 <RouteHeader details={routeHeader} />
-
-                <HistoryVisual 
-                    hasTabPanel={false}
-                    handleTabs={setReportTabs} 
-                    tabs={tabs}/>
-
                 <Grid
                     container
                     direction="row"
                     justify="flex-start"
                     alignItems="flex-start"
+                    style={{marginTop:20}}
                 >
+                    <Grid 
+                        item 
+                        xs={12}
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                    >
+                        <Grid
+                            item
+                            xs={4}
+                            container
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="flex-start"
+                            spacing={1}
+                        >
+                            {
+                                cusReportCard.map((item,i) => item)
+                            }
+                        </Grid>
+                        <Grid
+                            container
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="flex-start"
+                            spacing={1}
+                            item
+                            xs={4}
+                        >
+                             {
+                                cusReportCardCol2.map((item,i) => item)
+                            }
+                        </Grid>
+                        <Grid
+                            container
+                            direction="column"
+                            justify="flex-start"
+                            alignItems="flex-start"
+                            spacing={1}
+                            item
+                            xs={4}
+                        >
+                            <Grid item xs={4}>
+                                <Card style={{
+                                    borderRadius : 10,padding : 20,
+                                    backgroundColor : "#f2f74f",
+                                    textAlign : 'center',
+                                    width : 300
+                                }}>
+                                    <Paper 
+                                        className="dashboard-cus-chip"
+                                        style={{borderRadius : 10,backgroundColor : blue['A700']}}
+                                    >
+                                        Total Debit : <b>{cusReportCardDetails.totalDebit}</b> Taka
+                                    </Paper>
+                                    <Paper 
+                                        className="dashboard-cus-chip"
+                                        style={{borderRadius : 10,backgroundColor : blue['A700']}}
+                                    >
+                                        Total Credit : <b></b>{cusReportCardDetails.totalCredit} Taka
+                                    </Paper>
+                                    <Paper 
+                                        className="dashboard-cus-chip"
+                                        style={{borderRadius : 10,backgroundColor : blue['A700']}}
+                                    >
+                                        Net Profit : {cusReportCardDetails.netProfit} Taka
+                                    </Paper>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <HistoryVisual 
+                        hasTabPanel={false}
+                        handleTabs={setReportTabs} 
+                        tabs={tabs}/>
+
                     <Grid item xs={8}>
                         {
                             data.length === 0 ? (
-                                <Card style={{marginLeft:20,padding:200}} className={"light-pink-blue-gradient"}>
+                                <Card style={{padding:200,marginTop: 20}} className={"light-pink-blue-gradient"}>
                                     <h1>No Data To Show</h1>
                                 </Card>
                             ) :
@@ -377,7 +494,7 @@ const DashBoard = () =>{
                                 rows={reportDetails}
 
                             />
-                            <Paper style={{padding:30,paddingLeft: 30,backgroundColor: '#000'}}>
+                            {/* <Paper style={{padding:30,paddingLeft: 30,backgroundColor: '#000'}}>
                                 <Chip 
                                     style={{marginBottom:20}}
                                     color={reportDetails.profit+reportDetails.totalSalaryAmount+reportDetails.totalCostAmount+reportDetails.totalDamageReturnAmount > 0 ? 'primary' : 'secondary'}
@@ -394,12 +511,7 @@ const DashBoard = () =>{
                                     label={`Profit - Included Salary : ${reportDetails.profit}`}
                                     clickable />
 
-                            </Paper>
-                            <br />
-                            <PieChart 
-                                title="Product Categories Overview"
-                                data={categoriesData}
-                            />
+                            </Paper> */}
                         </Paper>
                     </Grid>
                 </Grid>

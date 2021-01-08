@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import AppDrawer from './layouts/MainLayout/AppDrawer';
-
 import {BrowserRouter as Router,Switch,Route, Redirect } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -46,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
+
 function App() {
     const classes = useStyles();
     const isDrawerExtend = useSelector(state => state.isSideBarExtend);
@@ -54,7 +54,7 @@ function App() {
     const [purPaymentDue,setPurPaymentDue] = useState(0);
     const [salesDueProd,setSalesDueProd] = useState(0);
     const [salesPaymentDue,setSalesPaymentDue] = useState(0);
-    const [isUserLoggedIn,setUserLoginStatus] = useState(true);
+    const [isUserLoggedIn,setUserLoginStatus] = useState(false);
 	const [user,setUser] = useState({});
 	const [appInfo,setAppInfo] = useState({});
 	

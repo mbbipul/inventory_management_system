@@ -27,7 +27,6 @@ function Product() {
     const [columns,] = useState([
                         { title: 'Product Name', field: 'productName' },
                         { title: 'Product Code', field: 'productCode' },
-                        { title: 'Product Type', field: 'productCategoryName' },
                         {   
                             title: 'Product Quantity (In stock)', 
                             field: 'totalProductInStock' ,
@@ -94,9 +93,9 @@ function Product() {
     const detailsPane = rowData => {
         let totalPurchasePrice = rowData.purchases.map(s=>s.salesPrice).reduce((a,c)=>a+c);
         let totalSalesPrice = 0;
-        if( rowData.saleses.length > 0){
-            totalSalesPrice = rowData.saleses.map(s=>s.salesPrice).reduce((a,c)=>a+c)
-        }
+        // if( rowData.saleses.length > 0){
+        //     totalSalesPrice = rowData.saleses.map(s=>s.salesPrice).reduce((a,c)=>a+c)
+        // }
 
         let profit = 0;
 
@@ -113,11 +112,12 @@ function Product() {
             count : rowData.totalProducts,
             icon : "storefront"
         }
-        ,{
-          name : "Total Purchase Price",
-          count : totalPurchasePrice +" tk" ,
-          icon : "shop_two"
-        },
+        ,
+        // {
+        //   name : "Total Purchase Price",
+        //   count : totalPurchasePrice +" tk" ,
+        //   icon : "shop_two"
+        // },
         {
             name : "Total Sales Price",
             count : totalSalesPrice,
@@ -160,9 +160,6 @@ function Product() {
                                 
                             />
                         </div>
-                </Route>
-                <Route exact path="/product/category">
-                    <Category />
                 </Route>
                 <Route exact path="/product/add-product">
                     <AddProduct />

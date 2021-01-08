@@ -121,3 +121,8 @@ body{
   width: 0;
   height: 0;
 }
+
+.dashboard-cus-chip {
+  margin-bottom: 20px;
+  padding: 10px;
+}

@@ -281,7 +281,7 @@ export default function AppDrawer() {
                           </IconButton>
                         </Link>
                       </Tooltip>
-                      <Tooltip title="Sales Due Products">
+                      {/* <Tooltip title="Sales Due Products">
                         <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-due-products"}  >
                           <IconButton  aria-label="sales due" color="inherit">
                             <AppContextConsumer >
@@ -293,7 +293,7 @@ export default function AppDrawer() {
                             </AppContextConsumer>
                           </IconButton>
                         </Link>
-                      </Tooltip>
+                      </Tooltip> */}
                       <Tooltip title="Sales Payment Dues">
                         <Link style={{textDecoration: "none",color:"#fff"}} to={"/sales/sales-payment-due"}  >
                           <IconButton  aria-label="sales payment due" color="inherit">

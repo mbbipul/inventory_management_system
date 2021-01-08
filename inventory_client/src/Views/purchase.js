@@ -154,7 +154,10 @@ function Purchase () {
                                 field: 'purchaseDate',
                                 render : rowData => new Date(parseInt(rowData.purchaseDate)).toDateString()
                             },
-                            // { title: 'Sales Price', field: 'salesPrice' },
+                            { 
+                                title: 'Purchase Payment Amount', 
+                                field: 'purchasePaymentAmount' 
+                            },
                             { 
                                 title: 'Purchase Product Due Status', 
                                 field: 'productDueStatus' ,

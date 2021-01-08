@@ -290,6 +290,7 @@ namespace inventory_rest_api.Controllers
 
             PurchaseDueProduct purchaseDueProduct = new PurchaseDueProduct {
                 PurchaseId = purchase.PurchaseId,
+                ProductPurchaseHistoryId = productPurchaseHistory.ProductPurchaseHistoryId,
                 ProductQuantity = purchase.ProductQuantity
             };
 

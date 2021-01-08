@@ -35,7 +35,24 @@ const sideBarItems = [
         icon : "dashboard",
         ref : "/dashboard",
         hasItems : false,
-    },{
+    },
+    {
+        name : "Product",
+        icon : "storefront",
+        ref : "/product",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Product",
+                ref : "product/add-product"
+            },
+            {
+                name : "Manage Product",
+                ref : "product/manage-product"
+            }
+        ]
+    },
+    {
         name : "Purchase",
         icon : "shop_two",
         ref : "/purchase",
@@ -62,13 +79,22 @@ const sideBarItems = [
             },{
                 name : "Manage Sales",
                 ref : "sales/manage-sales"
-            },{
-                name : "Sales Memo",
-                ref : "sales/sales-memo"
+            }
+        ]
+    },
+    {
+        name : "Order",
+        icon : "local_grocery_store",
+        ref : "/order",
+        hasItems : true,
+        subItems : [
+            {
+                name : "Add Order",
+                ref : "order/add-order"
             },
             {
-                name : "Sales Memo History",
-                ref : "sales/sales-memo-history"
+                name : "Manage Orders",
+                ref : "order/manage-order"
             }
         ]
     },
@@ -86,28 +112,13 @@ const sideBarItems = [
                 name : "Sales Payment",
                 ref : "payment/sales-payment"
             },
-        ]
-    },
-    {
-        name : "Product",
-        icon : "storefront",
-        ref : "/product",
-        hasItems : true,
-        subItems : [
             {
-                name : "Category",
-                ref : "product/category"
+                name : "Order Payment",
+                ref : "payment/order-sales-payment"
             },
-            {
-                name : "Add Product",
-                ref : "product/add-product"
-            },
-            {
-                name : "Manage Product",
-                ref : "product/manage-product"
-            }
         ]
-    },{
+    }
+    ,{
         name : "Customer",
         icon : "supervisor_account",
         ref : "/customer",
@@ -160,6 +171,14 @@ const sideBarItems = [
             {
                 name : "Manage Employee",
                 ref : "employee/manage-employee"
+            },
+            {
+                name : "Credit Employee",
+                ref : "employee/credit-employee"
+            },
+            {
+                name : "Paid Employee",
+                ref : "employee/paid-employee"
             }
         ]
     },
@@ -224,22 +243,6 @@ const sideBarItems = [
             {
                 name : "Manage Damages",
                 ref : "damage/manage-damage"
-            }
-        ]
-    },
-    {
-        name : "Order",
-        icon : "local_grocery_store",
-        ref : "/order",
-        hasItems : true,
-        subItems : [
-            {
-                name : "Add Order",
-                ref : "order/add-order"
-            },
-            {
-                name : "Manage Orders",
-                ref : "order/manage-order"
             }
         ]
     }

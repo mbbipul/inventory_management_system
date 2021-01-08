@@ -17,6 +17,8 @@ function Supplier() {
         { title: 'Supplier Name', field: 'supplierName' },
         { title: 'Address', field: 'supplierAddress' },
         { title: 'Contact Number', field: 'supplierContact' },
+        { title: 'Company Name', field: 'supplierContact' },
+
     ]);
     const [data,setData] = useState([]);
 

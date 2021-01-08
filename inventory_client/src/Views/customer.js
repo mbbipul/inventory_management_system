@@ -12,7 +12,6 @@ import AddCustomer from "./addCustomer";
 import { Chip, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 import MaterialUIPickers from "../components/datePicker";
-import HistoryVisual from "../components/historyWithVisualization";
 
 function Customer() {
     let location = useLocation().pathname.split("/");
@@ -29,8 +28,6 @@ function Customer() {
         { title: 'Customer Name', field: 'customerName' },
         { title: 'Address', field: 'customerAddress' },
         { title: 'Contact Number', field: 'customerContact' },
-        { title: 'Customer Email', field: 'customerEmail' },
-        { title: 'Customer NID', field: 'customerNID' },
         { 
             title: 'Join Date', 
             field: 'customerJoinDate',
@@ -59,6 +56,17 @@ function Customer() {
                                     color="primary"
                                     label={rowData.customerDueAmount}
                                     clickable /> 
+        },
+        { 
+            title: 'Sales Ids ', 
+            field: 'salesIds' ,
+            render : rowData => rowData.salesIds.map((item,i) => (
+                <Chip 
+                    style={{marginRight : 2,marginBottom : 2}}
+                    color="primary"
+                    label={item}
+                    clickable /> 
+            ))
         },
 
     ];
@@ -237,10 +245,10 @@ function Customer() {
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-            {
+            {/* {
                     showHistoryVisual && 
                         <HistoryVisual hasTabPanel={false} handleTabs={setReportTabs} tabs={hisTabs}/>
-            }
+            } */}
             <Switch>
                 <Route exact path="/customer">
                     <div style={{margin:20}}>
@@ -284,7 +292,7 @@ function Customer() {
                  <div style={{margin:20}}>
                         <MaterialTable 
                             title="All Paid Customers"
-                            columns={creditCustomerColumns.slice(0,-1)}
+                            columns={creditCustomerColumns.slice(0,-2)}
                             data={paidCustomer}/>
                     </div>
                 </Route>

@@ -446,14 +446,15 @@ function Damage () {
         {
             tab : "Damages Return From Company",
             tabPanel : <div style={{margin:20}}>
-                            <ManageTable 
+                            <MaterialTable 
                                 title="Manage damage" 
                                 hasUnique={true}
+                                hideDelete={true}
                                 apiInfo="Damages" 
                                 uniqueKey="damageId" 
                                 uniqueName="damageId" 
                                 apiUrl="Damages/filter/damageReturnFromCompanyTab/" 
-                                editable={true}
+                                editable={false}
                                 onChangeData={() => FetchData('damageReturnFromCompanyTab')} 
                                 data={data} 
                                 columns={damageReturnFromComCol}

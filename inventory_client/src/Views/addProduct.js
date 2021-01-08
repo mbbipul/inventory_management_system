@@ -40,12 +40,10 @@ class AddProduct extends React.Component {
         let product = {
             "productName" : state.ProductName,
             "productCode" : state.ProductCode,
-            "productCategoryId" : state.ProductType.productCategoryId,
             "totalProducts" : parseInt(state.ProductQuantity),
             "totalProductInStock" : parseInt(state.ProductQuantity),
             "productPrice" : exactPurchasePrice,
             "salestPrice" : parseFloat(state.SalesPrice),
-            "productDetails" : state.Details,
         }
 
 
