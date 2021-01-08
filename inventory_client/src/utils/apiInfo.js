@@ -53,7 +53,6 @@ export function removeCookie(name){
 }
 
 const getApiUrl = () => {
-    return "";
     const userCookies = getCookie('store-info');
 	if(userCookies !== null ){
         return userCookies;
@@ -61,7 +60,7 @@ const getApiUrl = () => {
     return "store1";
 }
 
-export const clientApi = "https://localhost:5001";
+export const clientApi = "http://167.99.31.200/";
 export const supportAPiUrl = clientApi+getApiUrl();
 const apiUrl = clientApi+getApiUrl()+"/api/";
 export default apiUrl;

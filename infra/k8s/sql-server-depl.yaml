@@ -18,17 +18,14 @@ spec:
         fsGroup: 10001
       containers:
       - name: mssql
-        image: 'mcr.microsoft.com/mssql/server'
+        image: 'mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-18.04'
         ports:
         - containerPort: 1433
         env:
         - name: ACCEPT_EULA
           value: "Y"
         - name: SA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mssql
-              key: SA_PASSWORD 
+          value: 1Secure*Password1
 ---
 apiVersion: v1
 kind: Service

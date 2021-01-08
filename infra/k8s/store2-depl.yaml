@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: store2
-          image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api2
+          image: bbbipul/inventory_rest_api2
           env:
           - name: ASPNETCORE_URLS
             value: "http://0.0.0.0:80"

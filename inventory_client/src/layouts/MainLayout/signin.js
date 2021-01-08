@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	image: {
 			padding : 170,
-			backgroundImage: 'url(https://miro.medium.com/max/3840/1*x0sK7t8o1vhbaIBx5uWYWg.jpeg)',
+			backgroundImage: 'url(loginpage.jpeg)',
 			backgroundRepeat: 'no-repeat',
 			backgroundColor:
 				theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -127,7 +127,7 @@ export default function SignInSide() {
 	const [currentUser,setUserInfo] = useState(null);
 	const [userFullName,setUserFullName] = useState('');
 
-	const {  setUserLoginStatus , setUser ,setAppInfo} = React.useContext(AppContext);
+	const {  setUserLoginStatus , setUser } = React.useContext(AppContext);
 	const [progress, setProgress] = React.useState(0);
 
 	const retryLogin = () => {
@@ -135,7 +135,7 @@ export default function SignInSide() {
 		setSignInNotSuccess(!isSignInNotSuccess);
 	}
 	const switchSignInUp = () => {
-		// setSwitchForm(!switchForm);
+		setSwitchForm(!switchForm);
 	};
 
 	const switchSignInSuceess = () => {
@@ -146,7 +146,6 @@ export default function SignInSide() {
 			setProgress((oldProgress) => {
 			  if (oldProgress === 100) {
 				setUserLoginStatus(true);
-				setAppInfo(-1);
 				setUser(true);
 				return 0;
 			  }
@@ -212,7 +211,7 @@ export default function SignInSide() {
 		
 		userService.login(user).then(
 			success => { 
-			    signInSuccess();
+			    signInSuccess();
 			},
 			error => {
 				signInNotSuccess();
@@ -253,10 +252,27 @@ export default function SignInSide() {
 		}
 	}
 	
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+		  var c = ca[i];
+		  while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		  }
+		  if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		  }
+		}
+		return null;
+	}
 
 	const getCurrentUsers = () => {
+
 		if (!isSignInSuccess )
 			return null;
+
 		const userCookies = getCookie('user-info');
 		if(userCookies !== null ){
 			const user = JSON.parse(decode(userCookies));
@@ -266,6 +282,12 @@ export default function SignInSide() {
 		return null;
 	} 
 
+	const getFullName = (user) => {
+		if (user === null ){
+			return "";
+		}
+		return user.FirstName + " " + user.LastName;
+	}
 
 	useEffect(() => {
 		if(isSignInSuccess){
@@ -287,7 +309,7 @@ export default function SignInSide() {
 	}))(Button);
 
 	useEffect(() => {
-		submitFormWithAddress(clientApi+"store1/api/users","GET","", (res) => {
+		submitForm("users","GET","", (res) => {
 			setUsers(JSON.parse(res));
 		});
 	},[]);
@@ -392,11 +414,11 @@ export default function SignInSide() {
 															Sign In
 														</Button>
 														<Grid container justify='flex-end'>
-														<Grid item xs>
+														{/* <Grid item xs>
 															<Link href="#" variant="body2">
 															Forgot password?
 															</Link>
-														</Grid>
+														</Grid> */}
 														<Grid item>
 															<Link href="#" variant="body2" onClick={switchSignInUp}>
 															Don't have an account? Sign Up

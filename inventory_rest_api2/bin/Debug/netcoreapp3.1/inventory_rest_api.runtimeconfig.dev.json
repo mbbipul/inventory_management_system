@@ -1,8 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "C:\\Users\\Talking Glass\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\Talking Glass\\.nuget\\packages"
-    ]
-  }
-}

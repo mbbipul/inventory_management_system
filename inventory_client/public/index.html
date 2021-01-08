@@ -47,13 +47,6 @@
       {
           var oldConsoleLog = null;
           var pub = {};
-          pub.enableLogger =  function enableLogger() 
-                        {
-                            if(oldConsoleLog == null)
-                                return;
-
-                            window['console']['log'] = oldConsoleLog;
-                        };
           pub.disableLogger = function disableLogger()
                               {
                                   oldConsoleLog = console.log;
@@ -62,7 +55,7 @@
 
           return pub;
       }();
-      logger.enableLogger();
+      logger.disableLogger();
     </script>
   </body>
 </html>

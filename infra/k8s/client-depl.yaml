@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: inventorymanagementsystem.azurecr.io/inventory/inventory_client
+          image: bbbipul/inventory_client
           env:
           - name: APP_NAME
             value: store1

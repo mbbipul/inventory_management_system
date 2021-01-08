@@ -4,23 +4,19 @@ metadata:
   name: inventory-management-system
 build:
   artifacts:
-  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_client
+  - image: bbbipul/inventory_client
     context: inventory_client
-  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api
+  - image: bbbipul/inventory_rest_api
     context: inventory_rest_api
-  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api2
+  - image: bbbipul/inventory_rest_api2
     context: inventory_rest_api2
-  - image: inventorymanagementsystem.azurecr.io/inventory/inventory_rest_api3
+  - image: bbbipul/inventory_rest_api3
     context: inventory_rest_api3
-  - image: inventorymanagementsystem.azurecr.io/inventory/supportapi
-    context: support_api
 deploy:
   kubectl:
     manifests:
     - infra/k8s/client-depl.yaml
     - infra/k8s/ingress-serv.yaml
-    - infra/k8s/mongo.yaml
     - infra/k8s/store1-depl.yaml
     - infra/k8s/store2-depl.yaml
     - infra/k8s/store3-depl.yaml
-    - infra/k8s/support_api.yaml

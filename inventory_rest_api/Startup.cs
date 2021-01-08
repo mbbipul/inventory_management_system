@@ -37,10 +37,14 @@ namespace inventory_rest_api
                         options.AddPolicy(name: MyAllowSpecificOrigins,
                                         builder =>
                                         {
-                                            builder.WithOrigins("http://localhost:3000")
-                                                                .AllowAnyHeader()
-                                                  .AllowAnyMethod()
-                                                  .AllowCredentials();
+                                            builder
+                                                .WithOrigins(
+                                                    "http://localhost:3000",
+                                                    "http://167.99.31.200/"
+                                                    )
+                                                    .AllowAnyHeader()
+                                                    .AllowAnyMethod()
+                                                    .AllowCredentials();
                                         });
             });
 
