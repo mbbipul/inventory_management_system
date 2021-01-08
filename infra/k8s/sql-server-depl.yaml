@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mssql-deployment
+  name: mssqlserver-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mssql
+      app: mssqlserver
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mssql
+        app: mssqlserver
     spec:
       securityContext:
         fsGroup: 10001
       containers:
-      - name: mssql
+      - name: mssqlserver
         image: 'mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-18.04'
         ports:
         - containerPort: 1433
@@ -30,12 +30,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mssql-deployment
+  name: mssqlserverserv
 spec:
   selector:
-    app: mssql
+    app: mssqlserver
   ports:
-    - protocol: TCP
+    - name: mssqlserver
+      protocol: TCP
       port: 31433
       targetPort: 1433
-  type: LoadBalancer
+
+      

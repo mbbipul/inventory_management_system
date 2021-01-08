@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: bbbipul/inventory_client
+          image: registry.digitalocean.com/bbbipul/inventory_client
           env:
           - name: APP_NAME
             value: store1

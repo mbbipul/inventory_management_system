@@ -14,14 +14,7 @@ spec:
     spec:
       containers:
         - name: store1
-          image: bbbipul/inventory_rest_api
-          env:
-          - name: ASPNETCORE_URLS
-            value: "http://0.0.0.0:80"
-          - name: ConnectionString
-            value: "Server=sql.freeasphost.net\\MSSQL2016;Database=multidimensional_inventory_db;uid=multidimensional;pwd=1Secure*Password1;"
-          - name: CLIENT_APP
-            value: "http://40.119.2.157"
+          image: registry.digitalocean.com/bbbipul/inventory_rest_api
 ---
 apiVersion: v1 
 kind: Service
