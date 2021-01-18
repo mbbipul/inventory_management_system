@@ -50,8 +50,8 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("CostAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("CostAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("CostDescription")
                         .HasColumnType("nvarchar(max)");
@@ -107,11 +107,11 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("CustomerId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("DamageProductAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("DamageProductAmount")
+                        .HasColumnType("float");
 
-                    b.Property<long>("DamageRetComProQuantity")
-                        .HasColumnType("bigint");
+                    b.Property<int>("DamageRetComProQuantity")
+                        .HasColumnType("int");
 
                     b.Property<bool>("DamageRetComProQuantityDueStatus")
                         .HasColumnType("bit");
@@ -119,8 +119,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<string>("DamageRetDate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("DamageRetFromComAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("DamageRetFromComAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("DamageRetFromCompanyDate")
                         .HasColumnType("nvarchar(max)");
@@ -131,8 +131,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<string>("DamageSentToCompanyStatus")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("DamgeReturnCompanyDueAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("DamgeReturnCompanyDueAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("DamgeReturnCompanyDueDate")
                         .HasColumnType("nvarchar(max)");
@@ -195,8 +195,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("DamageId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("RecievedProductAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("RecievedProductAmount")
+                        .HasColumnType("float");
 
                     b.Property<int>("RecievedProductQuantity")
                         .HasColumnType("int");
@@ -246,8 +246,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("OrderSalesId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("PaymentAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PaymentAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("PaymentOrderSalesDate")
                         .HasColumnType("nvarchar(max)");
@@ -278,8 +278,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<int>("ProductQuantityProductQuantity")
                         .HasColumnType("int");
 
-                    b.Property<long>("ProductRatePrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("ProductRatePrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("ReturnQuantityProductQuantity")
                         .HasColumnType("int");
@@ -300,11 +300,11 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("Commission")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Commission")
+                        .HasColumnType("float");
 
-                    b.Property<long>("Cost")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
 
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
@@ -315,11 +315,11 @@ namespace inventory_rest_api.Migrations
                     b.Property<bool>("OrderPaidStatus")
                         .HasColumnType("bit");
 
-                    b.Property<long>("OrderPaymentAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("OrderPaymentAmount")
+                        .HasColumnType("float");
 
-                    b.Property<long>("OrderTotalPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("OrderTotalPrice")
+                        .HasColumnType("float");
 
                     b.HasKey("OrderSalesId");
 
@@ -333,8 +333,8 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("PaymentAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PaymentAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("PaymentPurchaseDate")
                         .HasColumnType("nvarchar(max)");
@@ -356,8 +356,8 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("PaymentAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PaymentAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("PaymentSalesDate")
                         .HasColumnType("nvarchar(max)");
@@ -387,11 +387,11 @@ namespace inventory_rest_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("ProductPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("ProductPrice")
+                        .HasColumnType("float");
 
-                    b.Property<long>("SalestPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("SalestPrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("TotalProductInStock")
                         .HasColumnType("int");
@@ -415,17 +415,17 @@ namespace inventory_rest_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("PerProductPurchasePrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PerProductPurchasePrice")
+                        .HasColumnType("float");
 
-                    b.Property<long>("PerProductSalesPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PerProductSalesPrice")
+                        .HasColumnType("float");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ProductQuantity")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ProductQuantity")
+                        .HasColumnType("int");
 
                     b.HasKey("ProductPurchaseHistoryId");
 
@@ -451,8 +451,8 @@ namespace inventory_rest_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("PurchaseDiscount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PurchaseDiscount")
+                        .HasColumnType("float");
 
                     b.Property<string>("PurchaseDuePaymentDate")
                         .HasColumnType("nvarchar(max)");
@@ -460,14 +460,14 @@ namespace inventory_rest_api.Migrations
                     b.Property<bool>("PurchasePaidStatus")
                         .HasColumnType("bit");
 
-                    b.Property<long>("PurchasePaymentAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PurchasePaymentAmount")
+                        .HasColumnType("float");
 
-                    b.Property<long>("PurchasePrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PurchasePrice")
+                        .HasColumnType("float");
 
-                    b.Property<long>("SalesPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("SalesPrice")
+                        .HasColumnType("float");
 
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
@@ -539,8 +539,8 @@ namespace inventory_rest_api.Migrations
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("SalaryAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("SalaryAmount")
+                        .HasColumnType("float");
 
                     b.Property<long>("SalaryPaymentDate")
                         .HasColumnType("bigint");
@@ -572,11 +572,11 @@ namespace inventory_rest_api.Migrations
                     b.Property<bool>("SalesPaidStatus")
                         .HasColumnType("bit");
 
-                    b.Property<long>("SalesPaymentAmount")
-                        .HasColumnType("bigint");
+                    b.Property<double>("SalesPaymentAmount")
+                        .HasColumnType("float");
 
-                    b.Property<long>("SalesPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("SalesPrice")
+                        .HasColumnType("float");
 
                     b.HasKey("SalesId");
 
@@ -668,8 +668,8 @@ namespace inventory_rest_api.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("PerProductPrice")
-                        .HasColumnType("bigint");
+                    b.Property<double>("PerProductPrice")
+                        .HasColumnType("float");
 
                     b.Property<long>("ProductPurchaseHistoryId")
                         .HasColumnType("bigint");

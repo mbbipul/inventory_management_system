@@ -2,31 +2,30 @@ namespace inventory_rest_api.Models
 {
     public class StoreSnapshot
     {
-        public long GodownStock { get; set; }
-        public long CompanyPending { get; set; }
-        public long Credit { get; set; }
-        public long Cash { get; set; }
-        public long Damage { get; set; }
+        public double GodownStock { get; set; }
+        public double CompanyPending { get; set; }
+        public double Credit { get; set; }
+        public double Cash { get; set; }
+        public double Damage { get; set; }
 
-        public long PurchasePrice { get; set; }
-        public long TotalPayment { get; set; }
-        public long TotalCost { get; set; }
-        public long TotalSalary { get; set; }
-        public long TotalCommision { get; set; }
-
+        public double PurchasePrice { get; set; }
+        public double TotalPayment { get; set; }
+        public double TotalCost { get; set; }
+        public double TotalSalary { get; set; }
+        public double TotalCommision { get; set; }
         
-        public long GetTotalCash (){
-            long totalCash = this.GodownStock + this.CompanyPending + this.Credit + this.Cash
+        public double GetTotalCash (){
+            double totalCash = this.GodownStock + this.CompanyPending + this.Credit + this.Cash
                                 + this.Damage ;
             return totalCash;
         }
 
-        public long GetTotalDebit (){
-            long totalDebit = this.PurchasePrice + this.TotalCost + this.TotalSalary + this.TotalCommision;
+        public double GetTotalDebit (){
+            double totalDebit = this.PurchasePrice + this.TotalCost + this.TotalSalary + this.TotalCommision;
             return totalDebit;
         }
 
-        public long GetProfit () {
+        public double GetProfit () {
             return GetTotalCash() - GetTotalDebit();
         }
 

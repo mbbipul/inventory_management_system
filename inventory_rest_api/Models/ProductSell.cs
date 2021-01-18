@@ -9,9 +9,9 @@ namespace inventory_rest_api.Models
         public Product Product { get; }
         public int ProductQuantity { get; set; }
         public String ProductSellDate { get; set; }
-        public long ProductSellPrice { get; set; }
-        public long ProductSellDiscount { get; set; }
-        public long ProductSellDue { get; set; }
+        public double ProductSellPrice { get; set; }
+        public double ProductSellDiscount { get; set; }
+        public double ProductSellDue { get; set; }
         public bool ProductSellPayStatus { get;  set; }
 
     }

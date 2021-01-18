@@ -12,7 +12,7 @@ namespace inventory_rest_api.Models
         public long EmployeeId { get; set; } 
 
         [Required]
-        public long SalaryAmount { get; set; }
+        public double SalaryAmount { get; set; }
 
         [Required]
         public long SalaryPaymentDate { get; set; }

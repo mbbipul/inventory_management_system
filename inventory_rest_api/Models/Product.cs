@@ -23,10 +23,10 @@ namespace inventory_rest_api.Models
         public int TotalProductInStock { get; set; }
         
         [Required]
-        public long ProductPrice { get ; set;  }
+        public double ProductPrice { get ; set;  }
 
         [Required]
-        public long SalestPrice { get ; set;  }
+        public double SalestPrice { get ; set;  }
 
 
         [JsonIgnore]

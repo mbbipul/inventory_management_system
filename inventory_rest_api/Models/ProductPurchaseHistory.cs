@@ -12,13 +12,13 @@ namespace inventory_rest_api.Models
         public long ProductId { get; set; }
 
         [Required]
-        public long ProductQuantity { get; set; }
+        public int ProductQuantity { get; set; }
         
         [Required]
-        public long PerProductPurchasePrice { get; set; }
+        public double PerProductPurchasePrice { get; set; }
 
         [Required]
-        public long PerProductSalesPrice { get; set; }
+        public double PerProductSalesPrice { get; set; }
 
         [Required]
         public string Date{ get; set;}

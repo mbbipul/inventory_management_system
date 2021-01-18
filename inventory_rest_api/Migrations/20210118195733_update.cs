@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class Final : Migration
+    public partial class update : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,7 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CostType = table.Column<string>(nullable: false),
                     Date = table.Column<string>(nullable: false),
-                    CostAmount = table.Column<long>(nullable: false),
+                    CostAmount = table.Column<double>(nullable: false),
                     CostDescription = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -78,11 +78,11 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<long>(nullable: false),
                     OrderDate = table.Column<string>(nullable: true),
-                    OrderTotalPrice = table.Column<long>(nullable: false),
-                    OrderPaymentAmount = table.Column<long>(nullable: false),
+                    OrderTotalPrice = table.Column<double>(nullable: false),
+                    OrderPaymentAmount = table.Column<double>(nullable: false),
                     OrderPaidStatus = table.Column<bool>(nullable: false),
-                    Commission = table.Column<long>(nullable: false),
-                    Cost = table.Column<long>(nullable: false)
+                    Commission = table.Column<double>(nullable: false),
+                    Cost = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,8 +99,8 @@ namespace inventory_rest_api.Migrations
                     ProductCode = table.Column<string>(nullable: false),
                     TotalProducts = table.Column<int>(nullable: false),
                     TotalProductInStock = table.Column<int>(nullable: false),
-                    ProductPrice = table.Column<long>(nullable: false),
-                    SalestPrice = table.Column<long>(nullable: false)
+                    ProductPrice = table.Column<double>(nullable: false),
+                    SalestPrice = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -155,7 +155,7 @@ namespace inventory_rest_api.Migrations
                     SalaryId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<long>(nullable: false),
-                    SalaryAmount = table.Column<long>(nullable: false),
+                    SalaryAmount = table.Column<double>(nullable: false),
                     SalaryPaymentDate = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
@@ -177,7 +177,7 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderSalesId = table.Column<long>(nullable: false),
                     PaymentOrderSalesDate = table.Column<string>(nullable: true),
-                    PaymentAmount = table.Column<long>(nullable: false)
+                    PaymentAmount = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -197,9 +197,9 @@ namespace inventory_rest_api.Migrations
                     ProductPurchaseHistoryId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<long>(nullable: false),
-                    ProductQuantity = table.Column<long>(nullable: false),
-                    PerProductPurchasePrice = table.Column<long>(nullable: false),
-                    PerProductSalesPrice = table.Column<long>(nullable: false),
+                    ProductQuantity = table.Column<int>(nullable: false),
+                    PerProductPurchasePrice = table.Column<double>(nullable: false),
+                    PerProductSalesPrice = table.Column<double>(nullable: false),
                     Date = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -223,12 +223,12 @@ namespace inventory_rest_api.Migrations
                     ProductId = table.Column<long>(nullable: false),
                     ProductQuantity = table.Column<int>(nullable: false),
                     PurchaseDate = table.Column<string>(nullable: false),
-                    PurchasePrice = table.Column<long>(nullable: false),
-                    SalesPrice = table.Column<long>(nullable: false),
-                    PurchasePaymentAmount = table.Column<long>(nullable: false),
+                    PurchasePrice = table.Column<double>(nullable: false),
+                    SalesPrice = table.Column<double>(nullable: false),
+                    PurchasePaymentAmount = table.Column<double>(nullable: false),
                     PurchasePaidStatus = table.Column<bool>(nullable: false),
                     PurchaseDuePaymentDate = table.Column<string>(nullable: true),
-                    PurchaseDiscount = table.Column<long>(nullable: false)
+                    PurchaseDiscount = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -277,14 +277,14 @@ namespace inventory_rest_api.Migrations
                     SupplierId = table.Column<long>(nullable: false),
                     DamageRetDate = table.Column<string>(nullable: true),
                     ProductQuantity = table.Column<int>(nullable: false),
-                    DamageProductAmount = table.Column<long>(nullable: false),
+                    DamageProductAmount = table.Column<double>(nullable: false),
                     DamageSentToCompanyStatus = table.Column<string>(nullable: true),
                     DamageSentToCompanyDate = table.Column<string>(nullable: true),
                     DamageRetFromCompanyDate = table.Column<string>(nullable: true),
-                    DamageRetFromComAmount = table.Column<long>(nullable: false),
-                    DamageRetComProQuantity = table.Column<long>(nullable: false),
+                    DamageRetFromComAmount = table.Column<double>(nullable: false),
+                    DamageRetComProQuantity = table.Column<int>(nullable: false),
                     DamageRetComProQuantityDueStatus = table.Column<bool>(nullable: false),
-                    DamgeReturnCompanyDueAmount = table.Column<long>(nullable: false),
+                    DamgeReturnCompanyDueAmount = table.Column<double>(nullable: false),
                     DamgeReturnCompanyDuePaymentStatus = table.Column<bool>(nullable: false),
                     DamgeReturnCompanyDueDate = table.Column<string>(nullable: true)
                 },
@@ -324,7 +324,7 @@ namespace inventory_rest_api.Migrations
                     ProductQuantityProductQuantity = table.Column<int>(nullable: false),
                     ReturnQuantityProductQuantity = table.Column<int>(nullable: false),
                     DamageQuantityProductQuantity = table.Column<int>(nullable: false),
-                    ProductRatePrice = table.Column<long>(nullable: false)
+                    ProductRatePrice = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -351,7 +351,7 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PurchaseId = table.Column<long>(nullable: false),
                     PaymentPurchaseDate = table.Column<string>(nullable: true),
-                    PaymentAmount = table.Column<long>(nullable: false)
+                    PaymentAmount = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -439,7 +439,7 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DamageId = table.Column<long>(nullable: false),
                     RecievedProductQuantity = table.Column<int>(nullable: false),
-                    RecievedProductAmount = table.Column<long>(nullable: false)
+                    RecievedProductAmount = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -461,7 +461,7 @@ namespace inventory_rest_api.Migrations
                     SalesId = table.Column<long>(nullable: false),
                     ProductPurchaseHistoryId = table.Column<long>(nullable: false),
                     ProductQuantity = table.Column<int>(nullable: false),
-                    PerProductPrice = table.Column<long>(nullable: false)
+                    PerProductPrice = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -502,8 +502,8 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<long>(nullable: false),
                     SalesDate = table.Column<string>(nullable: false),
-                    SalesPrice = table.Column<long>(nullable: false),
-                    SalesPaymentAmount = table.Column<long>(nullable: false),
+                    SalesPrice = table.Column<double>(nullable: false),
+                    SalesPaymentAmount = table.Column<double>(nullable: false),
                     SalesPaidStatus = table.Column<bool>(nullable: false),
                     SalesDueProductId = table.Column<long>(nullable: true)
                 },
@@ -526,7 +526,7 @@ namespace inventory_rest_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SalesId = table.Column<long>(nullable: false),
                     PaymentSalesDate = table.Column<string>(nullable: true),
-                    PaymentAmount = table.Column<long>(nullable: false)
+                    PaymentAmount = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {

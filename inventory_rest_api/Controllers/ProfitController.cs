@@ -18,7 +18,7 @@ namespace inventory_rest_api.Controllers
         public ProfitController(InventoryDbContext context) => _context = context ;
 
         [HttpGet]
-        public ActionResult<long> GetProfit(){
+        public ActionResult<double> GetProfit(){
 
             var totalDebit = _context.Sales.Sum(sales => sales.SalesPrice);
 
@@ -192,7 +192,7 @@ namespace inventory_rest_api.Controllers
         }
 
         [HttpGet("sales-amount")]
-        public ActionResult<long> GetSalesAmount(long id){
+        public ActionResult<double> GetSalesAmount(long id){
 
             return GetAllSalesAmount();
         }
@@ -357,7 +357,7 @@ namespace inventory_rest_api.Controllers
 
         }
 
-        public long GetAllSalesAmount(){
+        public double GetAllSalesAmount(){
 
             var amount = _context.Sales.Sum(s => s.SalesPrice);
 
@@ -396,7 +396,7 @@ namespace inventory_rest_api.Controllers
             return _context.Products.Count();
         }
 
-        public long GetTotalDamgeReturnFromCompanyAmount(int filter,string d){
+        public double GetTotalDamgeReturnFromCompanyAmount(int filter,string d){
             var query = from damages in _context.Damages 
                         select new {
                             damages.DamageRetFromComAmount,
@@ -425,7 +425,7 @@ namespace inventory_rest_api.Controllers
                             d.Year  == date.Year
                     ).Sum(d => d.DamageRetFromComAmount);
         }
-        public long GetTotalDamgeAmountByDate(int filter, string d){
+        public double GetTotalDamgeAmountByDate(int filter, string d){
             
             var query = from damages in _context.Damages 
                         select new {
@@ -456,18 +456,18 @@ namespace inventory_rest_api.Controllers
                     ).Sum(d => d.DamageProductAmount);
         }
 
-        public long GetTotalSalaryAmountByDate(int filter,string d){
+        public double GetTotalSalaryAmountByDate(int filter,string d){
             
             var query = from salary in _context.Salaries 
                         select new {
-                            salary.SalaryAmount,
-                            AppUtils.DateTime(salary.SalaryAmount).Day,
-                            AppUtils.DateTime(salary.SalaryAmount).Month,
-                            AppUtils.DateTime(salary.SalaryAmount).Year,
+                            salary.SalaryPaymentDate,
+                            AppUtils.DateTime(salary.SalaryPaymentDate).Day,
+                            AppUtils.DateTime(salary.SalaryPaymentDate).Month,
+                            AppUtils.DateTime(salary.SalaryPaymentDate).Year,
                         };
 
             if(filter == 0){
-                return query.Sum(s => s.SalaryAmount);
+                return query.Sum(s => s.SalaryPaymentDate);
             }else if(filter == 1){
                 DateTime dt = AppUtils.DateTime(d);
 
@@ -475,7 +475,7 @@ namespace inventory_rest_api.Controllers
                             s.Day  >= dt.Day &&
                             s.Month  == dt.Month &&
                             s.Year  == dt.Year
-                    ).Sum(s => s.SalaryAmount);
+                    ).Sum(s => s.SalaryPaymentDate);
             }
 
             DateTime date = AppUtils.DateTime(d);
@@ -484,9 +484,9 @@ namespace inventory_rest_api.Controllers
                             s.Day  == date.Day &&
                             s.Month  == date.Month &&
                             s.Year  == date.Year
-                    ).Sum(s => s.SalaryAmount);
+                    ).Sum(s => s.SalaryPaymentDate);
         }
-        public long GetTotalCostByDate(int filter,string d){
+        public double GetTotalCostByDate(int filter,string d){
             var query = from costs in _context.Costs 
                         select new {
                             costs.CostAmount,
@@ -515,7 +515,7 @@ namespace inventory_rest_api.Controllers
                             c.Year  == date.Year
                     ).Sum(c => c.CostAmount);
         }
-        public long GetSalesAmountByDate(int filter,string d){
+        public double GetSalesAmountByDate(int filter,string d){
 
             var query = from sales in _context.Sales 
                         select new {
@@ -546,7 +546,7 @@ namespace inventory_rest_api.Controllers
                     ).Sum(s => s.SalesPrice);
         }
 
-        public long GetPurchaseAmountByDate(int filter,string d){
+        public double GetPurchaseAmountByDate(int filter,string d){
 
             var query = from purchase in _context.Purchases 
                         select new {
@@ -613,8 +613,8 @@ namespace inventory_rest_api.Controllers
             return 0;
         }
 
-        private long CalculateProfit(long purAmount,long costAmount,long salaryAmount,long damageAmount,long salesAmount,long damageComAmount){
-            long profit =  (salesAmount+damageComAmount) - (purAmount + costAmount + salaryAmount + damageAmount) ; 
+        private double CalculateProfit(double purAmount,double costAmount,double salaryAmount,double damageAmount,double salesAmount,double damageComAmount){
+            double profit =  (salesAmount+damageComAmount) - (purAmount + costAmount + salaryAmount + damageAmount) ; 
             return profit;
         }
 

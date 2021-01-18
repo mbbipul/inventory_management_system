@@ -12,7 +12,7 @@ namespace inventory_rest_api.Models
         public int ProductQuantityProductQuantity { get ; set; }
         public int ReturnQuantityProductQuantity { get ; set; }
         public int DamageQuantityProductQuantity { get ; set; }
-        public long ProductRatePrice { get; set; }
+        public double ProductRatePrice { get; set; }
 
         [JsonIgnore]
         public ProductPurchaseHistory ProductPurchaseHistory { get; set; }

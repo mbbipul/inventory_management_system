@@ -23,7 +23,7 @@ namespace inventory_rest_api.Controllers
         [HttpGet("snapshot-report")]
         public async Task<ActionResult<Object>> GetStoreSnapReport(){
 
-            long companyPending  = await _context.PurchaseDueProducts
+            double companyPending  = await _context.PurchaseDueProducts
                                         .Include(pdp => pdp.Purchase).SumAsync(pdp =>pdp.Purchase.PurchasePrice);
             var companyDuePaymentQuery  =   from pdp in _context.PurchaseDueProducts
                                         join ppur  in _context.PaymentPurchases
@@ -31,14 +31,15 @@ namespace inventory_rest_api.Controllers
                                         select new {
                                             ppur.PaymentAmount
                                         };
-            long companyDuePayments = companyDuePaymentQuery.AsEnumerable().Sum(cp => cp.PaymentAmount);
-            long godownStockWithCompanyDue =await _context.ProductPurchaseHistories.SumAsync(pph => (pph.ProductQuantity*pph.PerProductPurchasePrice));
+            double companyDuePayments = companyDuePaymentQuery.AsEnumerable().Sum(cp => cp.PaymentAmount);
+            double godownStockWithCompanyDue =await _context.ProductPurchaseHistories.SumAsync(pph => (pph.ProductQuantity*pph.PerProductPurchasePrice));
             
-            long customerCash = await _context.PaymentSales.SumAsync( s => s.PaymentAmount);
-            long dsrCash = await _context.OrderPayments.SumAsync( s => s.PaymentAmount);
+            double customerCash = await _context.PaymentSales.SumAsync( s => s.PaymentAmount);
+            double dsrCash = await _context.OrderPayments.SumAsync( s => s.PaymentAmount);
 
-            long totalSalesPrice = await _context.Sales.SumAsync(s => s.SalesPrice);
-            long totalOrderSalesPrice = await _context.OrderSales.SumAsync(os => os.OrderTotalPrice);            
+            double totalSalesPrice = await _context.Sales.SumAsync(s => s.SalesPrice);
+            double totalOrderSalesPrice = await _context.OrderSales.SumAsync(os => os.OrderTotalPrice);            
+            
             var damageQuery =   _context.Damages
                                 .Select( d => new {
                                     ProductRate = (d.DamageProductAmount / d.ProductQuantity),
@@ -49,12 +50,12 @@ namespace inventory_rest_api.Controllers
                                                             .Where(dh => dh.DamageId == d.DamageId)
                                                             .Sum(dh => dh.RecievedProductQuantity)
                                 }).AsEnumerable();
-            long damage = damageQuery.Sum(d => (d.DelDamProQuantity-d.RecepDamProQuantity)*d.ProductRate);
+            double damage = damageQuery.Sum(d => (d.DelDamProQuantity-d.RecepDamProQuantity)*d.ProductRate);
 
-            long totalPayments = await _context.PaymentPurchases.SumAsync(pp => pp.PaymentAmount);
-            long mainCost = await _context.Costs.SumAsync(c => c.CostAmount);
-            long ordersCost = await _context.OrderSales.SumAsync(os => os.Cost);
-            long totalCommision = await _context.OrderSales.SumAsync(OrderSales=> OrderSales.Commission);
+            double totalPayments = await _context.PaymentPurchases.SumAsync(pp => pp.PaymentAmount);
+            double mainCost = await _context.Costs.SumAsync(c => c.CostAmount);
+            double ordersCost = await _context.OrderSales.SumAsync(os => os.Cost);
+            double totalCommision = await _context.OrderSales.SumAsync(OrderSales=> OrderSales.Commission);
 
             StoreSnapshot storeSnapshot = new StoreSnapshot {
                 GodownStock = godownStockWithCompanyDue - companyPending,
@@ -76,6 +77,7 @@ namespace inventory_rest_api.Controllers
 
             return storeSnapshot.GetStoreSnapshot();
         }
+        
         [HttpGet("purchase-report")]
         public  ActionResult<Object> GetPurchaseReport(){
 

@@ -15,8 +15,8 @@ namespace inventory_rest_api.Models
         public string ProductCategoryName { get; set; }
         public int TotalProducts { get ; set; }
         public int TotalProductInStock { get; set; }
-        public long ProductPrice { get ; set;  } 
-        public long SalestPrice { get ; set;  } //per
+        public double ProductPrice { get ; set;  } 
+        public double SalestPrice { get ; set;  } //per
         public String ProductDetails { get ; set ; }
         public ICollection<Purchase> Purchases { get; set; }
         public ICollection<Sales> Saleses { get; set; }

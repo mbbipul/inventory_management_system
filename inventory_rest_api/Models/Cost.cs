@@ -15,7 +15,7 @@ namespace inventory_rest_api.Models
         public string Date { get; set; }
 
         [Required] 
-        public long CostAmount { get; set; }
+        public double CostAmount { get; set; }
 
         public string CostDescription { get; set; }
     }

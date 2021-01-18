@@ -9,11 +9,11 @@ namespace inventory_rest_api.Models
         public long OrderSalesId { get; set; }
         public long EmployeeId { get; set; }
         public string OrderDate { get; set; }
-        public long OrderTotalPrice { get; set; }
-        public long OrderPaymentAmount { get; set; }
+        public double OrderTotalPrice { get; set; }
+        public double OrderPaymentAmount { get; set; }
         public bool OrderPaidStatus { get; set ;}
-        public long Commission { get; set; }
-        public long Cost { get; set;  }
+        public double Commission { get; set; }
+        public double Cost { get; set;  }
 
         [JsonIgnore]
         public ICollection<OrderProduct> OrderProduct { get; set; }

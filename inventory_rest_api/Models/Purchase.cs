@@ -23,14 +23,14 @@ namespace inventory_rest_api.Models
         public string PurchaseDate { get; set; }
         
         [Required]
-        public long PurchasePrice { get; set; }
+        public double PurchasePrice { get; set; }
 
         // public long CurrentPurchasePrice
         [Required]
-        public long SalesPrice { get; set; }
+        public double SalesPrice { get; set; }
 
         [Required]
-        public long PurchasePaymentAmount { get; set; }
+        public double PurchasePaymentAmount { get; set; }
         
         [Required]
         public bool PurchasePaidStatus { get; set; }
@@ -38,7 +38,7 @@ namespace inventory_rest_api.Models
         public string PurchaseDuePaymentDate { get; set;}
 
         [Required]
-        public long PurchaseDiscount { get; set; }
+        public double PurchaseDiscount { get; set; }
 
         [JsonIgnore]
         public Product Product { get ; set; }

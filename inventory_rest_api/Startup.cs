@@ -103,10 +103,6 @@ namespace inventory_rest_api
                 endpoints.MapControllers();
             });
 
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetService<InventoryDbContext>().Database.Migrate();
-            }
         //   SeedData.EnsurePopulated(app);
         }
     }

@@ -16,11 +16,11 @@ namespace inventory_rest_api.Models
         public string SalesDate { get; set; }
         
         [Required]
-        public long SalesPrice { get; set; }
+        public double SalesPrice { get; set; }
 
 
         [Required]
-        public long SalesPaymentAmount { get; set; }
+        public double SalesPaymentAmount { get; set; }
 
         [Required]
         public bool SalesPaidStatus { get; set; }

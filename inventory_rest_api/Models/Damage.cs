@@ -11,15 +11,15 @@ namespace inventory_rest_api.Models
         public long SupplierId { get; set; }
         public string DamageRetDate { get ; set; }
         public int ProductQuantity { get; set; }
-        public long DamageProductAmount { get; set; }
+        public double DamageProductAmount { get; set; }
         public string DamageSentToCompanyStatus { get ; set; }
         public string DamageSentToCompanyDate { get ; set; }
         public string DamageRetFromCompanyDate { get ; set; }
-        public long DamageRetFromComAmount { get ; set; }
-        public long DamageRetComProQuantity { get; set; }
+        public double DamageRetFromComAmount { get ; set; }
+        public int DamageRetComProQuantity { get; set; }
         public bool DamageRetComProQuantityDueStatus { get; set; }
 
-        public long DamgeReturnCompanyDueAmount { get; set; }
+        public double DamgeReturnCompanyDueAmount { get; set; }
         public bool DamgeReturnCompanyDuePaymentStatus { get; set; }
 
         public string DamgeReturnCompanyDueDate { get; set; }

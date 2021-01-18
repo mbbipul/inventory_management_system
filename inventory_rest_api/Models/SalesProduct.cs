@@ -9,7 +9,7 @@ namespace inventory_rest_api.Models
         public long SalesId { get; set; }
         public long ProductPurchaseHistoryId { get; set; }
         public int ProductQuantity { get; set; }
-        public long PerProductPrice { get; set; }
+        public double PerProductPrice { get; set; }
 
         public ProductPurchaseHistory ProductPurchaseHistory { get; set; }
         public Sales Sales { get; set; }
