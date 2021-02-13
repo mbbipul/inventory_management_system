@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
 import submitForm from '../utils/fetchApi';
+import exportCsv from '../utils/apiInfo';
 
 export default function Table(props) {
   const [data,setData] = useState(props.data.data);
@@ -19,6 +20,7 @@ export default function Table(props) {
   return (
     <MaterialTable
       title={props.title}
+      options={{exportButton: true,exportCsv}}
       columns={props.data.columns}
       data={data}
       

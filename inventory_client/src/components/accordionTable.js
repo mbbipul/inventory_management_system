@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Card, createMuiTheme, Grid, ThemeProvider } from '@material-ui/core';
+import { Button, Card, createMuiTheme, Grid, ThemeProvider } from '@material-ui/core';
 import MaterialTable from 'material-table';
+import { exportCsv } from '../utils/apiInfo';
+import { useReactToPrint } from 'react-to-print';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AccordionsTable(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const printRef = useRef();
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -38,9 +41,19 @@ export default function AccordionsTable(props) {
       type: theme,
     },
   });
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   return (
     <ThemeProvider theme={Theme(props.theme)}>
-        <Card style={{padding : 20 , marginBottom : 20}}>
+        <Button
+          style={{marginBottom: 20}} color='primary' variant='contained' onClick={handlePrint}>
+          Print 
+        </Button>
+        <div ref={printRef}>
+          <Card style={{padding : 20 , marginBottom : 20}}>
             <Grid
                 container
                 direction="row"
@@ -78,6 +91,7 @@ export default function AccordionsTable(props) {
                         <AccordionDetails>
                             <ThemeProvider theme={Theme(props.theme)}>
                                 <MaterialTable 
+                                    options={{exportButton : true,exportCsv}}
                                     title={props.title+acc.key}
                                     columns={props.columns}
                                     data={acc.data}/>
@@ -87,7 +101,7 @@ export default function AccordionsTable(props) {
                 </ThemeProvider>
             ))
         }
-      
+        </div>
     </ThemeProvider>
   );
 }

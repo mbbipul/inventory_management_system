@@ -9,9 +9,9 @@ export default function SalesPayment(){
     const columns = [
         { title: 'Sales Id', field: 'salesId' },
         { title: 'Customer Name', field: 'customerName' },
-        { title: 'Purchase Payment Amount', field: 'paymentAmount' },
+        { title: 'Sales Payment Amount', field: 'paymentAmount' },
         { 
-            title: 'Purchase Payment Date', 
+            title: 'Sales Payment Date', 
             field: 'paymentSalesDate',
             render : rowData => new Date(parseInt(rowData.paymentSalesDate)).toDateString() 
         },
@@ -19,7 +19,11 @@ export default function SalesPayment(){
     ];
 
     const FetchData = () => {
-        submitForm("Paymentsales/regarding-customer","GET","",(res) => setData(JSON.parse(res)));
+        submitForm("Paymentsales/regarding-customer","GET","",(res) => {
+            let tmp = JSON.parse(res);
+            tmp.map(d => d.paymentSalesDate = new Date(parseInt(d.paymentSalesDate)).toDateString());
+            setData(tmp);
+        });
     }
 
     const accordionsHeaders = ["Customer Name","Total Sales Payment","Total Sales Payment Amount","Recieved Payment Amount"];

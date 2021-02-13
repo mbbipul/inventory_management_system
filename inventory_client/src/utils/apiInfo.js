@@ -2,10 +2,23 @@ import { decode } from "js-base64";
 import { useContext } from "react";
 import AppContext from "../context/appContext";
 import { getStoreApiPath } from "./storeInfo";
-
+const _filefy = require("filefy");
 let app_nameV = "store1";
 export const app_name = app_nameV;
 
+export const exportCsv = (allColumns, allData) => {
+    const columns = allColumns.filter(columnDef => columnDef["export"] !== false);
+    const exportedData = allData.map(rowData => {
+        rowData.salesDate = new Date(parseInt(rowData.salesDate)).toDateString();
+        rowData.salesPaidStatusCustom = rowData.salesPaidStatus;
+        return columns.map(columnDef => rowData[columnDef.field])
+    });
+    new _filefy.CsvBuilder('inventory_report_'+Date.now()+'.csv' )
+      .setDelimeter(',')
+      .setColumns(columns.map(columnDef => columnDef.title))
+      .addRows(exportedData)
+      .exportFile();
+}
 // const apiUrl = window.__SECRET_API_URL;
 // const apiUrl = "http://40.119.2.157/"+app_name+"/api/";
 export function getCookie(cname) {
@@ -60,7 +73,7 @@ const getApiUrl = () => {
     return "store1";
 }
 
-export const clientApi = "http://167.99.31.200/";
-export const supportAPiUrl = clientApi+getApiUrl();
-const apiUrl = clientApi+getApiUrl()+"/api/";
+export const clientApi = "https://localhost:5001/";
+export const supportAPiUrl = clientApi;
+const apiUrl = clientApi+"api/";
 export default apiUrl;

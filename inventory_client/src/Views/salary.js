@@ -10,6 +10,9 @@ import ProductTable from '../components/productTable';
 
 import AddSalary from "./addSalary";
 import submitForm from "../utils/fetchApi";
+import MaterialTable from "material-table";
+
+const _filefy = require("filefy");
 
 function Salary () {
 
@@ -28,10 +31,24 @@ function Salary () {
         { title: 'Salary Id', field: 'salaryId' },
         { title: 'Employee Name', field: 'employeeName' },
         { title: 'Salary Amount', field: 'salaryAmount' },
-        { title: 'Payment Date', field: 'salaryPaymentDate' }
+        { title: 'Payment Date', field: 'salaryPaymentDate',
+            render: rowData => new Date(parseInt(rowData.salaryPaymentDate)).toDateString()   
+        }
 
     ]);
 
+    const exportCsv = (allColumns, allData) => {
+        const columns = allColumns.filter(columnDef => columnDef["export"] !== false);
+        const exportedData = allData.map(rowData => {
+            rowData.salaryPaymentDate = new Date(parseInt(rowData.salaryPaymentDate)).toDateString();
+            return columns.map(columnDef => rowData[columnDef.field])
+        });
+        new _filefy.CsvBuilder('inventory_report_'+Date.now()+'.csv' )
+          .setDelimeter(',')
+          .setColumns(columns.map(columnDef => columnDef.title))
+          .addRows(exportedData)
+          .exportFile();
+    }
     const [data,setData] = useState([]);
     
     const FetchData =  () => {
@@ -68,10 +85,13 @@ function Salary () {
             <Switch>
                 <Route exact path="/salary">
                     <div style={{margin:20}}>
-                        <ProductTable 
-                            title="Salary Sheet"
-                            apiUrl="Salaries/" 
-                            data={{ columns : columns , data : data}}/>
+                        <MaterialTable
+                            title="All Salaries"
+                            options={{exportButton: true,exportCsv}}
+                            columns={columns}
+                            data={data}
+                        
+                        />
                     </div>
                 </Route>
                 <Route exact path="/salary/add-salary">

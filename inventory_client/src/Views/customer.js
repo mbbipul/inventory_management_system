@@ -12,6 +12,10 @@ import AddCustomer from "./addCustomer";
 import { Chip, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 import MaterialUIPickers from "../components/datePicker";
+import {exportCsv} from '../utils/apiInfo';
+
+const _filefy = require("filefy");
+
 
 function Customer() {
     let location = useLocation().pathname.split("/");
@@ -36,6 +40,19 @@ function Customer() {
         }
 
     ]);
+
+    const exportCsv = (allColumns, allData) => {
+        const columns = allColumns.filter(columnDef => columnDef["export"] !== false);
+        const exportedData = allData.map(rowData => {
+            rowData.customerJoinDate = new Date(parseInt(rowData.customerJoinDate)).toDateString();
+            return columns.map(columnDef => rowData[columnDef.field])
+        });
+        new _filefy.CsvBuilder('inventory_report_'+Date.now()+'.csv' )
+          .setDelimeter(',')
+          .setColumns(columns.map(columnDef => columnDef.title))
+          .addRows(exportedData)
+          .exportFile();
+    }
 
     const creditCustomerColumns = [
         { title: 'Customer Name', field: 'customerName' },
@@ -252,10 +269,13 @@ function Customer() {
             <Switch>
                 <Route exact path="/customer">
                     <div style={{margin:20}}>
-                        <ProductTable 
+                        <MaterialTable
                             title="All Customers"
-                            apiUrl="Customers/" 
-                            data={{ columns : columns , data : data}}/>
+                            options={{exportButton: true,exportCsv}}
+                            columns={columns}
+                            data={data}
+                        
+                        />
                     </div>
                 </Route>
                 <Route exact path="/customer/add-customer">
@@ -284,6 +304,7 @@ function Customer() {
                     <MaterialTable
                         title="All Credit Customer"
                         columns={creditCustomerColumns}
+                        options={{exportButton: true,exportCsv}}
                         data={creditCustomer}/>
                 </div>
                 </Route>
@@ -292,6 +313,7 @@ function Customer() {
                  <div style={{margin:20}}>
                         <MaterialTable 
                             title="All Paid Customers"
+                            options={{exportButton: true,exportCsv}}
                             columns={creditCustomerColumns.slice(0,-2)}
                             data={paidCustomer}/>
                     </div>

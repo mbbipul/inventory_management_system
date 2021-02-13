@@ -720,6 +720,7 @@ function Damage () {
                     <div style={{margin:20}}>
                         <MaterialTable
                             title="All Damages"
+                            options={{exportButton: true}}
                             columns={damagesCol}
                             data={data} />
                     </div>

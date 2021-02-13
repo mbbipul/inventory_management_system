@@ -2,7 +2,7 @@ import apiUrl, { clientApi } from "../utils/apiInfo";
 import { authHeader } from "../utils/authHeader";
 import { getStoreApiPath, getStoreInfo } from "../utils/storeInfo";
 
-const userControllerAPi = clientApi + 'store1/api/users/';
+const userControllerAPi = clientApi + 'api/users/';
 export const userService = {
     login,
     logout,

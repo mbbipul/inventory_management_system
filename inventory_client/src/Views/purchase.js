@@ -31,6 +31,7 @@ function Purchase () {
     const [purchaseReport,setPurchaseReport] = useState({});
     const [reportItems,setReportItems] = useState([]);
     const [reportOptions,setReportOptions] = useState({});
+    const [tableData,setTableData] = useState([]);
 
     function CustomPaidStatus (props) {
         return (
@@ -402,6 +403,12 @@ function Purchase () {
         
         return overViewItems;
     }
+
+    useEffect(() => {
+        const tmp = [...data];
+        tmp.map(d => d.purchaseDate = new Date(parseInt(d.purchaseDate)).toDateString())
+        setTableData(tmp);
+    },[data]);
         return(
             <div>
                 <RouteHeader subTitle={headersubtitle} details={routeHeader} />
@@ -413,7 +420,7 @@ function Purchase () {
                                 detailsPane={detailsPane}
                                 title="Purchase"
                                 columns={columns} 
-                                data={data} />
+                                data={tableData} />
                         </div>
                     </Route>
                     <Route exact path="/purchase/add-purchase">

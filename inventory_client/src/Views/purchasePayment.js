@@ -19,7 +19,11 @@ export default function PurchasePayment(){
     ];
 
     const FetchData = () => {
-        submitForm("paymentpurchase/regarding-supplier","GET","",(res) => setData(JSON.parse(res)));
+        submitForm("paymentpurchase/regarding-supplier","GET","",(res) => {
+            let tmp = JSON.parse(res);
+            tmp.map(d => d.paymentPurchaseDate = new Date(parseInt(d.paymentPurchaseDate)).toDateString());
+            setData(tmp);
+        });
     }
 
     const accordionsHeaders = ["Supplier Name","Total Purchase Payment","Total Purchase Payment Amount","Paid Purchase Amount"];

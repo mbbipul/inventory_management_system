@@ -4,6 +4,7 @@ import { Grid } from '@material-ui/core';
 import IconCard from './iconCard';
 import submitForm from '../utils/fetchApi';
 import DataTableExtensions from "react-data-table-component-extensions";
+const _filefy = require("filefy");
 
 function DetailsTable(props) {
 
@@ -27,12 +28,22 @@ function DetailsTable(props) {
     data : props.data
   };
 
+  const exportCsv = (allColumns, allData) => {
+    const columns = allColumns.filter(columnDef => columnDef["export"] !== false);
+    const exportedData = allData.map(rowData => columns.map(columnDef => rowData[columnDef.field]));
+    new _filefy.CsvBuilder('filename5.csv' )
+      .setDelimeter(',')
+      .setColumns(columns.map(columnDef => columnDef.title))
+      .addRows(exportedData)
+      .exportFile();
+  }
+
   return (
     <MaterialTable
       title={props.title}
       columns={props.columns}
       data={props.data}
-      options={{exportButton:true}}
+      options={{exportButton:true,exportCsv}}
       detailPanel={rowData => {
         let overViewItems = props.detailsPane(rowData);
         

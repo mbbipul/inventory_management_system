@@ -12,6 +12,8 @@ import submitForm from "../utils/fetchApi";
 import { Chip } from "@material-ui/core";
 import MaterialTable from "material-table";
 
+const _filefy = require("filefy");
+
 function Employee () {
 
     const [data,setData] = useState([]);
@@ -83,6 +85,20 @@ function Employee () {
     const FetchData =  () => {
         submitForm("Employees/","GET","",(res) => setData(JSON.parse(res)));
     };
+
+    
+    const exportCsv = (allColumns, allData) => {
+        const columns = allColumns.filter(columnDef => columnDef["export"] !== false);
+        const exportedData = allData.map(rowData => {
+            rowData.date = new Date(parseInt(rowData.date)).toDateString();
+            return columns.map(columnDef => rowData[columnDef.field])
+        });
+        new _filefy.CsvBuilder('inventory_report_'+Date.now()+'.csv' )
+          .setDelimeter(',')
+          .setColumns(columns.map(columnDef => columnDef.title))
+          .addRows(exportedData)
+          .exportFile();
+    }
     
     let routeHeader = {
         title : "Employee",
@@ -121,10 +137,13 @@ function Employee () {
             <Switch>
                 <Route exact path="/employee">
                     <div style={{margin:20}}>
-                    <ProductTable 
-                        title="All Employees"
-                        apiUrl="Employees/" 
-                        data={{ columns : columns , data : data}}/>
+                        <MaterialTable
+                            title="All Employees"
+                            options={{exportButton: true,exportCsv}}
+                            columns={columns}
+                            data={data}
+                        
+                        />
                     </div>
                 </Route>
                 <Route exact path="/employee/add-employee">
@@ -151,6 +170,7 @@ function Employee () {
                  <div style={{margin:20}}>
                     <MaterialTable
                         title="All Credit Employees"
+                        options={{exportButton: true,exportCsv}}
                         columns={creditEmployeeColumns}
                         data={creditEmployee}/>
                 </div>
@@ -160,6 +180,7 @@ function Employee () {
                  <div style={{margin:20}}>
                         <MaterialTable 
                             title="All Paid Employees"
+                            options={{exportButton: true,exportCsv}}
                             columns={creditEmployeeColumns.slice(0,-1)}
                             data={paidEmployee}/>
                     </div>

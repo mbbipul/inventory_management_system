@@ -5,25 +5,24 @@ import {
   useLocation,
 } from "react-router-dom";
 import RouteHeader from '../components/routeHeader';
-import ManageTable from "../components/manageTable";
 import apiUrl from "../utils/apiInfo";
 import NewSales from "./newSales";
 import TodaysReport from "../components/todaysReport";
 import HistoryVisual from "../components/historyWithVisualization";
-import DetailsTable from "../components/collapseTable";
 import submitForm from "../utils/fetchApi";
 import DoneOutlineOutlinedIcon from '@material-ui/icons/DoneOutlineOutlined';
 import { green } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
 import { Box, Button, Chip, Grid, Snackbar, TextField, Typography } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
-import SalesMemo from "./memo";
-import SalesMemoHistory from "./salesMemoHistory";
 import MaterialTable from "material-table";
 import { updateSalesFormFields } from "../utils/appFormsFileds";
 import Form from "../components/form";
 import Alert from "@material-ui/lab/Alert";
 import FullWidthTabs from "../components/tab";
+import { useReactToPrint } from 'react-to-print';
+import { useRef } from "react";
+import { exportCsv } from '../utils/apiInfo.js';
 
 function CustomPaidStatus (props) {
     return (
@@ -54,6 +53,8 @@ function Sales () {
     const [reportOptions,setReportOptions] = useState({});
     const [salesTab,setSalesTab] = useState(0);
     const [openSnackbar,setOpenSnackbar] = useState(false);
+
+    const printComponent = useRef();
 
     useEffect(() => {
         let filterValue = [];
@@ -442,6 +443,9 @@ function Sales () {
         ];
         return overViewItems;
     }
+    const handlePrint = useReactToPrint({
+        content: () => printComponent.current,
+    });
 
     const tabsSales = [
         {
@@ -478,7 +482,9 @@ function Sales () {
                                                     title="Manage Customer Sales"
                                                     columns={columns}
                                                     data={data}
+                                                    options={{exportButton:true,exportCsv}}
                                                     detailPanel={rowData => {
+
                                                         let payment = 0;
                                                         let dueAmount = rowData.salesPrice - rowData.salesPaymentAmount;
                                                         const handlePayment = (e) => {
@@ -512,7 +518,7 @@ function Sales () {
                                                             );
                                                         }
                                                         return (
-                                                            <Box style={{padding: 20}}>
+                                                            <Box ref={printComponent} style={{padding: 20}}>
                                                                 <Form salesData={rowData} onSubmit={() => console.log(3)}  fields={updateSalesFormFields}/>
                                                                 {
                                                                     rowData.salesPaidStatus ? (
@@ -549,9 +555,10 @@ function Sales () {
                                                                                     color='primary'>Make Payment</Button>
                                                                             </Grid>
                                                                         </Grid>
+                                                                       
                                                                     )
                                                                 }
-                                                            
+                                                                <Button variant='contained' onClick={handlePrint}  color='primary'>Print Sales</Button>
                                                             </Box>
                                                         )
                                                     }}
@@ -560,6 +567,7 @@ function Sales () {
                                                         title="Manage Order Sales"
                                                         columns={columns}
                                                         data={data}
+                                                        options={{exportButton:true,exportCsv}}
                                                         detailPanel={rowData => {
                                                             let payment = 0;
                                                             let dueAmount = rowData.salesPrice - rowData.salesPaymentAmount;
@@ -628,7 +636,7 @@ function Sales () {
                                                                             </Grid>
                                                                         )
                                                                     }
-                                                                
+                                                                    <Button variant='contained' onClick={handlePrint}  color='primary'>Print Sales</Button>
                                                                 </Box>
                                                             )
                                                         }}
