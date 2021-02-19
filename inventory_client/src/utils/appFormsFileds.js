@@ -373,6 +373,79 @@ const newSalesFormFields = [
     
 ] ;
 
+const newOrdersFormFields = [
+    {
+        label : "Route Name",
+        placeholder : "Notullabad",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [9999]
+
+    },
+    
+    {
+        label : "Product Info",
+        columns : [
+            { 
+                title: 'Product Name', 
+                field: 'productName',
+                editable: 'never' ,
+                fetchUrl : apiUrl+"Products",
+                selectName : "productName",
+                selectKey : "productId",
+            },
+            { title: "Product Quantity", field: 'productQuantity'},
+            { title: 'Product Price (per product)', field: 'productPrice'},
+            { title: 'Total Price', field: 'productPrice'}
+
+        ],
+        type : 11,
+        selectValue : "customerAddress"
+    },
+    {
+        type : 999,
+        label : ''
+    },
+    {
+        label : "Order Payment Amount",
+        placeholder : "450.00 tk",
+        type : 7,
+        dependsOn : {
+            field : ["total Products Price"],
+            operation : 7 //substruct operation with check this value is not larger
+        },
+        required : true,
+        disabled : false,
+        validation : [0] 
+    },
+    {
+        label : "Sales Payment Due Amount",
+        type : 8,
+        dependsOn : {
+            field : ["totalProductsPrice","Order Payment Amount"],
+            operation : 1
+        },
+    },
+    {
+        label : "Commision",
+        placeholder : "500",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    {
+        label : "Cost",
+        placeholder : "500",
+        type : 0,
+        required : true,
+        disabled : false,
+        validation : [0]
+    },
+    
+] ;
+
 const updateSalesFormFields = [
     {
         label : "Customer Name",
@@ -880,5 +953,6 @@ export {
     addReturnDamageFormFileds,
     addOrderFormFields,
     memoFormFields,
-    updateSalesFormFields
+    updateSalesFormFields,
+    newOrdersFormFields
 };

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace inventory_rest_api.Migrations
 {
-    public partial class update : Migration
+    public partial class OrderFixed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -82,7 +82,8 @@ namespace inventory_rest_api.Migrations
                     OrderPaymentAmount = table.Column<double>(nullable: false),
                     OrderPaidStatus = table.Column<bool>(nullable: false),
                     Commission = table.Column<double>(nullable: false),
-                    Cost = table.Column<double>(nullable: false)
+                    Cost = table.Column<double>(nullable: false),
+                    RouteName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -73,7 +73,7 @@ const getApiUrl = () => {
     return "store1";
 }
 
-export const clientApi = "https://localhost:5001/";
-export const supportAPiUrl = clientApi;
-const apiUrl = clientApi+"api/";
+export const clientApi = "http://167.99.31.200/";
+export const supportAPiUrl = clientApi+getApiUrl();
+const apiUrl = clientApi+getApiUrl()+"/api/";
 export default apiUrl;

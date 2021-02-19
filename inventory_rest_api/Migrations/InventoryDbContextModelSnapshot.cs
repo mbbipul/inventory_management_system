@@ -321,6 +321,9 @@ namespace inventory_rest_api.Migrations
                     b.Property<double>("OrderTotalPrice")
                         .HasColumnType("float");
 
+                    b.Property<string>("RouteName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("OrderSalesId");
 
                     b.ToTable("OrderSales");

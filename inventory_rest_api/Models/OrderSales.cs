@@ -14,6 +14,7 @@ namespace inventory_rest_api.Models
         public bool OrderPaidStatus { get; set ;}
         public double Commission { get; set; }
         public double Cost { get; set;  }
+        public string RouteName { get; set; }
 
         [JsonIgnore]
         public ICollection<OrderProduct> OrderProduct { get; set; }

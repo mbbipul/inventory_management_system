@@ -419,11 +419,11 @@ export default function SignInSide() {
 															Forgot password?
 															</Link>
 														</Grid> */}
-														<Grid item>
+														{/* <Grid item>
 															<Link href="#" variant="body2" onClick={switchSignInUp}>
 															Don't have an account? Sign Up
 															</Link>
-														</Grid>
+														</Grid> */}
 														</Grid>
 														<Box mt={5}>
 														<Copyright />

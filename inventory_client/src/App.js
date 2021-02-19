@@ -30,6 +30,7 @@ import { decode } from 'js-base64';
 import { getCookie, parseCookie, setCookie } from './utils/apiInfo';
 import { getStoreInfo, getStoreInfoByName } from './utils/storeInfo';
 import AccountSetting from './Views/account-setting';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -58,6 +59,8 @@ function App() {
 	const [user,setUser] = useState({});
 	const [appInfo,setAppInfo] = useState({});
 	
+	let history = useHistory();
+
 	const getCurrentUsers = (state) => {
 
 		const userCookies = getCookie('user-info');
@@ -188,7 +191,7 @@ function App() {
       	<AppContextProvider value={appContextValue}>
 			{
 				isUserLoggedIn ? (
-					<Router>
+					<Router history={history}>
 						<AppDrawer />
 						<main style={content}  >
 							<div className={classes.toolbar} />

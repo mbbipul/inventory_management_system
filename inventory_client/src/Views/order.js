@@ -8,7 +8,7 @@ import RouteHeader from '../components/routeHeader';
 import ManageTable from "../components/manageTable";
 import submitForm from "../utils/fetchApi";
 import AddOrder from "./addOrder";
-import {hip, Grid, Paper, Chip } from "@material-ui/core";
+import {hip, Grid, Paper, Chip, Button } from "@material-ui/core";
 import MaterialUIPickers from "../components/datePicker";
 import HistoryVisual from "../components/historyWithVisualization";
 import MaterialTable from "material-table";
@@ -107,7 +107,7 @@ function Order() {
         { 
             title: 'Due Payment Amount', 
             field: 'orderPaidStatus' ,
-            render : rowData => rowData.orderPaidStatus ?   (<Alert severity='success'>
+            render : rowData => level1NestedSum(rowData,"orderTotalPrice") - level1NestedSum(rowData,"orderPaymentAmount") === 0 ?   (<Alert severity='success'>
                                                                 <Chip
                                                                     color="primary"
                                                                     label={"Paid"}
@@ -305,13 +305,13 @@ function Order() {
     return(
         <div>
             <RouteHeader subTitle={headersubtitle} details={routeHeader} />
-            {
+            {/* {
                 showHisVis && 
                 <HistoryVisual 
                     hasTabPanel={false}
                     handleTabs={setReportTabs} 
                     tabs={hisTabs}/>
-            }
+            } */}
 
             <Switch>
             <Route exact path="/order">
@@ -319,6 +319,7 @@ function Order() {
                 </Route>
                 <Route exact path="/order/manage-order">
                     <div style={{margin:20}}>
+                        <Button variant='contained' color="secondary" onClick={() => FetchOrders()}>Refresh</Button>
                         <MaterialTable
                             title="All Orders"
                             columns={columns}
@@ -348,7 +349,7 @@ function Order() {
                             // }}
                             detailPanel={rowData => {
                                 return (
-                                    <ManageOrder orderSaleses={rowData}/>
+                                    <AddOrder orderDate={new Date(rowData.date).getTime()} />
                                 )
                             }}
                         />

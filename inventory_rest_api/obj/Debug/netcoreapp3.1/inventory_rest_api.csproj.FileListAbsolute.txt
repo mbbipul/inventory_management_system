@@ -134,3 +134,6 @@ G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netco
 G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netcoreapp3.1\inventory_rest_api.dll
 G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netcoreapp3.1\inventory_rest_api.pdb
 G:\projects_bipul\inventory_management_system\inventory_rest_api\obj\Debug\netcoreapp3.1\inventory_rest_api.genruntimeconfig.cache
+G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+G:\projects_bipul\inventory_management_system\inventory_rest_api\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll

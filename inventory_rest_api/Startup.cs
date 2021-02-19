@@ -54,7 +54,9 @@ namespace inventory_rest_api
             services.AddDbContext<InventoryDbContext>( opt => 
                 opt.UseSqlServer(Configuration.GetConnectionString("inventoryDb")));
             // configure strongly typed settings objects
-           
+           services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
  

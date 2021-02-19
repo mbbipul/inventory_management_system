@@ -11,7 +11,6 @@ class Form extends React.Component {
 
     constructor(props){
         super(props);
-        this.apiUrl = "https://localhost:5001/api/";
         this.state = {
             hasAnyError: [],
         };

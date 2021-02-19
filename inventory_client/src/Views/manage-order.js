@@ -69,6 +69,8 @@ export default function ManageOrder(props){
 
     const [openSnackbar,setOpenSnackbar] = useState(false);
 
+    const [preOr,setPreOrdProQ] = useState([]);
+
     const columns = [
         'Product Name','Select Product Purchase Price','Receive','Return','Sells','Damage','Rate','Total Sells (taka)'
     ];
@@ -113,16 +115,13 @@ export default function ManageOrder(props){
             orderProducts.push(v.orderProduct);
         });
 
-        console.log({
-            orderSales,
-            orderProducts
-        })
+
         
         submitForm('orders','PUT',{orderSales,orderProducts},(res) => {
-            console.log(res);
+
             setOpenSnackbar(true);
             setInterval(function (){
-                window.location.href = "/order/manage-order";
+            //    window.location.href = "/order/manage-order";
             },2000);
         });
 
@@ -141,10 +140,6 @@ export default function ManageOrder(props){
         return parseFloat(str);
     }
 
-
-    useEffect(() => {
-        console.log(empOrderProducts);
-    },[empOrderProducts]);
 
     const handlePaymentAmount = (e,i) => {
         let amount = parseFloatR(e.target.value);
@@ -171,10 +166,14 @@ export default function ManageOrder(props){
         const tmp = [...empOrderProducts];
         const value = parseIntR(e.target.value);
         let rQ = value;
-        if(value > (tmp[i].orderProductInfos[opi].pph.productQuantity+tmp[i].orderProductInfos[opi].orderProduct.productQuantityProductQuantity)){
+        let totalSalesAblePro = parseIntR(tmp[i].orderProductInfos[opi].pph.productQuantity+preOr[i].orderProductInfos[opi].pph.productQuantity);
+        if(value > totalSalesAblePro){
             rQ = tmp[i].orderProductInfos[opi].orderProduct.productQuantityProductQuantity;
-            alert('This amount of product are not in stock');
+            alert('This amount of product are not in stock ' );
+            return;
         }
+       console.log("gg",preOr);
+
         if(tmp[i]){
             tmp[i].orderProductInfos[opi].orderProduct.productQuantityProductQuantity = rQ;
         }
@@ -211,8 +210,12 @@ export default function ManageOrder(props){
         orderSales.data.forEach(os => {
             orderSalesEmIds.push({employeeId : os.employeeId,orderSales : os.data[0]})
         });
-        console.log(orderSalesEmIds);
-        submitForm("Orders/order-sales-by-ids","POST",orderSalesEmIds,(res) => setEmpOrderProducts(JSON.parse(res)));
+        
+        submitForm("Orders/order-sales-by-ids","POST",orderSalesEmIds,(res) => {
+            const tmp =JSON.parse(res);
+            setPreOrdProQ([...tmp]);
+            setEmpOrderProducts(tmp);
+        });
 
     },[]);
 
@@ -401,7 +404,6 @@ export default function ManageOrder(props){
                                         <TextField 
                                             placeholder={"Previous Commision : " + emP.orderSales.commission}
                                             onChange={handleCommision}
-                                            required={true}
                                             label="Commision(tk)"
                                         />
                                     </Grid>
@@ -409,7 +411,6 @@ export default function ManageOrder(props){
                                         <TextField 
                                             placeholder={"Previous Cost : " + emP.orderSales.cost}
                                             onChange={handleCost}
-                                            required={true}
                                             label="Cost(tk)"
                                         />
                                     </Grid>

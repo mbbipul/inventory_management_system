@@ -22,7 +22,7 @@ namespace inventory_rest_api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable> GetOrderSales(string date){
+        public ActionResult<IEnumerable> GetOrderSales(){
             var query = from os in _context.OrderSales
                         select new {
                             Date = AppUtils.DateTime(os.OrderDate).ToShortDateString(),
@@ -65,7 +65,7 @@ namespace inventory_rest_api.Controllers
             
         }
 
-        [HttpGet("{date}")]
+        [HttpGet("nn/{date}")]
         public async Task<ActionResult<IEnumerable>> GetOrderSalesByDate(string date){
             DateTime dateTime = AppUtils.DateTime(date);
             List<Employee> employees = await _context.Employees.ToListAsync();
@@ -125,8 +125,285 @@ namespace inventory_rest_api.Controllers
             return employeeOrderWithProdutctByDates;
         }
 
+        // [HttpGet("is-order-exist/{employeeId}")]
+        // public  ActionResult<Boolean> CheckIsOrderExits(long employeeId){
+        //     DateTime today = DateTime.Today;
+        //     var query = from os in _context.OrderSales
+        //                 where os.EmployeeId == employeeId
+        //                 select new {
+        //                     Day = AppUtils.DateTime(os.OrderDate).Day,
+        //                     AppUtils.DateTime(os.OrderDate).Month,
+        //                     AppUtils.DateTime(os.OrderDate).Year 
+        //                 };
 
-        [HttpPost("order-sales-by-ids")]
+        //     var seelctBydate = query.AsEnumerable().Where(os => os.Day == today.Day && os.Month == today.Month 
+        //                 && os.Year == today.Year).ToList();
+
+        //     return seelctBydate.Count() > 0;
+        // }
+
+        [HttpGet("order-sales-by-employeeid/{employeeId}")]
+        public async  Task<ActionResult<Object>> GetOrderSalesByEmpId(long employeeId){
+            DateTime today = DateTime.Today;
+            var orderSales = from os in _context.OrderSales
+                        where os.EmployeeId == employeeId
+                        select new {
+                            os.OrderSalesId,
+                            os.EmployeeId,
+                            os.OrderPaidStatus,
+                            os.OrderTotalPrice,
+                            os.OrderPaymentAmount,
+                            os.Commission,
+                            os.Cost,
+                            os.RouteName,
+                            Day = AppUtils.DateTime(os.OrderDate).Day,
+                            AppUtils.DateTime(os.OrderDate).Month,
+                            AppUtils.DateTime(os.OrderDate).Year ,
+                            Date = AppUtils.DateTime(os.OrderDate).ToShortDateString()
+                        };
+
+            var orderSalesBydate = orderSales.AsEnumerable().Where(os => os.Day == today.Day && os.Month == today.Month 
+                        && os.Year == today.Year && os.EmployeeId == employeeId).ToList();
+                        
+            var query = from product in _context.Products
+                            .Include(p => p.ProductPurchaseHistories)
+                        select new {
+                            ProductId = product.ProductId,
+                            ProductName = product.ProductName,
+                            ProductCode = product.ProductCode,
+                            TotalProducts = product.TotalProducts,
+                            TotalProductInStock = product.TotalProductInStock,
+                            ProductPrice = product.ProductPrice,
+                            SalestPrice = product.SalestPrice,
+                            PurHis = product.ProductPurchaseHistories
+                        };
+            List<Object> orderPros = new List<Object>();
+
+            var allProducts = await query.ToListAsync();
+            foreach (var item in allProducts)
+            {
+                var pphs = item.PurHis;
+                List<Object> pphswithOrderInfo = new List<Object>();
+                foreach (var pph in pphs)
+                {
+                    if(orderSalesBydate.Count() > 0){
+                        var orderSalesId = orderSalesBydate.First().OrderSalesId;
+                        
+                        List<OrderProduct> orderProduct = _context.OrderProducts.
+                                                    Where( 
+                                                        op => op.OrderSalesId == orderSalesId &&
+                                                        op.ProductPurchaseHistoryId == pph.ProductPurchaseHistoryId
+                                                        ).ToList();
+                        if (orderProduct.Count() > 0){
+                            var pphOrder = new {
+                                pph.ProductPurchaseHistoryId,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice,
+                                pph.ProductId,
+                                pph.ProductQuantity,
+                                pph.Date,
+                                orderSalesId,
+                                orderProduct.First().OrderProductId,
+                                orderProduct.First().DamageQuantityProductQuantity,
+                                orderProduct.First().ProductQuantityProductQuantity,
+                                orderProduct.First().ReturnQuantityProductQuantity,
+                                orderProduct.First().ProductRatePrice
+                            };
+                            pphswithOrderInfo.Add(pphOrder);
+                        }else{
+                            var pphOrder = new {
+                                pph.ProductPurchaseHistoryId,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice,
+                                pph.ProductId,
+                                pph.ProductQuantity,
+                                pph.Date,
+                                orderSalesId = -387827,
+                                OrderProductId = -34,
+                                DamageQuantityProductQuantity = 0,
+                                ProductQuantityProductQuantity = 0,
+                                ReturnQuantityProductQuantity = 0,
+                                ProductRatePrice = 0
+                            };
+                            pphswithOrderInfo.Add(pphOrder);
+                        }
+                       
+               
+                    } else if (await _context.Employees.FindAsync(employeeId) != null){
+                         var pphOrder = new {
+                                pph.ProductPurchaseHistoryId,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice,
+                                pph.ProductId,
+                                pph.ProductQuantity,
+                                pph.Date,
+                                orderSalesId = -387827,
+                                OrderProductId = -56,
+                                DamageQuantityProductQuantity = 0,
+                                ProductQuantityProductQuantity = 0,
+                                ReturnQuantityProductQuantity = 0,
+                                ProductRatePrice = 0
+                            };
+                            pphswithOrderInfo.Add(pphOrder);
+                    }
+
+                } 
+                if (orderSalesBydate.Count() > 0 || await _context.Employees.FindAsync(employeeId) != null){
+                    var orderPro = new {
+                            item.ProductId,
+                            item.ProductName,
+                            item.ProductCode,
+                            item.TotalProducts,
+                            item.TotalProductInStock,
+                            item.ProductPrice,
+                            item.SalestPrice,
+                            PurHis = pphswithOrderInfo
+                    };
+                    orderPros.Add(orderPro);
+
+                } 
+
+            }
+            var orderSalesInfo = orderSalesBydate.Count() > 0 ? orderSalesBydate.First() : null;
+
+            return  new {
+                orderSalesInfo,
+                Products = orderPros.ToList()
+            };
+        }
+
+        [HttpGet("order-sales-by-date-employeeid/{employeeId}-{date}")]
+        public async  Task<ActionResult<Object>> GetOrderSalesByEmpId(long employeeId,long date){
+            DateTime today = AppUtils.DateTime(date);
+            var orderSales = from os in _context.OrderSales
+                        where os.EmployeeId == employeeId
+                        select new {
+                            os.OrderSalesId,
+                            os.EmployeeId,
+                            os.OrderPaidStatus,
+                            os.OrderTotalPrice,
+                            os.OrderPaymentAmount,
+                            os.Commission,
+                            os.Cost,
+                            os.RouteName,
+                            Day = AppUtils.DateTime(os.OrderDate).Day,
+                            AppUtils.DateTime(os.OrderDate).Month,
+                            AppUtils.DateTime(os.OrderDate).Year ,
+                            Date = AppUtils.DateTime(os.OrderDate).ToShortDateString()
+                        };
+
+            var orderSalesBydate = orderSales.AsEnumerable().Where(os => os.Day == today.Day && os.Month == today.Month 
+                        && os.Year == today.Year && os.EmployeeId == employeeId).ToList();
+                        
+            var query = from product in _context.Products
+                            .Include(p => p.ProductPurchaseHistories)
+                        select new {
+                            ProductId = product.ProductId,
+                            ProductName = product.ProductName,
+                            ProductCode = product.ProductCode,
+                            TotalProducts = product.TotalProducts,
+                            TotalProductInStock = product.TotalProductInStock,
+                            ProductPrice = product.ProductPrice,
+                            SalestPrice = product.SalestPrice,
+                            PurHis = product.ProductPurchaseHistories
+                        };
+            List<Object> orderPros = new List<Object>();
+
+            var allProducts = await query.ToListAsync();
+            foreach (var item in allProducts)
+            {
+                var pphs = item.PurHis;
+                List<Object> pphswithOrderInfo = new List<Object>();
+                foreach (var pph in pphs)
+                {
+                    if(orderSalesBydate.Count() > 0){
+                        var orderSalesId = orderSalesBydate.First().OrderSalesId;
+                        
+                        List<OrderProduct> orderProduct = _context.OrderProducts.
+                                                    Where( 
+                                                        op => op.OrderSalesId == orderSalesId &&
+                                                        op.ProductPurchaseHistoryId == pph.ProductPurchaseHistoryId
+                                                        ).ToList();
+                        if (orderProduct.Count() > 0){
+                            var pphOrder = new {
+                                pph.ProductPurchaseHistoryId,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice,
+                                pph.ProductId,
+                                pph.ProductQuantity,
+                                pph.Date,
+                                orderSalesId,
+                                orderProduct.First().OrderProductId,
+                                orderProduct.First().DamageQuantityProductQuantity,
+                                orderProduct.First().ProductQuantityProductQuantity,
+                                orderProduct.First().ReturnQuantityProductQuantity,
+                                orderProduct.First().ProductRatePrice
+                            };
+                            pphswithOrderInfo.Add(pphOrder);
+                        }else{
+                            var pphOrder = new {
+                                pph.ProductPurchaseHistoryId,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice,
+                                pph.ProductId,
+                                pph.ProductQuantity,
+                                pph.Date,
+                                orderSalesId = -387827,
+                                OrderProductId = -34,
+                                DamageQuantityProductQuantity = 0,
+                                ProductQuantityProductQuantity = 0,
+                                ReturnQuantityProductQuantity = 0,
+                                ProductRatePrice = 0
+                            };
+                            pphswithOrderInfo.Add(pphOrder);
+                        }
+                       
+               
+                    } else if (await _context.Employees.FindAsync(employeeId) != null){
+                         var pphOrder = new {
+                                pph.ProductPurchaseHistoryId,
+                                pph.PerProductPurchasePrice,
+                                pph.PerProductSalesPrice,
+                                pph.ProductId,
+                                pph.ProductQuantity,
+                                pph.Date,
+                                orderSalesId = -387827,
+                                OrderProductId = -56,
+                                DamageQuantityProductQuantity = 0,
+                                ProductQuantityProductQuantity = 0,
+                                ReturnQuantityProductQuantity = 0,
+                                ProductRatePrice = 0
+                            };
+                            pphswithOrderInfo.Add(pphOrder);
+                    }
+
+                } 
+                if (orderSalesBydate.Count() > 0 || await _context.Employees.FindAsync(employeeId) != null){
+                    var orderPro = new {
+                            item.ProductId,
+                            item.ProductName,
+                            item.ProductCode,
+                            item.TotalProducts,
+                            item.TotalProductInStock,
+                            item.ProductPrice,
+                            item.SalestPrice,
+                            PurHis = pphswithOrderInfo
+                    };
+                    orderPros.Add(orderPro);
+
+                } 
+
+            }
+            var orderSalesInfo = orderSalesBydate.Count() > 0 ? orderSalesBydate.First() : null;
+
+            return  new {
+                orderSalesInfo,
+                Products = orderPros.ToList()
+            };
+        }
+
+
+        [HttpGet("order-sales-by-ids/{employeeId}")]
         public async Task<ActionResult<IEnumerable>> GetOrderSales(List<OrderSalesIdsWthEmpId> orderSalesIdsWthEmpIds){
             
             List<EmployeeOrderWithProdutctByDate> employeeOrderWithProdutctByDates = new List<EmployeeOrderWithProdutctByDate>();
@@ -260,18 +537,25 @@ namespace inventory_rest_api.Controllers
         [HttpPut]
         public async Task<ActionResult> PutOrderSales(OrderWithProdutct orderWithProdutct){
             OrderSales orderSales = orderWithProdutct.OrderSales;
-            if(orderSales.OrderSalesId == -9999998){
+            if(orderSales.OrderSalesId < 0){
                 await PostOrderSalesD(orderWithProdutct);
                 return Ok("Successfully");
             }
 
             OrderSales preOrderSales = await _context.OrderSales.FindAsync(orderSales.OrderSalesId);
+            bool payStatus = false;
             
             preOrderSales.OrderPaymentAmount += orderSales.OrderPaymentAmount;
-            preOrderSales.OrderPaidStatus = orderSales.OrderPaidStatus;
+
+            if (orderSales.OrderTotalPrice - preOrderSales.OrderPaymentAmount == 0 ){
+                payStatus = true;
+            }
+
+            preOrderSales.OrderPaidStatus = payStatus;
             preOrderSales.OrderTotalPrice = orderSales.OrderTotalPrice;
             preOrderSales.Commission = orderSales.Commission;
             preOrderSales.Cost = orderSales.Cost;
+            preOrderSales.RouteName = orderSales.RouteName;
 
             OrderPayment orderPayment = new OrderPayment {
                 OrderSalesId = preOrderSales.OrderSalesId,
@@ -282,9 +566,10 @@ namespace inventory_rest_api.Controllers
             _context.OrderPayments.Add(orderPayment);
             _context.OrderSales.Update(preOrderSales);
         
+            
             foreach (OrderProduct orderProduct in orderWithProdutct.OrderProducts)
             {
-                if(orderProduct.OrderProductId == -999999988){
+                if(orderProduct.OrderProductId < 0){
                     orderProduct.OrderSalesId = orderSales.OrderSalesId;
                     await PostOrderProduct(orderProduct);
                 }else{
@@ -310,8 +595,8 @@ namespace inventory_rest_api.Controllers
                     
                     preOrderProduct.ProductQuantityProductQuantity = orderProduct.ProductQuantityProductQuantity;
                     preOrderProduct.ReturnQuantityProductQuantity = orderProduct.ReturnQuantityProductQuantity;
-                    preOrderProduct.DamageQuantityProductQuantity = preOrderProduct.DamageQuantityProductQuantity;
-                    preOrderProduct.ProductRatePrice = preOrderProduct.ProductRatePrice;
+                    preOrderProduct.DamageQuantityProductQuantity = orderProduct.DamageQuantityProductQuantity;
+                    preOrderProduct.ProductRatePrice = orderProduct.ProductRatePrice;
 
                     _context.OrderProducts.Update(preOrderProduct);
                 }
@@ -368,7 +653,8 @@ namespace inventory_rest_api.Controllers
                 OrderPaymentAmount = orderWithProdutct.OrderSales.OrderPaymentAmount,
                 OrderPaidStatus = orderWithProdutct.OrderSales.OrderPaidStatus,
                 Commission = orderWithProdutct.OrderSales.Commission,
-                Cost = orderWithProdutct.OrderSales.Cost
+                Cost = orderWithProdutct.OrderSales.Cost,
+                RouteName = orderWithProdutct.OrderSales.RouteName
             } ; 
 
             _context.OrderSales.Add(orderSales);
@@ -396,6 +682,8 @@ namespace inventory_rest_api.Controllers
         }
 
         private async Task PostOrderProduct(OrderProduct op){
+            // Console.WriteLine(op.ProductRatePrice);
+
             OrderProduct orderProduct = new OrderProduct {
                 OrderSalesId = op.OrderSalesId,
                 ProductPurchaseHistoryId = op.ProductPurchaseHistoryId,
@@ -414,6 +702,22 @@ namespace inventory_rest_api.Controllers
             _context.ProductPurchaseHistories.Update(proPurHis);
             _context.Products.Update(product);
             _context.OrderProducts.Add(orderProduct);
+        }
+
+        private bool isOrderExists(long employeeId){
+             DateTime today = DateTime.Today;
+            var query = from os in _context.OrderSales
+                        where os.EmployeeId == employeeId
+                        select new {
+                            Day = AppUtils.DateTime(os.OrderDate).Day,
+                            AppUtils.DateTime(os.OrderDate).Month,
+                            AppUtils.DateTime(os.OrderDate).Year 
+                        };
+
+            var seelctBydate = query.AsEnumerable().Where(os => os.Day == today.Day && os.Month == today.Month 
+                        && os.Year == today.Year).ToList();
+
+            return seelctBydate.Count() > 0;
         }
     }
 
@@ -440,4 +744,6 @@ namespace inventory_rest_api.Controllers
         public long EmployeeId { get; set; }
         public OrderSales OrderSales { get; set; }
     }
+
+    
 }

@@ -10,8 +10,8 @@ using inventory_rest_api.Models;
 namespace inventory_rest_api.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20210118195733_update")]
-    partial class update
+    [Migration("20210219084836_OrderFixed")]
+    partial class OrderFixed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -322,6 +322,9 @@ namespace inventory_rest_api.Migrations
 
                     b.Property<double>("OrderTotalPrice")
                         .HasColumnType("float");
+
+                    b.Property<string>("RouteName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderSalesId");
 
