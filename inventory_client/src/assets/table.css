@@ -1,8 +1,8 @@
 .form-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    overflow-x: scroll;
-    overflow: scroll;
+    overflow-x: auto;
+    overflow: auto;
     width: 100%;
 }
 .form-table-th-td {
@@ -22,7 +22,7 @@
 .form-table-th-td-center-fixed-width {
     border: 1px solid #dddddd;
     text-align: center;
-    width: auto;
+    width: 500px!important;
     padding: 10px;
     display: table-cell;
 }
@@ -30,7 +30,7 @@
 .form-table-th-td-center-width-300 {
     border: 1px solid #dddddd;
     text-align: center;
-    width: 300px;
+    width: 700px!important;
     padding: 10px;
     display: table-cell;
 }

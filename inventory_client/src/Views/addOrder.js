@@ -301,7 +301,7 @@ export default function AddOrder(props){
                     <TabPanel value={tabValue} index={i}>
                     
                         <form ref={printRef} onSubmit={saveOrder} >
-                        <Card style={{overflowX : 'scroll!important'}}>
+                        <Card>
                             <Grid
                                 container
                                 direction='row'>
@@ -327,7 +327,7 @@ export default function AddOrder(props){
                                 </Grid>
                                 
                             </Grid>
-                            <table className='form-table' >
+                            <table className='form-table' style={{overflow: 'auto'}} >
                                 <thead>
                                     <tr>
                                         {
@@ -344,8 +344,8 @@ export default function AddOrder(props){
                                         products.length > 0 && products.map((item,i) => (
                                             <tr key={i}>
                                                 
-                                                <td className="form-table-th-td-center-fixed-width">
-                                                    <Typography>{item.productName}</Typography> 
+                                                <td className="form-table-th-td-center-width-300">
+                                                    <Typography style={{width:200}}>{item.productName}</Typography> 
                                                 </td>
                                                 <td className="form-table-th-td-center-width-300">
                                                     {
@@ -362,7 +362,8 @@ export default function AddOrder(props){
                                                     {
                                                         item.purHis.map((ph,j) => (
                                                             <TextField 
-                                                                style={{marginBottom: 5}}
+                                        
+                                                                style={{marginBottom: 5,width:200}}
                                                                 key={i}
                                                                 variant="outlined" 
                                                                 value={ph.productQuantityProductQuantity} 
@@ -375,7 +376,7 @@ export default function AddOrder(props){
                                                     {
                                                         item.purHis.map((ph,j) => (
                                                             <TextField 
-                                                                style={{marginBottom: 5}}
+                                                                style={{marginBottom: 5,width:200}}
                                                                 variant="outlined"
                                                                 value={ph.returnQuantityProductQuantity}
                                                                 onChange={(e) => handleReturn(e,i,j)} />
@@ -394,7 +395,7 @@ export default function AddOrder(props){
                                                 {
                                                         item.purHis.map((ph,j) => (
                                                             <TextField 
-                                                                style={{marginBottom: 5}}
+                                                                style={{marginBottom: 5,width:200}}
                                                                 variant="outlined"
                                                                 value={ph.damageQuantityProductQuantity}
                                                                 onChange={(e) => handleDamage(e,i,j)} />
@@ -405,7 +406,7 @@ export default function AddOrder(props){
                                                 {
                                                         item.purHis.map((ph,j) => (
                                                             <TextField 
-                                                                style={{marginBottom: 5}}
+                                                                style={{marginBottom: 5,width:200}}
                                                                 variant="outlined"
                                                                 value={ph.productRatePrice}
                                                                 onChange={(e) => handleRate(e,i,j)} />
@@ -415,7 +416,7 @@ export default function AddOrder(props){
                                                 <td className="form-table-th-td-center-fixed-width">
                                                     {
                                                         item.purHis.map((ph,j) => (
-                                                            <Typography>{(ph.productQuantityProductQuantity-ph.returnQuantityProductQuantity)*ph.productRatePrice}</Typography>
+                                                            <Typography style={{width:200}}>{(ph.productQuantityProductQuantity-ph.returnQuantityProductQuantity)*ph.productRatePrice}</Typography>
                                                         ))
                                                     }
                                                 </td>
@@ -509,6 +510,7 @@ export default function AddOrder(props){
                                         (
                                             <TextField 
                                                 value={paymentAmount}
+                                                style={{marginBottom: 5,width:200}}
                                                 required={true}
                                                 onChange={handlePaymentAmount}
                                                 label="Sales Payment Amount(tk)"
@@ -540,6 +542,7 @@ export default function AddOrder(props){
                                 </Grid>
                                 <Grid item xs={6} style={{marginBottom : 10}}>
                                     <TextField   
+                                        style={{marginBottom: 5,width:200}}
                                         onChange={handleCommision}
                                         value={commisionAmount}
                                         required={true}
@@ -549,6 +552,7 @@ export default function AddOrder(props){
                                 </Grid>
                                 <Grid item xs={6} style={{marginBottom : 10}}>
                                     <TextField 
+                                        style={{marginBottom: 5,width:200}}
                                         onChange={handleCost}
                                         value={costAmount}
                                         required={true}
