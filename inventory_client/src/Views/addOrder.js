@@ -406,6 +406,7 @@ export default function AddOrder(props){
                                                 {
                                                         item.purHis.map((ph,j) => (
                                                             <TextField 
+                                                                type='number'
                                                                 style={{marginBottom: 5,width:200}}
                                                                 variant="outlined"
                                                                 value={ph.productRatePrice}

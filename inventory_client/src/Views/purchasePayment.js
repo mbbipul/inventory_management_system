@@ -13,7 +13,12 @@ export default function PurchasePayment(){
         { 
             title: 'Purchase Payment Date', 
             field: 'paymentPurchaseDate',
-            render : rowData => new Date(parseInt(rowData.paymentPurchaseDate)).toDateString() 
+            render : rowData => {
+                if(/^\d+$/.test(rowData.paymentPurchaseDate)){
+                    return new Date(parseInt(rowData.paymentPurchaseDate)).toDateString() 
+                }
+                return new Date(rowData.paymentPurchaseDate).toDateString() ;
+            }
         },
 
     ];
@@ -21,7 +26,6 @@ export default function PurchasePayment(){
     const FetchData = () => {
         submitForm("paymentpurchase/regarding-supplier","GET","",(res) => {
             let tmp = JSON.parse(res);
-            tmp.map(d => d.paymentPurchaseDate = new Date(parseInt(d.paymentPurchaseDate)).toDateString());
             setData(tmp);
         });
     }
